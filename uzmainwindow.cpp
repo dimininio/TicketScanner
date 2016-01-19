@@ -53,7 +53,14 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 
     connect(searchButton,&QPushButton::clicked,this,&UZMainWindow::ticketsSearch);
     connect(networkManager,&NetworkManager::finished,this,&UZMainWindow::showSearchResults);
+    connect(textBrowser,&QTextBrowser::anchorClicked,this,&UZMainWindow::trainChosen);
 
+}
+
+
+UZMainWindow::~UZMainWindow()
+{
+    delete ui;
 }
 
 
@@ -84,7 +91,7 @@ void UZMainWindow::showSearchResults()
          for(auto it = jsonTrains.begin();it != jsonTrains.end();++it)
          {
              train = it->toObject();
-             trainData = train["num"].toString();
+             trainData = "<a href=\"" + train["num"].toString() + "\">" +  train["num"].toString() +"</a>";
              trainData = trainData + "\t" + train["travel_time"].toString();
 
              QJsonArray ticketTypes = train["types"].toArray();
@@ -120,7 +127,13 @@ void UZMainWindow::error(QNetworkReply::NetworkError err)
     int ret = QMessageBox::critical(this, tr("UZ scanner"),searchReply->errorString(),QMessageBox::Ok);
 }
 
-UZMainWindow::~UZMainWindow()
+
+
+
+void UZMainWindow::trainChosen(const QUrl &link)
 {
-    delete ui;
+     qDebug()<<"clicked "<<link;
+
+
+
 }

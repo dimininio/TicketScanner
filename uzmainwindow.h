@@ -28,6 +28,7 @@ public:
 public slots:
     void ticketsSearch();
     void error(QNetworkReply::NetworkError err);
+    void trainChosen(const QUrl& link);
 
 private:
     Ui::UZMainWindow *ui;

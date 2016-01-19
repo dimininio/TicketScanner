@@ -46,7 +46,7 @@ void NetworkManager::getAttributes()
     QWebFrame *frame = hiddenView->page()->mainFrame();
     frame->setParent(this);
     //QWebPage* startpage = new QWebPage(hiddenView->page());
-
+    token.clear();
     QVariant vartoken = frame->evaluateJavaScript("localStorage.getItem('gv-token')");
    // QString tokenstr = vartoken.toString();
     token.append(vartoken.toString());
@@ -116,9 +116,14 @@ QNetworkReply* NetworkManager::sendSearchRequest(SearchData searchdata)
 
 void NetworkManager::errorSlot(QNetworkReply::NetworkError err)
 {
-    qDebug()<<"error: "<<networkReply->error();
+    qDebug()<<"error: "<<err;
 
-     qDebug()<<"err: "<<networkReply->errorString();
+     qDebug()<<"error "<<networkReply->errorString();
+
+     QVariant httpstatus = networkReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+     qDebug()<<"status "<<httpstatus.toInt();
+     if (httpstatus.toInt()==400)
+         getAttributes();
 
     //int ret = QMessageBox::critical(UZApplication::instance()->mainWindow, tr("UZ scanner"),networkReply->errorString(),QMessageBox::Ok);
 }
