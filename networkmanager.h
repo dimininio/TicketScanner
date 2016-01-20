@@ -19,10 +19,16 @@ public:
     NetworkManager(QObject *parent = 0);
     ~NetworkManager();
 
+signals:
+    void responseReady(QNetworkReply* reply,QByteArray identifier);
+
 public slots:
 
-    QNetworkReply* sendGetStationsRequest(QString prefix);
-    QNetworkReply* sendSearchRequest(SearchData searchdata);
+   // QNetworkReply* sendGetStationsRequest(QString prefix);
+    QNetworkReply* sendGetStationsRequest(QString prefix,QByteArray sender);
+   // QNetworkReply* sendSearchRequest(SearchData searchdata);
+    QNetworkReply* sendSearchRequest(SearchData searchdata,QByteArray sender);
+    void replyHandling(QNetworkReply* reply);
 
     /*
     QNetworkReply sendGet();

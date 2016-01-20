@@ -7,6 +7,7 @@
 
 class NetworkManager;
 class QNetworkReply;
+class QByteArray;
 
 class LineEdit: public QLineEdit
 {
@@ -16,12 +17,13 @@ public:
     ~LineEdit();
 
     QString getStationID();
+    QByteArray identifier();
 
 public slots:
     void checkContent();
 
 private slots:
-    void updateContent();
+    void updateContent(QNetworkReply* reply,QByteArray id);
 
 signals:
     void getStations(QString prefix);
@@ -33,6 +35,8 @@ private:
 
     QNetworkReply* reply;
     QMap<QString,QString> stations;
+    static int senderIdentifier;
+    int p_identifier;
 
 };
 

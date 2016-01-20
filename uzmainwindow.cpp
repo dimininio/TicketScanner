@@ -20,7 +20,8 @@
 UZMainWindow::UZMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::UZMainWindow),
-    searchReply(nullptr)
+    searchReply(nullptr),
+    p_identifier("mainwindow")
 {
     //ui->setupUi(this);
 
@@ -52,7 +53,8 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 
 
     connect(searchButton,&QPushButton::clicked,this,&UZMainWindow::ticketsSearch);
-    connect(networkManager,&NetworkManager::finished,this,&UZMainWindow::showSearchResults);
+    //connect(networkManager,&NetworkManager::finished,this,&UZMainWindow::showSearchResults);
+    connect(networkManager,&NetworkManager::responseReady,this,&UZMainWindow::showSearchResults);
     connect(textBrowser,&QTextBrowser::anchorClicked,this,&UZMainWindow::trainChosen);
 
 }
@@ -68,12 +70,15 @@ void UZMainWindow::ticketsSearch()
 {
     QString date = dateField->date().toString("MM.dd.yyyy");
     SearchData searchdata(editFrom->getStationID(),editTo->getStationID(),date);
-    searchReply = networkManager->sendSearchRequest(searchdata);
+    searchReply = networkManager->sendSearchRequest(searchdata,identifier());
 }
 
-void UZMainWindow::showSearchResults()
+void UZMainWindow::showSearchResults(QNetworkReply *reply, QByteArray sender)
 {
     if (searchReply==nullptr) return;
+
+    if(sender!=identifier()) return;
+
     QByteArray data = searchReply->readAll();
 
     qDebug()<<"search result: "<<data;
@@ -127,7 +132,10 @@ void UZMainWindow::error(QNetworkReply::NetworkError err)
     int ret = QMessageBox::critical(this, tr("UZ scanner"),searchReply->errorString(),QMessageBox::Ok);
 }
 
-
+QByteArray UZMainWindow::identifier()
+{
+    return p_identifier;
+}
 
 
 void UZMainWindow::trainChosen(const QUrl &link)

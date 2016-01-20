@@ -23,7 +23,8 @@ public:
     explicit UZMainWindow(QWidget *parent = 0);
     ~UZMainWindow();
 
-    void showSearchResults();
+    void showSearchResults(QNetworkReply *reply, QByteArray id);
+    QByteArray identifier();
 
 public slots:
     void ticketsSearch();
@@ -40,6 +41,7 @@ private:
     LineEdit* editFrom;
     LineEdit* editTo;
     QTextBrowser* textBrowser;
+    QByteArray p_identifier;
 };
 
 #endif // UZMAINWINDOW_H

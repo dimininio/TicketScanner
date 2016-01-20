@@ -29,6 +29,8 @@ NetworkManager::NetworkManager(QObject *parent):
     hiddenView->setUrl(QUrl("http://booking.uz.gov.ua/en/"));
 
     connect(hiddenView,SIGNAL(loadFinished(bool)),this,SLOT(getAttributes()));
+
+    connect(this,&NetworkManager::finished,this,&NetworkManager::replyHandling);
     //connect(networkReply,SIGNAL(error(QNetworkReply::NetworkError)),this,SLOT(error(QNetworkReply::NetworkError)));
 }
 
@@ -63,7 +65,8 @@ void NetworkManager::getAttributes()
 }
 
 
-QNetworkReply *NetworkManager::sendGetStationsRequest(QString prefix)
+
+QNetworkReply *NetworkManager::sendGetStationsRequest(QString prefix, QByteArray sender)
 {
     QNetworkRequest request;
 
@@ -72,16 +75,13 @@ QNetworkReply *NetworkManager::sendGetStationsRequest(QString prefix)
     request.setRawHeader("Connection","keep-alive");
     request.setRawHeader("Origin","http://booking.uz.gov.ua");
     request.setRawHeader("Referer","http://booking.uz.gov.ua/en/");
+    request.setRawHeader("Sender",sender);
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
     return this->post(request,"");
-    //if (!networkReply) {
-    //   connect(networkReply,SIGNAL(error(QNetworkReply::NetworkError)),this,SLOT(errorSlot(QNetworkReply::NetworkError)));
-   // }
-   // return networkReply;
 }
 
 
-QNetworkReply* NetworkManager::sendSearchRequest(SearchData searchdata)
+QNetworkReply* NetworkManager::sendSearchRequest(SearchData searchdata,QByteArray sender)
 {
     QNetworkRequest request;
 
@@ -95,6 +95,7 @@ QNetworkReply* NetworkManager::sendSearchRequest(SearchData searchdata)
     request.setRawHeader("GV-Ajax","1");
     request.setRawHeader("GV-Referer","http://booking.uz.gov.ua/en/");
     request.setRawHeader("Referer","http://booking.uz.gov.ua/en/");
+    request.setRawHeader("Sender",sender);
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 
 
@@ -111,6 +112,13 @@ QNetworkReply* NetworkManager::sendSearchRequest(SearchData searchdata)
     }
     return networkReply;
     //return this->post(request,bytearrayPOST);
+}
+
+
+void NetworkManager::replyHandling(QNetworkReply *reply)
+{
+    QByteArray identifier = reply->request().rawHeader("Sender");
+    emit responseReady(reply,identifier);
 }
 
 
