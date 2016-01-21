@@ -17,6 +17,10 @@
 #include <QDebug>
 #include <QMessageBox>
 
+static const QByteArray searchRequest = "searchRequest";
+static const QByteArray coachRequest = "coachRequest";
+static const QByteArray coachesRequest = "coachesRequest";
+
 UZMainWindow::UZMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::UZMainWindow),
@@ -53,8 +57,7 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 
 
     connect(searchButton,&QPushButton::clicked,this,&UZMainWindow::ticketsSearch);
-    //connect(networkManager,&NetworkManager::finished,this,&UZMainWindow::showSearchResults);
-    connect(networkManager,&NetworkManager::responseReady,this,&UZMainWindow::showSearchResults);
+    connect(networkManager,&NetworkManager::responseReady,this,&UZMainWindow::analizeResponse);
     connect(textBrowser,&QTextBrowser::anchorClicked,this,&UZMainWindow::trainChosen);
 
 }
@@ -70,16 +73,29 @@ void UZMainWindow::ticketsSearch()
 {
     QString date = dateField->date().toString("MM.dd.yyyy");
     SearchData searchdata(editFrom->getStationID(),editTo->getStationID(),date);
-    searchReply = networkManager->sendSearchRequest(searchdata,identifier());
+    searchReply = networkManager->sendSearchRequest(searchdata,searchRequest);
 }
 
-void UZMainWindow::showSearchResults(QNetworkReply *reply, QByteArray sender)
+
+
+void UZMainWindow::analizeResponse(QNetworkReply *reply, QByteArray id)
 {
-    if (searchReply==nullptr) return;
+    //switch(id) {
+    //    case searchRequest: showSearchResults(reply);
+   // }
+    if (id == searchRequest)
+        showSearchResults(reply);
+}
 
-    if(sender!=identifier()) return;
 
-    QByteArray data = searchReply->readAll();
+
+void UZMainWindow::showSearchResults(QNetworkReply *reply)
+{
+    //if (searchReply==nullptr) return;
+
+   // if(sender!=identifier()) return;
+
+    QByteArray data = reply->readAll();
 
     qDebug()<<"search result: "<<data;
 
@@ -119,9 +135,9 @@ void UZMainWindow::showSearchResults(QNetworkReply *reply, QByteArray sender)
 
     }
 
-
-    delete searchReply;
-    searchReply = nullptr;
+    //reply->deleteLater();
+    //delete searchReply;
+    //searchReply = nullptr;
 }
 
 

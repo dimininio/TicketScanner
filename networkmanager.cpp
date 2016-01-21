@@ -28,7 +28,7 @@ NetworkManager::NetworkManager(QObject *parent):
     hiddenView = new QWebView();
     hiddenView->setUrl(QUrl("http://booking.uz.gov.ua/en/"));
 
-    connect(hiddenView,SIGNAL(loadFinished(bool)),this,SLOT(getAttributes()));
+    connect(hiddenView,SIGNAL(loadFinished(bool)),this,SLOT(getAttributes(bool)));
 
     connect(this,&NetworkManager::finished,this,&NetworkManager::replyHandling);
     //connect(networkReply,SIGNAL(error(QNetworkReply::NetworkError)),this,SLOT(error(QNetworkReply::NetworkError)));
@@ -41,16 +41,20 @@ NetworkManager::~NetworkManager()
     //delete cached resourses
 }
 
-
-void NetworkManager::getAttributes()
+void NetworkManager::updateAttributes()
 {
+    hiddenView->reload();
+}
+
+void NetworkManager::getAttributes(bool ok)
+{
+    if (!ok)  qDebug()<<"fatality!!";
 
     QWebFrame *frame = hiddenView->page()->mainFrame();
     frame->setParent(this);
     //QWebPage* startpage = new QWebPage(hiddenView->page());
     token.clear();
     QVariant vartoken = frame->evaluateJavaScript("localStorage.getItem('gv-token')");
-   // QString tokenstr = vartoken.toString();
     token.append(vartoken.toString());
     cookies = hiddenView->page()->networkAccessManager()->cookieJar()->cookiesForUrl(QUrl("http://booking.uz.gov.ua/en/"));
 
@@ -60,6 +64,7 @@ void NetworkManager::getAttributes()
        qDebug()<<it->name()<<"  --  "<<it->value();
     }
 
+    emit this->networkManagerReady();
     //frame->deleteLater(); crashed during finishing
    // delete startpage;
 }
@@ -131,7 +136,8 @@ void NetworkManager::errorSlot(QNetworkReply::NetworkError err)
      QVariant httpstatus = networkReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
      qDebug()<<"status "<<httpstatus.toInt();
      if (httpstatus.toInt()==400)
-         getAttributes();
+         updateAttributes();
+
 
     //int ret = QMessageBox::critical(UZApplication::instance()->mainWindow, tr("UZ scanner"),networkReply->errorString(),QMessageBox::Ok);
 }

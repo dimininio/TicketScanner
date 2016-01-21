@@ -21,6 +21,7 @@ public:
 
 signals:
     void responseReady(QNetworkReply* reply,QByteArray identifier);
+    void networkManagerReady();
 
 public slots:
 
@@ -36,7 +37,8 @@ public slots:
 */
     void errorSlot(QNetworkReply::NetworkError err);
 private slots:
-    void getAttributes();
+    void getAttributes(bool ok);
+
 
 private:
     QByteArray token;
@@ -44,6 +46,8 @@ private:
     QWebView* hiddenView;
     QNetworkReply* networkReply;
     //void getAttributes();
+
+    void updateAttributes();
 
 };
 

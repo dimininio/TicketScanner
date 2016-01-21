@@ -23,11 +23,12 @@ public:
     explicit UZMainWindow(QWidget *parent = 0);
     ~UZMainWindow();
 
-    void showSearchResults(QNetworkReply *reply, QByteArray id);
+    void showSearchResults(QNetworkReply *reply);
     QByteArray identifier();
 
 public slots:
     void ticketsSearch();
+    void analizeResponse(QNetworkReply *reply, QByteArray id);
     void error(QNetworkReply::NetworkError err);
     void trainChosen(const QUrl& link);
 

@@ -20,6 +20,9 @@ public:
 
     NetworkManager* networkManager();
 
+private slots:
+    void showWindow();
+
 private:
 
     NetworkManager* p_networkManager;

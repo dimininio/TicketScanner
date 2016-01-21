@@ -3,12 +3,21 @@
 #include "networkmanager.h"
 
 UZApplication::UZApplication(int &argc, char **argv):
-    QApplication(argc,argv)
+    QApplication(argc,argv),
+    mainWindow(nullptr)
 {
     p_networkManager = new NetworkManager(this);
 
-    mainWindow = new UZMainWindow();
-    mainWindow->show();
+    connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
+}
+
+
+void UZApplication::showWindow()
+{
+    if (!mainWindow) {
+        mainWindow = new UZMainWindow();
+        mainWindow->show();
+     }
 }
 
 
