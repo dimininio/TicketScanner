@@ -5,21 +5,20 @@
 #include "lineedit.h"
 #include "networkmanager.h"
 #include "requestdata.h"
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
+
 #include <QGridLayout>
 #include <QCalendarWidget>
 #include <QDateEdit>
 #include <QPushButton>
 #include <QByteArray>
 #include <QNetworkReply>
+#include <QDateTime>
 #include <QDebug>
 #include <QMessageBox>
 
-static const QByteArray searchRequest = "searchRequest";
-static const QByteArray coachRequest = "coachRequest";
-static const QByteArray coachesRequest = "coachesRequest";
+const QByteArray searchRequest = "searchRequest";
+const QByteArray coachRequest = "coachRequest";
+const QByteArray coachesRequest = "coachesRequest";
 
 UZMainWindow::UZMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,6 +29,7 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
     //ui->setupUi(this);
 
     networkManager = UZApplication::instance()->networkManager();
+    trains = &UZApplication::instance()->trains;
 
     editFrom = new LineEdit(this);
     editTo = new LineEdit(this);
@@ -57,7 +57,6 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 
 
     connect(searchButton,&QPushButton::clicked,this,&UZMainWindow::ticketsSearch);
-    connect(networkManager,&NetworkManager::responseReady,this,&UZMainWindow::analizeResponse);
     connect(textBrowser,&QTextBrowser::anchorClicked,this,&UZMainWindow::trainChosen);
 
 }
@@ -72,72 +71,52 @@ UZMainWindow::~UZMainWindow()
 void UZMainWindow::ticketsSearch()
 {
     QString date = dateField->date().toString("MM.dd.yyyy");
-    SearchData searchdata(editFrom->getStationID(),editTo->getStationID(),date);
+    SearchPOSTData searchdata(editFrom->getStationID(),editTo->getStationID(),date);
     searchReply = networkManager->sendSearchRequest(searchdata,searchRequest);
 }
 
 
 
-void UZMainWindow::analizeResponse(QNetworkReply *reply, QByteArray id)
+void UZMainWindow::showAvailableTrains()
 {
-    //switch(id) {
-    //    case searchRequest: showSearchResults(reply);
-   // }
-    if (id == searchRequest)
-        showSearchResults(reply);
+    QString trainData;
+    textBrowser->clear();
+
+    for(auto train = trains->begin();train!=trains->end();++train)
+    {
+        trainData = "<a href=\"" + train->number + "\">" +  train->number +"</a>";
+        trainData = trainData + "\t" + train->travelTime;
+        for(auto tickets = train->availablePlaces.begin();tickets!=train->availablePlaces.end(); ++tickets)
+        {
+            trainData = trainData + "\t" + tickets.key() + ": " + QString::number(tickets.value());
+        }
+        textBrowser->append(trainData);
+    }
+
 }
 
 
 
-void UZMainWindow::showSearchResults(QNetworkReply *reply)
+void UZMainWindow::showAvailableCoaches(Train *train)
 {
-    //if (searchReply==nullptr) return;
-
-   // if(sender!=identifier()) return;
-
-    QByteArray data = reply->readAll();
-
-    qDebug()<<"search result: "<<data;
-
+    QString data;
     textBrowser->clear();
 
-    QString trainData;
-    QJsonDocument responce;
-    responce = QJsonDocument::fromJson(data);
-    if (responce.isObject()) {
-        QJsonObject jsonobject = responce.object();
+    //try to use algorithms....
 
-         QJsonArray jsonTrains = jsonobject["value"].toArray();
-         QJsonObject train;
-         for(auto it = jsonTrains.begin();it != jsonTrains.end();++it)
-         {
-             train = it->toObject();
-             trainData = "<a href=\"" + train["num"].toString() + "\">" +  train["num"].toString() +"</a>";
-             trainData = trainData + "\t" + train["travel_time"].toString();
-
-             QJsonArray ticketTypes = train["types"].toArray();
-             QJsonObject ticketType;
-             for(auto it2 = ticketTypes.begin(); it2!=ticketTypes.end();++it2)
-             {
-                 ticketType = it2->toObject();
-                 trainData = trainData + "\t" + ticketType["letter"].toString() + ": " + QString::number(ticketType["places"].toInt());
-             }
-
-             textBrowser->append(trainData);
-
-         }
-
-        if (jsonobject["error"].toBool()){
-            QString error = jsonobject["value"].toString();
-            qDebug()<<error;
+    for(auto type = train->availablePlaces.begin(); type!=train->availablePlaces.end();++type)
+    {
+        textBrowser->append(type.key());
+        for(auto p = train->coaches.begin();p!= train->coaches.end(); ++p)
+        {
+            if (p->coachClass == type.key())
+            {
+                data = "\t\t" + QString::number(p->number) + QString::number(p->placesNumber);
+                //qDebug()<< p->number + "     " + p->placesNumber;
+                textBrowser->append(data);
+            }
         }
-
-
     }
-
-    //reply->deleteLater();
-    //delete searchReply;
-    //searchReply = nullptr;
 }
 
 
@@ -157,7 +136,17 @@ QByteArray UZMainWindow::identifier()
 void UZMainWindow::trainChosen(const QUrl &link)
 {
      qDebug()<<"clicked "<<link;
+     QString trainNum = link.toString();
+     Train* currentTrain = &(*trains)[trainNum];
 
+     //QDateTime date(dateField->date());
+     //uint dateInSeconds = date.toTime_t();
 
+     for(auto p = currentTrain->availablePlaces.begin();p!=currentTrain->availablePlaces.end();++p)
+     {
+        CoachesPOSTData postdata(editFrom->getStationID(),editTo->getStationID(),currentTrain->dateDeparture,
+                              trainNum,p.key());
+        networkManager->sendCoachesRequest(postdata,coachesRequest);
+     }
 
 }

@@ -8,11 +8,14 @@
 
 #include <QMessageBox>
 #include <QDebug>
+#include <QUrl>
 #include "uzapplication.h"
 
 
 static const QUrl searchURL("http://booking.uz.gov.ua/en/purchase/search/");
 static const QString stationsURL = "http://booking.uz.gov.ua/en/purchase/station/";
+static const QUrl coachesURL("http://booking.uz.gov.ua/en/purchase/coaches/");
+static const QUrl coachURL("http://booking.uz.gov.ua/en/purchase/coach/");
 
 
 
@@ -86,7 +89,7 @@ QNetworkReply *NetworkManager::sendGetStationsRequest(QString prefix, QByteArray
 }
 
 
-QNetworkReply* NetworkManager::sendSearchRequest(SearchData searchdata,QByteArray sender)
+QNetworkReply* NetworkManager::sendSearchRequest(SearchPOSTData searchdata,QByteArray sender)
 {
     QNetworkRequest request;
 
@@ -119,6 +122,81 @@ QNetworkReply* NetworkManager::sendSearchRequest(SearchData searchdata,QByteArra
     //return this->post(request,bytearrayPOST);
 }
 
+QString URLencode(QString str)
+{
+    QUrl urldata(str);
+    return urldata.toEncoded();
+}
+
+void NetworkManager::sendCoachesRequest(CoachesPOSTData postdata, QByteArray sender)
+{
+    QNetworkRequest request;
+    QByteArray train;train.append(postdata.train);
+    QByteArray coachType;coachType.append(postdata.coachType);
+
+    request.setUrl(coachesURL);
+    request.setRawHeader("Host","booking.uz.gov.ua");
+    request.setRawHeader("GV-Token",token);
+    request.setRawHeader("Connection","keep-alive");
+    request.setRawHeader("Origin","http://booking.uz.gov.ua");
+    request.setRawHeader("Content-Type","application/x-www-form-urlencoded");
+    request.setRawHeader("GV-Ajax","1");
+    request.setRawHeader("GV-Referer","http://booking.uz.gov.ua/en/");
+    request.setRawHeader("Referer","http://booking.uz.gov.ua/en/");
+    request.setRawHeader("Sender",sender);
+    request.setRawHeader("Train",train);
+    request.setRawHeader("CoachType",coachType);
+    request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
+
+    QString postBody = "station_id_from=" + postdata.stationFrom +
+                       "&station_id_till=" + postdata.stationTo +
+                       "&train=" + URLencode(postdata.train) +
+                       "&coach_type=" + URLencode(postdata.coachType) +
+                       "&date_dep=" + postdata.tripDate;
+    qDebug()<<postBody;
+    QByteArray bytearrayPOST;bytearrayPOST.append(postBody);
+
+    networkReply = post(request,bytearrayPOST);
+    if (networkReply) {
+        connect(networkReply,SIGNAL(error(QNetworkReply::NetworkError)),this,SLOT(errorSlot(QNetworkReply::NetworkError)));
+    }
+
+ }
+
+
+void NetworkManager::sendCoachRequest(CoachPOSTData postdata, QByteArray sender)
+{
+    QNetworkRequest request;
+
+    request.setUrl(searchURL);
+    //request.setUrl(QUrl("http://booking.uz.gov.ua/en/purchase/search/"));
+    request.setRawHeader("Host","booking.uz.gov.ua");
+    request.setRawHeader("GV-Token",token);
+    request.setRawHeader("Connection","keep-alive");
+    request.setRawHeader("Origin","http://booking.uz.gov.ua");
+    request.setRawHeader("Content-Type","application/x-www-form-urlencoded");
+    request.setRawHeader("GV-Ajax","1");
+    request.setRawHeader("GV-Referer","http://booking.uz.gov.ua/en/");
+    request.setRawHeader("Referer","http://booking.uz.gov.ua/en/");
+    request.setRawHeader("Sender",sender);
+    request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
+
+    QString postBody = "station_id_from=" + postdata.stationFrom +
+                       "&station_id_till=" + postdata.stationTo +
+                       "&train=" + postdata.train +
+                       "&coach_num=" + postdata.coachNum +
+                       "&coach_type_id=" + postdata.coachType +
+                       "&date_dep=" + postdata.tripDate;
+
+    qDebug()<<postBody;
+    QByteArray bytearrayPOST;bytearrayPOST.append(postBody);
+
+    networkReply = post(request,bytearrayPOST);
+    if (networkReply) {
+        connect(networkReply,SIGNAL(error(QNetworkReply::NetworkError)),this,SLOT(errorSlot(QNetworkReply::NetworkError)));
+    }
+}
+
 
 void NetworkManager::replyHandling(QNetworkReply *reply)
 {
@@ -141,3 +219,5 @@ void NetworkManager::errorSlot(QNetworkReply::NetworkError err)
 
     //int ret = QMessageBox::critical(UZApplication::instance()->mainWindow, tr("UZ scanner"),networkReply->errorString(),QMessageBox::Ok);
 }
+
+

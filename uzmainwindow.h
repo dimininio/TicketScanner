@@ -15,6 +15,9 @@ class QNetworkReply;
 class LineEdit;
 class QTextBrowser;
 
+class Train;
+typedef QMap<QString,Train> Trains;
+
 class UZMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -23,12 +26,15 @@ public:
     explicit UZMainWindow(QWidget *parent = 0);
     ~UZMainWindow();
 
-    void showSearchResults(QNetworkReply *reply);
+   // void parseSearchResults(QNetworkReply *reply);
     QByteArray identifier();
+
+    void showAvailableTrains();
+    void showAvailableCoaches(Train* train);
 
 public slots:
     void ticketsSearch();
-    void analizeResponse(QNetworkReply *reply, QByteArray id);
+
     void error(QNetworkReply::NetworkError err);
     void trainChosen(const QUrl& link);
 
@@ -43,6 +49,7 @@ private:
     LineEdit* editTo;
     QTextBrowser* textBrowser;
     QByteArray p_identifier;
+    Trains* trains;
 };
 
 #endif // UZMAINWINDOW_H

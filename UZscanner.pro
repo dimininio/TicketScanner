@@ -22,6 +22,7 @@ HEADERS  += uzmainwindow.h \
     uzapplication.h \
     networkmanager.h \
     lineedit.h \
-    requestdata.h
+    requestdata.h \
+    train.h
 
 FORMS    += uzmainwindow.ui
