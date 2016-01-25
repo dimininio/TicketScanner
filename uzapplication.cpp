@@ -95,7 +95,6 @@ void UZApplication::parseSearchResults(QNetworkReply *reply)
              train.travelTime = jsonTrain["travel_time"].toString();
              int dateInSeconds = (jsonTrain["from"].toObject())["date"].toInt();
              train.dateDeparture = QString::number(dateInSeconds);
-              qDebug()<<dateInSeconds;
 
              QJsonArray ticketTypes = jsonTrain["types"].toArray();
              QJsonObject ticketType;
@@ -144,7 +143,7 @@ void UZApplication::parseCoachesSearchResults(QNetworkReply *reply)
              Coach coach(number);
              coach.coachTypeID = QString::number(jsonCoach["coach_type_id"].toInt());
              coach.placesNumber = jsonCoach["places_cnt"].toInt();
-             coach.coachClass = jsonCoach["places_cnt"].toString();
+             coach.coachClass = coachType;
              train->coaches.insert(number,coach);
              //qDebug()<<jsonCoach["num"];
 

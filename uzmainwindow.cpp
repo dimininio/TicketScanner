@@ -42,6 +42,7 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 
 
     textBrowser = new QTextBrowser(this);
+    textBrowser->setOpenLinks(false);
 
     QWidget *centralWidget = new QWidget;
 
@@ -103,20 +104,24 @@ void UZMainWindow::showAvailableCoaches(Train *train)
     textBrowser->clear();
 
     //try to use algorithms....
-
+    textBrowser->append("<span>Type \t           №        Qty</span>\n\n");
     for(auto type = train->availablePlaces.begin(); type!=train->availablePlaces.end();++type)
     {
-        textBrowser->append(type.key());
+        //textBrowser->append(type.key());
+        textBrowser->append("<span>" + type.key() + "</span>");
+
         for(auto p = train->coaches.begin();p!= train->coaches.end(); ++p)
         {
             if (p->coachClass == type.key())
             {
-                data = "\t\t" + QString::number(p->number) + QString::number(p->placesNumber);
+                data = "\t" + QString::number(p->number)+ ":    " + QString::number(p->placesNumber);
+                data ="           " + QString::number(p->number)+ ":           " + QString::number(p->placesNumber);
                 //qDebug()<< p->number + "     " + p->placesNumber;
-                textBrowser->append(data);
+                textBrowser->append("<span>" + data + "</span>");
             }
         }
     }
+    textBrowser->reload();
 }
 
 
