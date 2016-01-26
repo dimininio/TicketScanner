@@ -42,7 +42,6 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 
 
     textBrowser = new QTextBrowser(this);
-    textBrowser->setOpenLinks(false);
 
     QWidget *centralWidget = new QWidget;
 
