@@ -99,6 +99,10 @@ void UZMainWindow::showAvailableTrains()
 
 void UZMainWindow::showAvailableCoaches(Train *train)
 {
+    qDebug()<<"run ";
+    if (!train->checkComleteness()) return;
+qDebug()<<"Run ";
+
     QString data;
     textBrowser->clear();
 
@@ -120,7 +124,7 @@ void UZMainWindow::showAvailableCoaches(Train *train)
             }
         }
     }
-    textBrowser->reload();
+
 }
 
 
