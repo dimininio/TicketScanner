@@ -85,10 +85,10 @@ void UZMainWindow::showAvailableTrains()
     for(auto train = trains->begin();train!=trains->end();++train)
     {
         trainData = "<a href=\"" + train->number + "\">" +  train->number +"</a>";
-        trainData = trainData + "\t" + train->travelTime;
-        for(auto tickets = train->availablePlaces.begin();tickets!=train->availablePlaces.end(); ++tickets)
+        trainData = trainData + " \t" + train->travelTime;
+        for(auto tickets = train->freePlaces.begin();tickets!=train->freePlaces.end(); ++tickets)
         {
-            trainData = trainData + "\t" + tickets.key() + ": " + QString::number(tickets.value());
+            trainData = trainData + "\t" + tickets->placeClass  + ": " + QString::number(tickets->placesNumber);
         }
         textBrowser->append(trainData);
     }
@@ -99,23 +99,22 @@ void UZMainWindow::showAvailableTrains()
 
 void UZMainWindow::showAvailableCoaches(Train *train)
 {
-    qDebug()<<"run ";
+ //   qDebug()<<"run ";
     if (!train->checkComleteness()) return;
-qDebug()<<"Run ";
+//qDebug()<<"Run ";
 
     QString data;
     textBrowser->clear();
 
-    //try to use algorithms....
     textBrowser->append("<span>Type \t           №        Qty</span>\n\n");
-    for(auto type = train->availablePlaces.begin(); type!=train->availablePlaces.end();++type)
-    {
-        //textBrowser->append(type.key());
-        textBrowser->append("<span>" + type.key() + "</span>");
 
+    for(auto type = train->freePlaces.begin(); type!=train->freePlaces.end();++type)
+    {
+        //textBrowser->append(type->placeClass);
+        textBrowser->append("<span>" + type->placeClass + "</span>");
         for(auto p = train->coaches.begin();p!= train->coaches.end(); ++p)
         {
-            if (p->coachClass == type.key())
+            if (p->coachClass == type->placeClass)
             {
                 data = "\t" + QString::number(p->number)+ ":    " + QString::number(p->placesNumber);
                 data ="           " + QString::number(p->number)+ ":           " + QString::number(p->placesNumber);
@@ -147,13 +146,10 @@ void UZMainWindow::trainChosen(const QUrl &link)
      QString trainNum = link.toString();
      Train* currentTrain = &(*trains)[trainNum];
 
-     //QDateTime date(dateField->date());
-     //uint dateInSeconds = date.toTime_t();
-
-     for(auto p = currentTrain->availablePlaces.begin();p!=currentTrain->availablePlaces.end();++p)
+     for(auto p = currentTrain->freePlaces.begin();p!=currentTrain->freePlaces.end();++p)
      {
         CoachesPOSTData postdata(editFrom->getStationID(),editTo->getStationID(),currentTrain->dateDeparture,
-                              trainNum,p.key());
+                              trainNum,p->placeClass);
         networkManager->sendCoachesRequest(postdata,coachesRequest);
      }
 

@@ -16,6 +16,12 @@ static const QUrl searchURL("http://booking.uz.gov.ua/en/purchase/search/");
 static const QString stationsURL = "http://booking.uz.gov.ua/en/purchase/station/";
 static const QUrl coachesURL("http://booking.uz.gov.ua/en/purchase/coaches/");
 static const QUrl coachURL("http://booking.uz.gov.ua/en/purchase/coach/");
+static const QByteArray host = "booking.uz.gov.ua";
+static const QByteArray bookingUZ = "http://booking.uz.gov.ua/en/";
+static const QByteArray originURL = "http://booking.uz.gov.ua";
+static const QByteArray connectionType = "keep-alive";
+static const QByteArray contentType = "application/x-www-form-urlencoded";
+static const QByteArray gv_ajax = "1";
 
 
 
@@ -25,14 +31,11 @@ NetworkManager::NetworkManager(QObject *parent):
 {
     QWebSettings *defsetting = QWebSettings::globalSettings();
     defsetting->setAttribute(QWebSettings::LocalStorageEnabled,true);
-    //defsetting->setAttribute(QWebSettings::LocalStorageDatabaseEnabled,true);
-   // defsetting->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled,true);
 
     hiddenView = new QWebView();
-    hiddenView->setUrl(QUrl("http://booking.uz.gov.ua/en/"));
+    hiddenView->setUrl(QUrl(bookingUZ));
 
     connect(hiddenView,SIGNAL(loadFinished(bool)),this,SLOT(getAttributes(bool)));
-
     connect(this,&NetworkManager::finished,this,&NetworkManager::replyHandling);
     //connect(networkReply,SIGNAL(error(QNetworkReply::NetworkError)),this,SLOT(error(QNetworkReply::NetworkError)));
 }
@@ -59,7 +62,7 @@ void NetworkManager::getAttributes(bool ok)
     token.clear();
     QVariant vartoken = frame->evaluateJavaScript("localStorage.getItem('gv-token')");
     token.append(vartoken.toString());
-    cookies = hiddenView->page()->networkAccessManager()->cookieJar()->cookiesForUrl(QUrl("http://booking.uz.gov.ua/en/"));
+    cookies = hiddenView->page()->networkAccessManager()->cookieJar()->cookiesForUrl(QUrl(bookingUZ));
 
     qDebug()<<"token  "<<token;
     for(QList<QNetworkCookie>::iterator it = cookies.begin(); it!=cookies.end(); it++)
@@ -79,10 +82,10 @@ QNetworkReply *NetworkManager::sendGetStationsRequest(QString prefix, QByteArray
     QNetworkRequest request;
 
     request.setUrl(QUrl(stationsURL + prefix + "//"));
-    request.setRawHeader("Host","booking.uz.gov.ua");
-    request.setRawHeader("Connection","keep-alive");
-    request.setRawHeader("Origin","http://booking.uz.gov.ua");
-    request.setRawHeader("Referer","http://booking.uz.gov.ua/en/");
+    request.setRawHeader("Host",host);
+    request.setRawHeader("Connection",connectionType);
+    request.setRawHeader("Origin",originURL);
+    request.setRawHeader("Referer",bookingUZ);
     request.setRawHeader("Sender",sender);
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
     return this->post(request,"");
@@ -94,15 +97,14 @@ QNetworkReply* NetworkManager::sendSearchRequest(SearchPOSTData searchdata,QByte
     QNetworkRequest request;
 
     request.setUrl(searchURL);
-    //request.setUrl(QUrl("http://booking.uz.gov.ua/en/purchase/search/"));
-    request.setRawHeader("Host","booking.uz.gov.ua");
+    request.setRawHeader("Host",host);
     request.setRawHeader("GV-Token",token);
-    request.setRawHeader("Connection","keep-alive");
-    request.setRawHeader("Origin","http://booking.uz.gov.ua");
-    request.setRawHeader("Content-Type","application/x-www-form-urlencoded");
-    request.setRawHeader("GV-Ajax","1");
-    request.setRawHeader("GV-Referer","http://booking.uz.gov.ua/en/");
-    request.setRawHeader("Referer","http://booking.uz.gov.ua/en/");
+    request.setRawHeader("Connection",connectionType);
+    request.setRawHeader("Origin",originURL);
+    request.setRawHeader("Content-Type",contentType);
+    request.setRawHeader("GV-Ajax",gv_ajax);
+    request.setRawHeader("GV-Referer",bookingUZ);
+    request.setRawHeader("Referer",bookingUZ);
     request.setRawHeader("Sender",sender);
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 
@@ -135,14 +137,14 @@ void NetworkManager::sendCoachesRequest(CoachesPOSTData postdata, QByteArray sen
     QByteArray coachType;coachType.append(postdata.coachType);
 
     request.setUrl(coachesURL);
-    request.setRawHeader("Host","booking.uz.gov.ua");
+    request.setRawHeader("Host",host);
     request.setRawHeader("GV-Token",token);
-    request.setRawHeader("Connection","keep-alive");
-    request.setRawHeader("Origin","http://booking.uz.gov.ua");
-    request.setRawHeader("Content-Type","application/x-www-form-urlencoded");
-    request.setRawHeader("GV-Ajax","1");
-    request.setRawHeader("GV-Referer","http://booking.uz.gov.ua/en/");
-    request.setRawHeader("Referer","http://booking.uz.gov.ua/en/");
+    request.setRawHeader("Connection",connectionType);
+    request.setRawHeader("Origin",originURL);
+    request.setRawHeader("Content-Type",contentType);
+    request.setRawHeader("GV-Ajax",gv_ajax);
+    request.setRawHeader("GV-Referer",bookingUZ);
+    request.setRawHeader("Referer",bookingUZ);
     request.setRawHeader("Sender",sender);
     request.setRawHeader("Train",train);
     request.setRawHeader("CoachType",coachType);
@@ -169,15 +171,14 @@ void NetworkManager::sendCoachRequest(CoachPOSTData postdata, QByteArray sender)
     QNetworkRequest request;
 
     request.setUrl(searchURL);
-    //request.setUrl(QUrl("http://booking.uz.gov.ua/en/purchase/search/"));
-    request.setRawHeader("Host","booking.uz.gov.ua");
+    request.setRawHeader("Host",host);
     request.setRawHeader("GV-Token",token);
-    request.setRawHeader("Connection","keep-alive");
-    request.setRawHeader("Origin","http://booking.uz.gov.ua");
-    request.setRawHeader("Content-Type","application/x-www-form-urlencoded");
-    request.setRawHeader("GV-Ajax","1");
-    request.setRawHeader("GV-Referer","http://booking.uz.gov.ua/en/");
-    request.setRawHeader("Referer","http://booking.uz.gov.ua/en/");
+    request.setRawHeader("Connection",connectionType);
+    request.setRawHeader("Origin",originURL);
+    request.setRawHeader("Content-Type",contentType);
+    request.setRawHeader("GV-Ajax",gv_ajax);
+    request.setRawHeader("GV-Referer",bookingUZ);
+    request.setRawHeader("Referer",bookingUZ);
     request.setRawHeader("Sender",sender);
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 

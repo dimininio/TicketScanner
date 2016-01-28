@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QMap>
 #include <algorithm>
+#include <QDebug>
 
 
 
@@ -12,14 +13,26 @@ class Coach
 public:
     Coach(int num)
         :number(num){}
+    Coach() = default;
 
-    int number;
-    QString coachClass;
-    QString coachTypeID;
+    int number = -1;
+    QString coachClass = "";
+    QString coachTypeID = "";
     QVector<quint16> places;
-    int placesNumber;
+    int placesNumber = 0;
 
 
+};
+
+
+struct FreePlaces
+{
+    FreePlaces(QString _placeClass,int _placesNumber)
+        :placeClass(_placeClass),placesNumber(_placesNumber) {}
+    FreePlaces() = default;
+
+    QString placeClass = "";
+    int placesNumber = 0;
 };
 
 
@@ -29,28 +42,24 @@ class Train
 public:
     Train(QString num)
         :number(num) {}
-    Train() {}
+    Train() = default;
 
     bool checkComleteness()
     {
-       //for(const auto& type : availablePlaces)
-        for(auto type = availablePlaces.begin();type!= availablePlaces.end();++type)
+        for(auto type = freePlaces.begin();type!= freePlaces.end();++type)
        {
-         auto p = std::find_if(coaches.begin(),coaches.end(),[&type](Coach& coach){return coach.coachClass==type.key();});
-         qDebug()<<"check.... "<<type.key();
+         auto p = std::find_if(coaches.begin(),coaches.end(),[&type](Coach& coach){return coach.coachClass==type->placeClass;});
          if (p==coaches.end()) return false;
         }
-
         return true;
     }
 
-    QString number;
-    QString travelTime;
-    QString dateDeparture;
-    QMap<QString,int> availablePlaces;
+    QString number = "";
+    QString travelTime = "";
+    QString dateDeparture = "";
+    QVector<FreePlaces> freePlaces;
     QMap<int,Coach> coaches;
 };
-
 
 #endif // TRAIN
 

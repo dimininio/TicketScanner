@@ -86,7 +86,7 @@ void UZApplication::parseSearchResults(QNetworkReply *reply)
         QJsonObject jsonobject = responce.object();
 
          QJsonArray jsonTrains = jsonobject["value"].toArray();
-         QJsonObject jsonTrain;
+         QJsonObject jsonTrain;         
          for(auto it = jsonTrains.begin();it != jsonTrains.end();++it)
          {
              jsonTrain = it->toObject();
@@ -101,7 +101,7 @@ void UZApplication::parseSearchResults(QNetworkReply *reply)
              for(auto it2 = ticketTypes.begin(); it2!=ticketTypes.end();++it2)
              {
                  ticketType = it2->toObject();
-                 train.availablePlaces.insert(ticketType["letter"].toString(),ticketType["places"].toInt());
+                 train.freePlaces.push_back(FreePlaces(ticketType["letter"].toString(),ticketType["places"].toInt()));
              }
              trains.insert(trainNumber,train);
          }
@@ -144,8 +144,7 @@ void UZApplication::parseCoachesSearchResults(QNetworkReply *reply)
              coach.coachTypeID = QString::number(jsonCoach["coach_type_id"].toInt());
              coach.placesNumber = jsonCoach["places_cnt"].toInt();
              coach.coachClass = coachType;
-             train->coaches.insert(number,coach);
-             //qDebug()<<jsonCoach["num"];
+             train->coaches.insert(number,coach);            
 
           }
     }
