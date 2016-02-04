@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QNetworkReply>
+#include <QStackedWidget>
 namespace Ui {
 class UZMainWindow;
 }
@@ -14,6 +15,7 @@ class NetworkManager;
 class QNetworkReply;
 class LineEdit;
 class QTextBrowser;
+class TrainSearchPage;
 
 class Train;
 typedef QMap<QString,Train> Trains;
@@ -26,17 +28,14 @@ public:
     explicit UZMainWindow(QWidget *parent = 0);
     ~UZMainWindow();
 
-   // void parseSearchResults(QNetworkReply *reply);
     QByteArray identifier();
 
     void showAvailableTrains();
     void showAvailableCoaches(Train* train);
 
 public slots:
-    void ticketsSearch();
-
     void error(QNetworkReply::NetworkError err);
-    void trainChosen(const QUrl& link);
+
 
 private:
     Ui::UZMainWindow *ui;
@@ -48,8 +47,10 @@ private:
     LineEdit* editFrom;
     LineEdit* editTo;
     QTextBrowser* textBrowser;
-    QByteArray p_identifier;
+
     Trains* trains;
+    QStackedWidget* pagesWidget;
+    TrainSearchPage* trainSearchPage;
 };
 
 #endif // UZMAINWINDOW_H

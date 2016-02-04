@@ -103,7 +103,7 @@ void UZApplication::parseSearchResults(QNetworkReply *reply)
                  ticketType = it2->toObject();
                  train.freePlaces.push_back(FreePlaces(ticketType["letter"].toString(),ticketType["places"].toInt()));
              }
-             trains.insert(trainNumber,train);
+             p_trains.insert(trainNumber,train);
          }
 
         if (jsonobject["error"].toBool()){
@@ -125,7 +125,7 @@ void UZApplication::parseCoachesSearchResults(QNetworkReply *reply)
     QByteArray data = reply->readAll();
     QString trainNumber = whatTrain(reply);
     QString coachType = whatType(reply);
-    Train* train = &trains[trainNumber];
+    Train* train = &p_trains[trainNumber];
     //qDebug()<<"coaches data: "<<data;
 
     QJsonDocument responce;
@@ -159,3 +159,16 @@ NetworkManager*  UZApplication::networkManager()
 {
     return p_networkManager;
 }
+
+
+Trains& UZApplication::trains()
+{
+    return p_trains;
+}
+
+const Trains& UZApplication::trains() const
+{
+    return p_trains;
+}
+
+

@@ -25,8 +25,8 @@ public:
     UZMainWindow *mainWindow;
 
     NetworkManager* networkManager();
-
-    Trains trains;
+    Trains& trains();
+    const Trains& trains() const;
 
     void parseSearchResults(QNetworkReply *reply);
     void parseCoachesSearchResults(QNetworkReply *reply);
@@ -39,7 +39,7 @@ private slots:
 private:
 
     NetworkManager* p_networkManager;
-
+    Trains p_trains;
 
 };
 

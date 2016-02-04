@@ -15,7 +15,7 @@ public:
         :number(num){}
     Coach() = default;
 
-    int number = -1;
+    int number = 0;
     QString coachClass = "";
     QString coachTypeID = "";
     QVector<quint16> places;

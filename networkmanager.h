@@ -26,7 +26,10 @@ signals:
 public slots:
 
     QNetworkReply* sendGetStationsRequest(QString prefix,QByteArray sender);
-    QNetworkReply* sendSearchRequest(SearchPOSTData searchdata,QByteArray sender);
+  //  QNetworkReply* sendSearchRequest(SearchPOSTData searchdata,QByteArray sender);
+//    void sendGetStationsRequest(QString prefix,QByteArray sender);
+    void sendSearchRequest(SearchPOSTData searchdata,QByteArray sender);
+
     void sendCoachesRequest(CoachesPOSTData postdata, QByteArray sender);
     void sendCoachRequest(CoachPOSTData postdata, QByteArray sender);
     void replyHandling(QNetworkReply* reply);

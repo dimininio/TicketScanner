@@ -44,7 +44,7 @@ NetworkManager::NetworkManager(QObject *parent):
 NetworkManager::~NetworkManager()
 {
     delete hiddenView;
-    //delete cached resourses
+    QWebSettings::clearMemoryCaches();
 }
 
 void NetworkManager::updateAttributes()
@@ -77,7 +77,7 @@ void NetworkManager::getAttributes(bool ok)
 
 
 
-QNetworkReply *NetworkManager::sendGetStationsRequest(QString prefix, QByteArray sender)
+QNetworkReply* NetworkManager::sendGetStationsRequest(QString prefix, QByteArray sender)
 {
     QNetworkRequest request;
 
@@ -88,11 +88,12 @@ QNetworkReply *NetworkManager::sendGetStationsRequest(QString prefix, QByteArray
     request.setRawHeader("Referer",bookingUZ);
     request.setRawHeader("Sender",sender);
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
+    //post(request,"");
     return this->post(request,"");
 }
 
 
-QNetworkReply* NetworkManager::sendSearchRequest(SearchPOSTData searchdata,QByteArray sender)
+void NetworkManager::sendSearchRequest(SearchPOSTData searchdata,QByteArray sender)
 {
     QNetworkRequest request;
 
@@ -120,7 +121,8 @@ QNetworkReply* NetworkManager::sendSearchRequest(SearchPOSTData searchdata,QByte
     if (networkReply) {
         connect(networkReply,SIGNAL(error(QNetworkReply::NetworkError)),this,SLOT(errorSlot(QNetworkReply::NetworkError)));
     }
-    return networkReply;
+   // post(request,bytearrayPOST);
+    //return networkReply;
     //return this->post(request,bytearrayPOST);
 }
 

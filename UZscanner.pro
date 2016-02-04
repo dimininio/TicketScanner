@@ -16,13 +16,15 @@ SOURCES += main.cpp\
         uzmainwindow.cpp \
     uzapplication.cpp \
     networkmanager.cpp \
-    lineedit.cpp
+    lineedit.cpp \
+    windowpages.cpp
 
 HEADERS  += uzmainwindow.h \
     uzapplication.h \
     networkmanager.h \
     lineedit.h \
     requestdata.h \
-    train.h
+    train.h \
+    windowpages.h
 
 FORMS    += uzmainwindow.ui
