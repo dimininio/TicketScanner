@@ -10,6 +10,11 @@
 #include <QPushButton>
 #include <QTextBrowser>
 
+#include <QRadioButton>
+#include <QGroupBox>
+#include <QCheckBox>
+#include <algorithm>
+
 const QByteArray searchRequest = "searchRequest";
 const QByteArray coachRequest = "coachRequest";
 const QByteArray coachesRequest = "coachesRequest";
@@ -127,4 +132,136 @@ void TrainSearchPage::showAvailableCoaches(Train *train)
         }
     }
 
+}
+
+const LineEdit* TrainSearchPage::fromEdit() const
+{
+    return editFrom;
+}
+
+const LineEdit* TrainSearchPage::toEdit() const
+{
+    return editTo;
+}
+
+QDate TrainSearchPage::tripDate()
+{
+    return dateField->date();
+}
+
+
+
+
+
+ScannerPage::ScannerPage(TrainSearchPage* trainsSearchPage,QWidget *parent)
+    :QWidget(parent), searchConfiguration(trainsSearchPage)
+{
+    QGroupBox* trainsBox = new QGroupBox("Поїзди",this);
+    allTrainsBtn = new QRadioButton("Всі",this);
+    oneTrainBtn = new QRadioButton("Окремі",this);
+
+    trainsGroupLayout = new QGridLayout;
+
+    QVBoxLayout* trainsLayout = new  QVBoxLayout(this);
+    trainsLayout->addWidget(allTrainsBtn);
+    trainsLayout->addWidget(oneTrainBtn);
+    trainsLayout->addLayout(trainsGroupLayout);
+    trainsLayout->setAlignment(trainsGroupLayout,Qt::AlignRight);
+    trainsBox->setLayout(trainsLayout);
+
+    QGroupBox* coachesBox = new QGroupBox("Типи вагонів",this);
+    coachesTypesLayout = new QHBoxLayout;
+    coachesBox->setLayout(coachesTypesLayout);
+
+    startSearchBtn = new QPushButton("Запуск пошуку");
+
+    QVBoxLayout* pagelayout = new QVBoxLayout(this);
+    //pagelayout->addLayout(trainsLayout);
+    pagelayout->addWidget(trainsBox);
+    pagelayout->setAlignment(trainsBox,Qt::AlignTop);
+    pagelayout->addWidget(coachesBox);
+    pagelayout->addWidget(startSearchBtn);
+    pagelayout->setAlignment(startSearchBtn,Qt::AlignBottom);
+
+    NetworkManager* networkManager = UZApplication::instance()->networkManager();
+    connect(networkManager,&NetworkManager::responseReady,this,&ScannerPage::getTrainsOnRoute);
+
+    connect(allTrainsBtn,&QRadioButton::clicked,this,&ScannerPage::onRadioButtonClick);
+    connect(oneTrainBtn,&QRadioButton::clicked,this,&ScannerPage::onRadioButtonClick);
+}
+
+const QByteArray trainsOnRoute = "trainsOnRoute";
+
+void ScannerPage::exploreRout()
+{
+    const LineEdit* from = searchConfiguration->fromEdit();
+    const LineEdit* to = searchConfiguration->toEdit();
+    NetworkManager* networkManager = UZApplication::instance()->networkManager();
+    QDate futuredate = searchConfiguration->tripDate();
+    futuredate = futuredate.addMonths(1);
+
+    SearchPOSTData searchdata(from->getStationID(),to->getStationID(),futuredate.toString("MM.dd.yyyy"));
+
+    networkManager->sendSearchRequest(searchdata,trainsOnRoute);
+
+}
+
+
+void ScannerPage::getTrainsOnRoute(QNetworkReply *reply, QByteArray id)
+{
+    if (reply==nullptr) return;
+
+    if (id == trainsOnRoute)
+    {
+        Trains allTrainsOnRoute;
+        UZApplication::instance()->parseSearchResults(reply,allTrainsOnRoute);
+        //for(auto train = allTrainsOnRoute.begin();train!=allTrainsOnRoute.end();++train)
+        int i = 0; int j = 0;
+        QVector<QString> uniqueTypes;
+        for(auto train : allTrainsOnRoute)
+        {
+            //qDebug()<<train.number<<"  "<<typeid(train).name();
+
+            QCheckBox* box = new QCheckBox(train.number);
+            box->setEnabled(false);
+            trainsGroup.push_back(box);
+            trainsGroupLayout->addWidget(box,i,j);
+
+            for(auto&& placeType: train.freePlaces)
+                uniqueTypes.push_back(placeType.placeClass);
+
+
+            ++j;
+            if (j>3){
+                j=0; ++i;
+            }
+
+        }
+        std::sort(uniqueTypes.begin(),uniqueTypes.end());
+        auto pLast = std::unique(uniqueTypes.begin(),uniqueTypes.end());
+        uniqueTypes.erase(pLast,uniqueTypes.end());
+        for(auto&& coachType: uniqueTypes)
+        {
+            QCheckBox* box2 = new QCheckBox(coachType);
+            box2->setChecked(true);
+            coachesTypesLayout->addWidget(box2);
+            coachesTypes.push_back(box2);
+        }
+
+    }
+
+}
+
+
+void ScannerPage::onRadioButtonClick()
+{
+    if (allTrainsBtn->isChecked())
+        foreach (auto checkbox, trainsGroup) {
+            checkbox->setEnabled(false);
+        }
+    else
+     if (oneTrainBtn->isChecked())
+        foreach (auto checkbox, trainsGroup) {
+            checkbox->setEnabled(true);
+        }
 }

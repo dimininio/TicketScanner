@@ -29,9 +29,11 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
     //ui->setupUi(this);
 
     trainSearchPage = new TrainSearchPage;
+    scannerPage = new ScannerPage(trainSearchPage);
 
     pagesWidget = new QStackedWidget(this);
     pagesWidget->addWidget(trainSearchPage);
+    pagesWidget->addWidget(scannerPage);
 
     networkManager = UZApplication::instance()->networkManager();
     //trains = &UZApplication::instance()->trains;
@@ -40,7 +42,7 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 
     setCentralWidget(pagesWidget);
 
-
+    connect(trainSearchPage->showSettingsButton,&QPushButton::clicked,this,&UZMainWindow::showNextPage);
 
 
 }
@@ -62,7 +64,11 @@ void UZMainWindow::showAvailableCoaches(Train *train)
     trainSearchPage->showAvailableCoaches(train);
 }
 
-
+void UZMainWindow::showNextPage()
+{
+    scannerPage->exploreRout();
+    pagesWidget->setCurrentWidget(scannerPage);
+}
 
 
 void UZMainWindow::error(QNetworkReply::NetworkError err)

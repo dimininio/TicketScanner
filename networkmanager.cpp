@@ -77,7 +77,7 @@ void NetworkManager::getAttributes(bool ok)
 
 
 
-QNetworkReply* NetworkManager::sendGetStationsRequest(QString prefix, QByteArray sender)
+void NetworkManager::sendGetStationsRequest(QString prefix, QByteArray sender)
 {
     QNetworkRequest request;
 
@@ -88,8 +88,8 @@ QNetworkReply* NetworkManager::sendGetStationsRequest(QString prefix, QByteArray
     request.setRawHeader("Referer",bookingUZ);
     request.setRawHeader("Sender",sender);
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
-    //post(request,"");
-    return this->post(request,"");
+    post(request,"");
+    //return this->post(request,"");
 }
 
 

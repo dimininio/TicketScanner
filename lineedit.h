@@ -16,7 +16,7 @@ public:
     LineEdit(QWidget* parent = 0);
     ~LineEdit();
 
-    QString getStationID();
+    QString getStationID() const;
     QByteArray identifier();
 
 public slots:

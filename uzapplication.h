@@ -28,7 +28,7 @@ public:
     Trains& trains();
     const Trains& trains() const;
 
-    void parseSearchResults(QNetworkReply *reply);
+    void parseSearchResults(QNetworkReply *reply, Trains &trainsContainer);
     void parseCoachesSearchResults(QNetworkReply *reply);
 
 

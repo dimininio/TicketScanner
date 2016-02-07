@@ -57,7 +57,7 @@ void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
     if (reply==nullptr) return;
 
     if (id == searchRequest)
-        parseSearchResults(reply);
+        parseSearchResults(reply,p_trains);
     if (id == coachesRequest)
         parseCoachesSearchResults(reply);
 }
@@ -73,12 +73,13 @@ QString whatType(QNetworkReply *coachesReply)
 }
 
 
-void UZApplication::parseSearchResults(QNetworkReply *reply)
+void UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContainer)
 {
 
     QByteArray data = reply->readAll();
 
     qDebug()<<"search result: "<<data;
+    trainsContainer.clear();
 
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
@@ -103,7 +104,7 @@ void UZApplication::parseSearchResults(QNetworkReply *reply)
                  ticketType = it2->toObject();
                  train.freePlaces.push_back(FreePlaces(ticketType["letter"].toString(),ticketType["places"].toInt()));
              }
-             p_trains.insert(trainNumber,train);
+             trainsContainer.insert(trainNumber,train);
          }
 
         if (jsonobject["error"].toBool()){
@@ -120,7 +121,7 @@ void UZApplication::parseSearchResults(QNetworkReply *reply)
 }
 
 
-void UZApplication::parseCoachesSearchResults(QNetworkReply *reply)
+void UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
 {
     QByteArray data = reply->readAll();
     QString trainNumber = whatTrain(reply);

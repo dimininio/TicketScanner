@@ -31,7 +31,7 @@ void LineEdit::checkContent()
     if (text().length()>=2 && currentBegin!=text().mid(0,2).toLower()) {
         currentBegin = text().mid(0,2).toLower();
 
-        reply = networkManager->sendGetStationsRequest(currentBegin,identifier());
+        networkManager->sendGetStationsRequest(currentBegin,identifier());
         //qDebug()<<"id  "<<identifier();
     }
 }
@@ -75,7 +75,7 @@ void LineEdit::updateContent(QNetworkReply *reply, QByteArray id)
     reply = nullptr;
 }
 
-QString LineEdit::getStationID()
+QString LineEdit::getStationID() const
 {
     return stations[this->text()];
 }

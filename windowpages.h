@@ -11,6 +11,10 @@ class QNetworkReply;
 class LineEdit;
 class QTextBrowser;
 
+class QGridLayout;
+class QHBoxLayout;
+class QRadioButton;
+class QCheckBox;
 class Train;
 
 class TrainSearchPage: public QWidget
@@ -23,10 +27,16 @@ public:
     void showAvailableTrains();
     void showAvailableCoaches(Train* train);
 
+    const LineEdit* fromEdit() const;
+    const LineEdit* toEdit() const;
+    QDate tripDate();
+
+    QPushButton* showSettingsButton;
+private:
 
     QCalendarWidget* calendar;
     QPushButton* searchButton;
-    QPushButton* showSettingsButton;
+
     QDateEdit* dateField;
    // NetworkManager* networkManager;
     QNetworkReply* searchReply;
@@ -35,7 +45,7 @@ public:
     QTextBrowser* textBrowser;
 
 
-private:
+
     void processTrain(const QUrl& link);
 };
 
@@ -44,7 +54,24 @@ private:
 class ScannerPage: public QWidget
 {
 public:
-    ScannerPage(QWidget* parent=0);
+    ScannerPage(TrainSearchPage* trainsSearchPage,QWidget* parent=0);
+    void exploreRout();
+
+private:
+    QRadioButton* allTrainsBtn;
+    QRadioButton* oneTrainBtn;
+
+    QPushButton* startSearchBtn;
+    TrainSearchPage* searchConfiguration;
+
+    void getTrainsOnRoute(QNetworkReply *reply, QByteArray id);
+    void onRadioButtonClick();
+
+    QVector<QCheckBox*> trainsGroup;
+    QGridLayout* trainsGroupLayout;
+
+    QVector<QCheckBox*> coachesTypes;
+    QHBoxLayout* coachesTypesLayout;
 };
 
 

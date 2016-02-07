@@ -16,6 +16,7 @@ class QNetworkReply;
 class LineEdit;
 class QTextBrowser;
 class TrainSearchPage;
+class ScannerPage;
 
 class Train;
 typedef QMap<QString,Train> Trains;
@@ -32,6 +33,8 @@ public:
 
     void showAvailableTrains();
     void showAvailableCoaches(Train* train);
+
+    void showNextPage();
 
 public slots:
     void error(QNetworkReply::NetworkError err);
@@ -51,6 +54,7 @@ private:
     Trains* trains;
     QStackedWidget* pagesWidget;
     TrainSearchPage* trainSearchPage;
+    ScannerPage* scannerPage;
 };
 
 #endif // UZMAINWINDOW_H
