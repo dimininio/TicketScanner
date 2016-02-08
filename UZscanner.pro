@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     uzapplication.cpp \
     networkmanager.cpp \
     lineedit.cpp \
-    windowpages.cpp
+    windowpages.cpp \
+    searchparameters.cpp
 
 HEADERS  += uzmainwindow.h \
     uzapplication.h \
@@ -25,6 +26,7 @@ HEADERS  += uzmainwindow.h \
     lineedit.h \
     requestdata.h \
     train.h \
-    windowpages.h
+    windowpages.h \
+    searchparameters.h
 
 FORMS    += uzmainwindow.ui

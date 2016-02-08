@@ -56,6 +56,8 @@ class ScannerPage: public QWidget
 public:
     ScannerPage(TrainSearchPage* trainsSearchPage,QWidget* parent=0);
     void exploreRout();
+    void startScanner();
+
 
 private:
     QRadioButton* allTrainsBtn;

@@ -7,6 +7,8 @@
 class UZMainWindow;
 class NetworkManager;
 class QNetworkReply;
+class QTimer;
+class SearchParameters;
 
 typedef QMap<QString,Train> Trains;
 
@@ -30,6 +32,7 @@ public:
 
     void parseSearchResults(QNetworkReply *reply, Trains &trainsContainer);
     void parseCoachesSearchResults(QNetworkReply *reply);
+    void startScanning(SearchParameters searchparams);
 
 
 private slots:
@@ -40,6 +43,14 @@ private:
 
     NetworkManager* p_networkManager;
     Trains p_trains;
+    Trains scan_trains;
+    int p_interval;
+    QTimer* timer;
+
+    SearchParameters* searchParameters;
+
+    bool checkScanningResults();
+    void sendScanRequest();
 
 };
 

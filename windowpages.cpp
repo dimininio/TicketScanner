@@ -3,6 +3,7 @@
 #include "requestdata.h"
 #include "uzapplication.h"
 #include "networkmanager.h"
+#include "searchparameters.h"
 
 #include <QGridLayout>
 #include <QCalendarWidget>
@@ -59,8 +60,7 @@ void TrainSearchPage::ticketsSearch()
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
     QString date = dateField->date().toString("MM.dd.yyyy");
     SearchPOSTData searchdata(editFrom->getStationID(),editTo->getStationID(),date);
-    //searchReply =
-            networkManager->sendSearchRequest(searchdata,searchRequest);
+    networkManager->sendSearchRequest(searchdata,searchRequest);
 }
 
 
@@ -188,6 +188,7 @@ ScannerPage::ScannerPage(TrainSearchPage* trainsSearchPage,QWidget *parent)
 
     connect(allTrainsBtn,&QRadioButton::clicked,this,&ScannerPage::onRadioButtonClick);
     connect(oneTrainBtn,&QRadioButton::clicked,this,&ScannerPage::onRadioButtonClick);
+    connect(startSearchBtn,&QPushButton::clicked,this,&ScannerPage::startScanner);
 }
 
 const QByteArray trainsOnRoute = "trainsOnRoute";
@@ -198,7 +199,8 @@ void ScannerPage::exploreRout()
     const LineEdit* to = searchConfiguration->toEdit();
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
     QDate futuredate = searchConfiguration->tripDate();
-    futuredate = futuredate.addMonths(1);
+    //futuredate = futuredate.addMonths(1);
+    futuredate = futuredate.addDays(24);
 
     SearchPOSTData searchdata(from->getStationID(),to->getStationID(),futuredate.toString("MM.dd.yyyy"));
 
@@ -264,4 +266,21 @@ void ScannerPage::onRadioButtonClick()
         foreach (auto checkbox, trainsGroup) {
             checkbox->setEnabled(true);
         }
+}
+
+
+
+void ScannerPage::startScanner()
+{
+    const LineEdit* from = searchConfiguration->fromEdit();
+    const LineEdit* to = searchConfiguration->toEdit();
+    //share_ptr ??
+    SearchParameters searchparams(from->getStationID(),to->getStationID(),searchConfiguration->tripDate());
+    for(auto trains: trainsGroup)
+        if (trains->isChecked())
+            searchparams.setTrains().push_back(trains->text());
+    for(auto coach: coachesTypes)
+        if (coach->isChecked())
+            searchparams.setCoachTypes().push_back(coach->text());
+    UZApplication::instance()->startScanning(searchparams);
 }

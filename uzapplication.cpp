@@ -1,22 +1,26 @@
 #include "uzapplication.h"
 #include "uzmainwindow.h"
 #include "networkmanager.h"
+#include "searchparameters.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QMap>
 #include <QString>
-
+#include <QTimer>
+#include <algorithm>
 
 
 static const QByteArray searchRequest = "searchRequest";
+static const QByteArray scanRequest = "scanRequest";
 static const QByteArray coachRequest = "coachRequest";
 static const QByteArray coachesRequest = "coachesRequest";
 
 
 UZApplication::UZApplication(int &argc, char **argv):
     QApplication(argc,argv),
-    mainWindow(nullptr)
+    mainWindow(nullptr),
+    p_interval(10000) //10 min
 {
     p_networkManager = new NetworkManager(this);
     connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
@@ -41,7 +45,8 @@ UZApplication* UZApplication::instance()
 UZApplication::~UZApplication()
 {
     delete mainWindow;
-   // p_networkManager->clearAccessCache();  //does solve the leak problem
+    if (!searchParameters)
+        delete searchParameters;
     delete p_networkManager;
 }
 
@@ -56,10 +61,17 @@ void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
    // }
     if (reply==nullptr) return;
 
-    if (id == searchRequest)
+    if (id == searchRequest) {
         parseSearchResults(reply,p_trains);
-    if (id == coachesRequest)
-        parseCoachesSearchResults(reply);
+        mainWindow->showAvailableTrains();
+    }
+    if (id == coachesRequest){
+        parseCoachesSearchResults(reply);       
+    }
+    if (id == scanRequest){
+        parseSearchResults(reply,scan_trains);
+        if (checkScanningResults()) qDebug()<<"FOUND..";
+    }
 }
 
 
@@ -115,7 +127,7 @@ void UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContai
 
     }
 
-    mainWindow->showAvailableTrains();
+
     //reply->deleteLater();
     //delete searchReply;
 }
@@ -149,11 +161,44 @@ void UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
 
           }
     }
-
     mainWindow->showAvailableCoaches(train);
+
 }
 
 
+
+void UZApplication::startScanning(SearchParameters searchparams)
+{
+
+    searchParameters = new SearchParameters(searchparams);
+    timer = new QTimer(this);
+    connect(timer,&QTimer::timeout,this,&UZApplication::sendScanRequest);
+    timer->start(p_interval);
+
+}
+
+void UZApplication::sendScanRequest()
+{
+    QString date = searchParameters->getTripDate().toString("MM.dd.yyyy");
+    SearchPOSTData searchdata(searchParameters->stationFrom(),searchParameters->stationTo(),date);
+    p_networkManager->sendSearchRequest(searchdata,scanRequest);
+}
+
+bool UZApplication::checkScanningResults()
+{
+
+    for(auto rightTrain = searchParameters->getTrains().begin(); rightTrain!=searchParameters->getTrains().end();++rightTrain)
+    {
+        auto train = std::find_if(scan_trains.begin(),scan_trains.end(),[&rightTrain](Train trn){return trn.number==rightTrain;});
+        if (train!=scan_trains.end()) {
+            for(auto placeType:train->freePlaces)
+                for (auto& rightPlace:searchParameters->getCoachTypes() )
+                    if (rightPlace==placeType.placeClass)
+                        return true;
+        }
+    }
+    return false;
+}
 
 
 NetworkManager*  UZApplication::networkManager()
