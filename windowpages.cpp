@@ -16,6 +16,8 @@
 #include <QCheckBox>
 #include <algorithm>
 
+#include <QLabel>
+
 const QByteArray searchRequest = "searchRequest";
 const QByteArray coachRequest = "coachRequest";
 const QByteArray coachesRequest = "coachesRequest";
@@ -276,6 +278,7 @@ void ScannerPage::startScanner()
     const LineEdit* to = searchConfiguration->toEdit();
     //share_ptr ??
     SearchParameters searchparams(from->getStationID(),to->getStationID(),searchConfiguration->tripDate());
+    searchparams.setStationsName(from->text(),to->text());
     for(auto trains: trainsGroup)
         if (trains->isChecked())
             searchparams.setTrains().push_back(trains->text());
@@ -283,4 +286,26 @@ void ScannerPage::startScanner()
         if (coach->isChecked())
             searchparams.setCoachTypes().push_back(coach->text());
     UZApplication::instance()->startScanning(searchparams);
+}
+
+
+
+ProcessingPage::ProcessingPage(SearchParameters searchparams,QWidget* parent)
+    :QWidget(parent)
+{
+    infoLabel = new QLabel;
+    statusLabel = new QLabel;
+
+    QString info = "Пошук залізничних квитків між станціями" + searchparams.stationFromName() + " - " + searchparams.stationToName() +
+                    ", для поїздів: ";
+    for(auto& num: searchparams.getTrains())
+        info = info + num +  ",";
+    info = info + "Дата відправлення " + searchparams.getTripDate().toString();
+
+    infoLabel->setText(info);
+
+
+    QVBoxLayout* pagelayout = new QVBoxLayout(this);
+    pagelayout->addWidget(infoLabel);
+    pagelayout->addWidget(statusLabel);
 }

@@ -17,6 +17,9 @@ class QRadioButton;
 class QCheckBox;
 class Train;
 
+class SearchParameters;
+class QLabel;
+
 class TrainSearchPage: public QWidget
 {
 public:
@@ -76,6 +79,19 @@ private:
     QHBoxLayout* coachesTypesLayout;
 };
 
+
+
+class ProcessingPage:public QWidget
+{
+public:
+    ProcessingPage(SearchParameters searchparams,QWidget* parent=0);
+    void setSearchStatus(bool isFound);
+
+private:
+    QLabel* infoLabel;
+    QLabel* statusLabel;
+    bool searchStatus;
+};
 
 #endif // WINDOWPAGES
 

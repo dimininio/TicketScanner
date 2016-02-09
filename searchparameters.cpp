@@ -76,3 +76,19 @@ QString SearchParameters::stationTo()
 {
     return _stationTo;
 }
+
+void SearchParameters::setStationsName(QString stationFrom, QString stationTo)
+{
+    _stationFromName = stationFrom;
+    _stationToName = stationTo;
+}
+
+QString SearchParameters::stationFromName()
+{
+    return _stationFromName;
+}
+
+QString SearchParameters::stationToName()
+{
+    return _stationToName;
+}

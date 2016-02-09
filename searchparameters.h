@@ -24,11 +24,15 @@ public:
     void setTripDate(QDate tripdate);
     QDate getTripDate();
 
-    void setStations(QString stationFrom,QString stationTo);
+    void setStations(QString stationFrom,QString stationTo);      
     void setStationTo(QString stationTo);
     QString stationTo();
     void setStationFrom(QString stationFrom);
     QString stationFrom();
+
+    void setStationsName(QString stationFrom,QString stationTo);
+    QString stationFromName();
+    QString stationToName();
 
 private:
     QVector<QString> _trains;
@@ -36,6 +40,8 @@ private:
     QDate _tripDate;
     QString _stationFrom;
     QString _stationTo;
+    QString _stationFromName;
+    QString _stationToName;
 
 };
 
