@@ -61,12 +61,11 @@ public:
     void exploreRout();
     void startScanner();
 
-
+    QPushButton* startSearchBtn;
 private:
     QRadioButton* allTrainsBtn;
     QRadioButton* oneTrainBtn;
 
-    QPushButton* startSearchBtn;
     TrainSearchPage* searchConfiguration;
 
     void getTrainsOnRoute(QNetworkReply *reply, QByteArray id);
@@ -84,7 +83,7 @@ private:
 class ProcessingPage:public QWidget
 {
 public:
-    ProcessingPage(SearchParameters searchparams,QWidget* parent=0);
+    ProcessingPage(SearchParameters *searchparams, QWidget* parent=0);
     void setSearchStatus(bool isFound);
 
 private:

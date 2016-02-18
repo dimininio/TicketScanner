@@ -70,7 +70,12 @@ void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
     }
     if (id == scanRequest){
         parseSearchResults(reply,scan_trains);
-        if (checkScanningResults()) qDebug()<<"FOUND..";
+        if (checkScanningResults())
+        {
+            qDebug()<<"FOUND..";
+            emit updateSearchStatus(true);
+            timer->stop();
+        }
     }
 }
 
@@ -218,3 +223,8 @@ const Trains& UZApplication::trains() const
 }
 
 
+SearchParameters* UZApplication::getSearchParameters()
+{
+    if (searchParameters)
+        return searchParameters;
+}

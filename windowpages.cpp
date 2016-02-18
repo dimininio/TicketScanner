@@ -262,6 +262,7 @@ void ScannerPage::onRadioButtonClick()
     if (allTrainsBtn->isChecked())
         foreach (auto checkbox, trainsGroup) {
             checkbox->setEnabled(false);
+            checkbox->setChecked(true);
         }
     else
      if (oneTrainBtn->isChecked())
@@ -290,22 +291,34 @@ void ScannerPage::startScanner()
 
 
 
-ProcessingPage::ProcessingPage(SearchParameters searchparams,QWidget* parent)
-    :QWidget(parent)
+ProcessingPage::ProcessingPage(SearchParameters* searchparams,QWidget* parent)
+    :QWidget(parent),searchStatus(false)
 {
     infoLabel = new QLabel;
     statusLabel = new QLabel;
 
-    QString info = "Пошук залізничних квитків між станціями" + searchparams.stationFromName() + " - " + searchparams.stationToName() +
+    QString info = "Пошук залізничних квитків між станціями" + searchparams->stationFromName() + " - " + searchparams->stationToName() +
                     ", для поїздів: ";
-    for(auto& num: searchparams.getTrains())
+    for(auto& num: searchparams->getTrains())
         info = info + num +  ",";
-    info = info + "Дата відправлення " + searchparams.getTripDate().toString();
+    info = info + "Дата відправлення " + searchparams->getTripDate().toString();
 
+    infoLabel->setWordWrap(true);
     infoLabel->setText(info);
+
+    statusLabel->setText("Пошук");
 
 
     QVBoxLayout* pagelayout = new QVBoxLayout(this);
     pagelayout->addWidget(infoLabel);
     pagelayout->addWidget(statusLabel);
+
+    connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::setSearchStatus);
+}
+
+void ProcessingPage::setSearchStatus(bool isFound)
+{
+    searchStatus = isFound;
+    if (searchStatus)
+        statusLabel->setText("Знайдено");
 }

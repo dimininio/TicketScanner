@@ -43,7 +43,7 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
     setCentralWidget(pagesWidget);
 
     connect(trainSearchPage->showSettingsButton,&QPushButton::clicked,this,&UZMainWindow::showNextPage);
-
+    connect(scannerPage->startSearchBtn,&QPushButton::clicked,this,&UZMainWindow::showNextPage);
 
 }
 
@@ -66,8 +66,18 @@ void UZMainWindow::showAvailableCoaches(Train *train)
 
 void UZMainWindow::showNextPage()
 {
-    scannerPage->exploreRout();
-    pagesWidget->setCurrentWidget(scannerPage);
+    if (pagesWidget->currentWidget()==scannerPage) {        //temporary
+
+        processingPage = new ProcessingPage(UZApplication::instance()->getSearchParameters());
+        pagesWidget->addWidget(processingPage);
+        pagesWidget->setCurrentWidget(processingPage);
+    }
+    if (pagesWidget->currentWidget()==trainSearchPage) {
+        scannerPage->exploreRout();
+        pagesWidget->setCurrentWidget(scannerPage);
+    }
+
+
 }
 
 

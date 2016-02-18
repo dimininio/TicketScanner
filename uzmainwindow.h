@@ -17,6 +17,7 @@ class LineEdit;
 class QTextBrowser;
 class TrainSearchPage;
 class ScannerPage;
+class ProcessingPage;
 
 class Train;
 typedef QMap<QString,Train> Trains;
@@ -55,6 +56,7 @@ private:
     QStackedWidget* pagesWidget;
     TrainSearchPage* trainSearchPage;
     ScannerPage* scannerPage;
+    ProcessingPage* processingPage;
 };
 
 #endif // UZMAINWINDOW_H

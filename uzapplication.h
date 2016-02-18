@@ -34,6 +34,10 @@ public:
     void parseCoachesSearchResults(QNetworkReply *reply);
     void startScanning(SearchParameters searchparams);
 
+    SearchParameters* getSearchParameters(); //temporary
+
+signals:
+    void updateSearchStatus(bool found);
 
 private slots:
     void showWindow();
