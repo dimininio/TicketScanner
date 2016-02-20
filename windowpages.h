@@ -20,10 +20,31 @@ class Train;
 class SearchParameters;
 class QLabel;
 
-class TrainSearchPage: public QWidget
+class WidgetsMediator;
+
+
+class BasePage
 {
 public:
-    TrainSearchPage(QWidget* parent=0);
+    BasePage(WidgetsMediator* mediator)
+        :_widgetsMediator(mediator) {}
+
+    virtual ~BasePage(){}
+
+    virtual WidgetsMediator* mediator()
+    {
+        return _widgetsMediator;
+    }
+private:
+    WidgetsMediator* _widgetsMediator;
+};
+
+
+
+class TrainSearchPage: public QWidget, public BasePage
+{
+public:
+    TrainSearchPage(WidgetsMediator* widgetsMediator,QWidget* parent=0);
 
     void ticketsSearch();
 
@@ -54,11 +75,11 @@ private:
 
 
 
-class ScannerPage: public QWidget
+class ScannerPage: public QWidget, public BasePage
 {
 public:
-    ScannerPage(TrainSearchPage* trainsSearchPage,QWidget* parent=0);
-    void exploreRout();
+    ScannerPage(WidgetsMediator* widgetsMediator,QWidget* parent=0);
+
     void startScanner();
 
     QPushButton* startSearchBtn;
@@ -76,14 +97,16 @@ private:
 
     QVector<QCheckBox*> coachesTypes;
     QHBoxLayout* coachesTypesLayout;
+
+    void exploreRout();
 };
 
 
 
-class ProcessingPage:public QWidget
+class ProcessingPage:public QWidget, public BasePage
 {
 public:
-    ProcessingPage(SearchParameters *searchparams, QWidget* parent=0);
+    ProcessingPage(WidgetsMediator* widgetsMediator, QWidget* parent=0);
     void setSearchStatus(bool isFound);
 
 private:

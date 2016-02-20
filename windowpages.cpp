@@ -5,6 +5,8 @@
 #include "networkmanager.h"
 #include "searchparameters.h"
 
+#include "widgetsmediator.h"
+
 #include <QGridLayout>
 #include <QCalendarWidget>
 #include <QDateEdit>
@@ -23,8 +25,8 @@ const QByteArray coachRequest = "coachRequest";
 const QByteArray coachesRequest = "coachesRequest";
 
 
-TrainSearchPage::TrainSearchPage(QWidget *parent)
-    :QWidget(parent)
+TrainSearchPage::TrainSearchPage(WidgetsMediator* widgetsMediator,QWidget *parent)
+    :BasePage(widgetsMediator),QWidget(parent)
 {
     editFrom = new LineEdit(this);
     editTo = new LineEdit(this);
@@ -53,6 +55,8 @@ TrainSearchPage::TrainSearchPage(QWidget *parent)
 
     connect(searchButton,&QPushButton::clicked,this,&TrainSearchPage::ticketsSearch);
     connect(textBrowser,&QTextBrowser::anchorClicked,this,&TrainSearchPage::processTrain);
+    connect(showSettingsButton,&QPushButton::clicked,mediator(),&WidgetsMediator::prepareScannerPage);
+    //connect(showSettingsButton,&QPushButton::clicked,[](){mediator()->prepareScannerPage();});
 
 }
 
@@ -155,8 +159,8 @@ QDate TrainSearchPage::tripDate()
 
 
 
-ScannerPage::ScannerPage(TrainSearchPage* trainsSearchPage,QWidget *parent)
-    :QWidget(parent), searchConfiguration(trainsSearchPage)
+ScannerPage::ScannerPage(WidgetsMediator *widgetsMediator, QWidget *parent)
+    :QWidget(parent), BasePage(widgetsMediator)
 {
     QGroupBox* trainsBox = new QGroupBox("Поїзди",this);
     allTrainsBtn = new QRadioButton("Всі",this);
@@ -191,20 +195,21 @@ ScannerPage::ScannerPage(TrainSearchPage* trainsSearchPage,QWidget *parent)
     connect(allTrainsBtn,&QRadioButton::clicked,this,&ScannerPage::onRadioButtonClick);
     connect(oneTrainBtn,&QRadioButton::clicked,this,&ScannerPage::onRadioButtonClick);
     connect(startSearchBtn,&QPushButton::clicked,this,&ScannerPage::startScanner);
+
+    exploreRout();
 }
 
 const QByteArray trainsOnRoute = "trainsOnRoute";
 
 void ScannerPage::exploreRout()
 {
-    const LineEdit* from = searchConfiguration->fromEdit();
-    const LineEdit* to = searchConfiguration->toEdit();
+    //const LineEdit* from = searchConfiguration->fromEdit();
+    //const LineEdit* to = searchConfiguration->toEdit();
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
-    QDate futuredate = searchConfiguration->tripDate();
-    //futuredate = futuredate.addMonths(1);
+    QDate futuredate = QDate::currentDate();
     futuredate = futuredate.addDays(24);
 
-    SearchPOSTData searchdata(from->getStationID(),to->getStationID(),futuredate.toString("MM.dd.yyyy"));
+    SearchPOSTData searchdata(mediator()->getStationIDFrom(),mediator()->getStationIDTo(),futuredate.toString("MM.dd.yyyy"));
 
     networkManager->sendSearchRequest(searchdata,trainsOnRoute);
 
@@ -287,21 +292,23 @@ void ScannerPage::startScanner()
         if (coach->isChecked())
             searchparams.setCoachTypes().push_back(coach->text());
     UZApplication::instance()->startScanning(searchparams);
+    mediator()->setSearchParameters();
+    mediator()->prepareProcessingPage();
 }
 
 
 
-ProcessingPage::ProcessingPage(SearchParameters* searchparams,QWidget* parent)
-    :QWidget(parent),searchStatus(false)
+ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
+    :BasePage(widgetsMediator),QWidget(parent),searchStatus(false)
 {
     infoLabel = new QLabel;
     statusLabel = new QLabel;
 
-    QString info = "Пошук залізничних квитків між станціями" + searchparams->stationFromName() + " - " + searchparams->stationToName() +
+    QString info = "Пошук залізничних квитків між станціями" + mediator()->getStationFrom() + " - " + mediator()->getStationTo() +
                     ", для поїздів: ";
-    for(auto& num: searchparams->getTrains())
+    for(auto& num: mediator()->getChosenTrains())
         info = info + num +  ",";
-    info = info + "Дата відправлення " + searchparams->getTripDate().toString();
+    info = info + "Дата відправлення " +mediator()->tripDate().toString();
 
     infoLabel->setWordWrap(true);
     infoLabel->setText(info);

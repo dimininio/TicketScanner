@@ -18,6 +18,7 @@ class QTextBrowser;
 class TrainSearchPage;
 class ScannerPage;
 class ProcessingPage;
+class WidgetsMediator;
 
 class Train;
 typedef QMap<QString,Train> Trains;
@@ -57,6 +58,8 @@ private:
     TrainSearchPage* trainSearchPage;
     ScannerPage* scannerPage;
     ProcessingPage* processingPage;
+
+    WidgetsMediator* widgetsMediator;
 };
 
 #endif // UZMAINWINDOW_H

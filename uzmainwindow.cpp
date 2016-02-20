@@ -6,6 +6,7 @@
 #include "networkmanager.h"
 #include "requestdata.h"
 #include "windowpages.h"
+#include "widgetsmediator.h"
 
 #include <QGridLayout>
 #include <QCalendarWidget>
@@ -28,22 +29,24 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 {
     //ui->setupUi(this);
 
-    trainSearchPage = new TrainSearchPage;
-    scannerPage = new ScannerPage(trainSearchPage);
+    //trainSearchPage = new TrainSearchPage;
+    //scannerPage = new ScannerPage(trainSearchPage);
 
-    pagesWidget = new QStackedWidget(this);
-    pagesWidget->addWidget(trainSearchPage);
-    pagesWidget->addWidget(scannerPage);
+   // pagesWidget = new QStackedWidget(this);
+    //pagesWidget->addWidget(trainSearchPage);
+    //pagesWidget->addWidget(scannerPage);
 
     networkManager = UZApplication::instance()->networkManager();
     //trains = &UZApplication::instance()->trains;
 
+    widgetsMediator = new WidgetsMediator();
 
 
-    setCentralWidget(pagesWidget);
+    //setCentralWidget(pagesWidget);
+    setCentralWidget(widgetsMediator->initializeWidgets());
 
-    connect(trainSearchPage->showSettingsButton,&QPushButton::clicked,this,&UZMainWindow::showNextPage);
-    connect(scannerPage->startSearchBtn,&QPushButton::clicked,this,&UZMainWindow::showNextPage);
+    //connect(trainSearchPage->showSettingsButton,&QPushButton::clicked,this,&UZMainWindow::showNextPage);
+  //  connect(scannerPage->startSearchBtn,&QPushButton::clicked,this,&UZMainWindow::showNextPage);
 
 }
 
@@ -56,16 +59,19 @@ UZMainWindow::~UZMainWindow()
 
 void UZMainWindow::showAvailableTrains()
 {
-    trainSearchPage->showAvailableTrains();
+   // trainSearchPage->showAvailableTrains();
+    widgetsMediator->showAvailableTrains();
 }
 
 void UZMainWindow::showAvailableCoaches(Train *train)
 {
-    trainSearchPage->showAvailableCoaches(train);
+   // trainSearchPage->showAvailableCoaches(train);
+    widgetsMediator->showAvailableCoaches(train);
 }
 
 void UZMainWindow::showNextPage()
 {
+    /*
     if (pagesWidget->currentWidget()==scannerPage) {        //temporary
 
         processingPage = new ProcessingPage(UZApplication::instance()->getSearchParameters());
@@ -76,7 +82,7 @@ void UZMainWindow::showNextPage()
         scannerPage->exploreRout();
         pagesWidget->setCurrentWidget(scannerPage);
     }
-
+*/
 
 }
 

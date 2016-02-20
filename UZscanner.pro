@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     networkmanager.cpp \
     lineedit.cpp \
     windowpages.cpp \
-    searchparameters.cpp
+    searchparameters.cpp \
+    widgetsmediator.cpp
 
 HEADERS  += uzmainwindow.h \
     uzapplication.h \
@@ -27,6 +28,7 @@ HEADERS  += uzmainwindow.h \
     requestdata.h \
     train.h \
     windowpages.h \
-    searchparameters.h
+    searchparameters.h \
+    widgetsmediator.h
 
 FORMS    += uzmainwindow.ui
