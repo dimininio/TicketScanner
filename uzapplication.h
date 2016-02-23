@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QApplication>
 #include "train.h"
+#include <memory>
 
 class UZMainWindow;
 class NetworkManager;
@@ -32,7 +33,7 @@ public:
 
     void parseSearchResults(QNetworkReply *reply, Trains &trainsContainer);
     void parseCoachesSearchResults(QNetworkReply *reply);
-    void startScanning(SearchParameters searchparams);
+    void startScanning(std::shared_ptr<SearchParameters> &parameters);
 
     SearchParameters* getSearchParameters(); //temporary
 
@@ -51,7 +52,8 @@ private:
     int p_interval;
     QTimer* timer;
 
-    SearchParameters* searchParameters;
+    //SearchParameters* searchParameters;
+    std::shared_ptr<SearchParameters> searchParameters;
 
     bool checkScanningResults();
     void sendScanRequest();

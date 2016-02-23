@@ -69,7 +69,7 @@ private:
     QTextBrowser* textBrowser;
 
 
-
+    void showSettings();
     void processTrain(const QUrl& link);
 };
 

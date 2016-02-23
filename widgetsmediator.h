@@ -1,6 +1,6 @@
 #ifndef WIDGETMEDIATOR
 #define WIDGETMEDIATOR
-
+#include <memory>
 class ScannerPage;
 class TrainSearchPage;
 class ProcessingPage;
@@ -12,19 +12,18 @@ class SearchParameters;
 class Train;
 
 #include <QVector>
-#include <QObject>
 
-class WidgetsMediator: public QObject
+
+class WidgetsMediator
 {
-    Q_OBJECT
 public:
-    WidgetsMediator() {}
+    WidgetsMediator();
     ~WidgetsMediator();
 
     QWidget* initializeWidgets();
     void prepareScannerPage();
     void prepareProcessingPage();
-    void setSearchParameters();
+    void setSearchParameters(std::shared_ptr<SearchParameters> &p);
 
     void showAvailableTrains();
     void showAvailableCoaches(Train *train);
@@ -36,13 +35,13 @@ public:
     QDate tripDate();
 
     const QVector<QString>& getChosenTrains() const;
+    std::shared_ptr<SearchParameters> searchParameters;
 
 private:
     TrainSearchPage* trainSearchPage;
     ScannerPage* scannerPage;
     ProcessingPage* processingPage;
     QStackedWidget* stackedWidget;
-    SearchParameters* searchParameters;
 };
 
 

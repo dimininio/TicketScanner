@@ -15,16 +15,11 @@
 #include <QDebug>
 
 
-
-
-
-QWidget* WidgetsMediator::initializeWidgets()
+WidgetsMediator::WidgetsMediator()
+    :trainSearchPage(nullptr),scannerPage(nullptr),
+      processingPage(nullptr),stackedWidget(nullptr)
 {
-    stackedWidget = new QStackedWidget;
-    trainSearchPage = new TrainSearchPage(this);
-    stackedWidget->addWidget(trainSearchPage);
 
-    return stackedWidget;
 }
 
 WidgetsMediator::~WidgetsMediator()
@@ -35,6 +30,15 @@ WidgetsMediator::~WidgetsMediator()
     if (processingPage)
         delete processingPage;
     delete stackedWidget;
+}
+
+QWidget* WidgetsMediator::initializeWidgets()
+{
+    stackedWidget = new QStackedWidget;
+    trainSearchPage = new TrainSearchPage(this);
+    stackedWidget->addWidget(trainSearchPage);
+
+    return stackedWidget;
 }
 
 
@@ -52,9 +56,9 @@ void WidgetsMediator::prepareProcessingPage()
     stackedWidget->setCurrentWidget(processingPage);
 }
 
-void WidgetsMediator::setSearchParameters()
+void WidgetsMediator::setSearchParameters(std::shared_ptr<SearchParameters>& p)
 {
-    searchParameters = UZApplication::instance()->getSearchParameters();
+    if (p) searchParameters = p;
 }
 
 void WidgetsMediator::showAvailableTrains()
@@ -96,5 +100,7 @@ QDate WidgetsMediator::tripDate()
 
 const QVector<QString> &WidgetsMediator::getChosenTrains() const
 {
+    //return searchParameters->getTrains();
     return searchParameters->getTrains();
+
 }

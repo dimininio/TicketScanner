@@ -19,8 +19,8 @@ static const QByteArray coachesRequest = "coachesRequest";
 
 UZApplication::UZApplication(int &argc, char **argv):
     QApplication(argc,argv),
-    mainWindow(nullptr),
-    p_interval(10000) //10 min
+    mainWindow(nullptr),searchParameters(nullptr),
+    p_interval(300000) //10 min
 {
     p_networkManager = new NetworkManager(this);
     connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
@@ -45,8 +45,6 @@ UZApplication* UZApplication::instance()
 UZApplication::~UZApplication()
 {
     delete mainWindow;
-    if (!searchParameters)
-        delete searchParameters;
     delete p_networkManager;
 }
 
@@ -172,10 +170,9 @@ void UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
 
 
 
-void UZApplication::startScanning(SearchParameters searchparams)
+void UZApplication::startScanning(std::shared_ptr<SearchParameters>& parameters)
 {
-
-    searchParameters = new SearchParameters(searchparams);
+    searchParameters = parameters;
     timer = new QTimer(this);
     connect(timer,&QTimer::timeout,this,&UZApplication::sendScanRequest);
     timer->start(p_interval);
@@ -226,5 +223,5 @@ const Trains& UZApplication::trains() const
 SearchParameters* UZApplication::getSearchParameters()
 {
     if (searchParameters)
-        return searchParameters;
+        return searchParameters.get();
 }

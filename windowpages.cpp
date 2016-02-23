@@ -6,6 +6,7 @@
 #include "searchparameters.h"
 
 #include "widgetsmediator.h"
+#include <memory>
 
 #include <QGridLayout>
 #include <QCalendarWidget>
@@ -55,8 +56,17 @@ TrainSearchPage::TrainSearchPage(WidgetsMediator* widgetsMediator,QWidget *paren
 
     connect(searchButton,&QPushButton::clicked,this,&TrainSearchPage::ticketsSearch);
     connect(textBrowser,&QTextBrowser::anchorClicked,this,&TrainSearchPage::processTrain);
-    connect(showSettingsButton,&QPushButton::clicked,mediator(),&WidgetsMediator::prepareScannerPage);
-    //connect(showSettingsButton,&QPushButton::clicked,[](){mediator()->prepareScannerPage();});
+    connect(showSettingsButton,&QPushButton::clicked,this,&TrainSearchPage::showSettings);
+
+}
+
+void TrainSearchPage::showSettings()
+{
+
+    std::shared_ptr<SearchParameters> sParams = std::make_shared<SearchParameters>(editFrom->getStationID(),editTo->getStationID(),dateField->date());
+    sParams->setStationsName(editFrom->text(),editTo->text());
+    mediator()->setSearchParameters(sParams);
+    mediator()->prepareScannerPage();
 
 }
 
@@ -203,8 +213,6 @@ const QByteArray trainsOnRoute = "trainsOnRoute";
 
 void ScannerPage::exploreRout()
 {
-    //const LineEdit* from = searchConfiguration->fromEdit();
-    //const LineEdit* to = searchConfiguration->toEdit();
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
     QDate futuredate = QDate::currentDate();
     futuredate = futuredate.addDays(24);
@@ -280,19 +288,14 @@ void ScannerPage::onRadioButtonClick()
 
 void ScannerPage::startScanner()
 {
-    const LineEdit* from = searchConfiguration->fromEdit();
-    const LineEdit* to = searchConfiguration->toEdit();
-    //share_ptr ??
-    SearchParameters searchparams(from->getStationID(),to->getStationID(),searchConfiguration->tripDate());
-    searchparams.setStationsName(from->text(),to->text());
+
     for(auto trains: trainsGroup)
         if (trains->isChecked())
-            searchparams.setTrains().push_back(trains->text());
+            mediator()->searchParameters->setTrains().push_back(trains->text());
     for(auto coach: coachesTypes)
         if (coach->isChecked())
-            searchparams.setCoachTypes().push_back(coach->text());
-    UZApplication::instance()->startScanning(searchparams);
-    mediator()->setSearchParameters();
+            mediator()->searchParameters->setCoachTypes().push_back(coach->text());
+    UZApplication::instance()->startScanning(mediator()->searchParameters);
     mediator()->prepareProcessingPage();
 }
 
