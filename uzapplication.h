@@ -35,7 +35,7 @@ public:
     void parseCoachesSearchResults(QNetworkReply *reply);
     void startScanning(std::shared_ptr<SearchParameters> &parameters);
 
-    SearchParameters* getSearchParameters(); //temporary
+    //SearchParameters* getSearchParameters(); //temporary
 
 signals:
     void updateSearchStatus(bool found);

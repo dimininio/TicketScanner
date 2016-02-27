@@ -26,33 +26,32 @@ class WidgetsMediator;
 class BasePage
 {
 public:
-    BasePage(WidgetsMediator* mediator)
-        :_widgetsMediator(mediator) {}
-
     virtual ~BasePage(){}
 
     virtual WidgetsMediator* mediator()
     {
         return _widgetsMediator;
     }
+
+protected:
+    BasePage(WidgetsMediator* mediator)
+        :_widgetsMediator(mediator) {}
 private:
     WidgetsMediator* _widgetsMediator;
 };
 
 
 
-class TrainSearchPage: public QWidget, public BasePage
+class BrowserPage: public QWidget, public BasePage
 {
 public:
-    TrainSearchPage(WidgetsMediator* widgetsMediator,QWidget* parent=0);
+    BrowserPage(WidgetsMediator* widgetsMediator,QWidget* parent=0);
 
     void ticketsSearch();
 
     void showAvailableTrains();
     void showAvailableCoaches(Train* train);
 
-    const LineEdit* fromEdit() const;
-    const LineEdit* toEdit() const;
     QDate tripDate();
 
     QPushButton* showSettingsButton;
@@ -68,26 +67,29 @@ private:
     LineEdit* editTo;
     QTextBrowser* textBrowser;
 
-
     void showSettings();
     void processTrain(const QUrl& link);
+
+    friend class WidgetsMediator;
 };
 
 
 
-class ScannerPage: public QWidget, public BasePage
+class SettingsPage: public QWidget, public BasePage
 {
 public:
-    ScannerPage(WidgetsMediator* widgetsMediator,QWidget* parent=0);
+    SettingsPage(WidgetsMediator* widgetsMediator,QWidget* parent=0);
 
     void startScanner();
+    void showBrowser();
 
     QPushButton* startSearchBtn;
+    QPushButton* showBrowserBtn;
 private:
     QRadioButton* allTrainsBtn;
     QRadioButton* oneTrainBtn;
 
-    TrainSearchPage* searchConfiguration;
+    BrowserPage* searchConfiguration;
 
     void getTrainsOnRoute(QNetworkReply *reply, QByteArray id);
     void onRadioButtonClick();
@@ -108,10 +110,13 @@ class ProcessingPage:public QWidget, public BasePage
 public:
     ProcessingPage(WidgetsMediator* widgetsMediator, QWidget* parent=0);
     void setSearchStatus(bool isFound);
+    void showSettings();
+    void updatePage();
 
 private:
     QLabel* infoLabel;
     QLabel* statusLabel;
+    QPushButton* showSettingsButton;
     bool searchStatus;
 };
 

@@ -1,8 +1,8 @@
 #ifndef WIDGETMEDIATOR
 #define WIDGETMEDIATOR
 #include <memory>
-class ScannerPage;
-class TrainSearchPage;
+class SettingsPage;
+class BrowserPage;
 class ProcessingPage;
 class QStackedWidget;
 class QWidget;
@@ -20,9 +20,12 @@ public:
     WidgetsMediator();
     ~WidgetsMediator();
 
-    QWidget* initializeWidgets();
-    void prepareScannerPage();
-    void prepareProcessingPage();
+    QWidget* getStartWidgets();
+
+    void showBrowserPage();
+    void showSettingPage();
+    void showProcessingPage();
+
     void setSearchParameters(std::shared_ptr<SearchParameters> &p);
 
     void showAvailableTrains();
@@ -38,8 +41,8 @@ public:
     std::shared_ptr<SearchParameters> searchParameters;
 
 private:
-    TrainSearchPage* trainSearchPage;
-    ScannerPage* scannerPage;
+    BrowserPage* browserPage;
+    SettingsPage* settingsPage;
     ProcessingPage* processingPage;
     QStackedWidget* stackedWidget;
 };

@@ -16,43 +16,51 @@
 
 
 WidgetsMediator::WidgetsMediator()
-    :trainSearchPage(nullptr),scannerPage(nullptr),
+    :browserPage(nullptr),settingsPage(nullptr),
       processingPage(nullptr),stackedWidget(nullptr)
 {
-
+    stackedWidget = new QStackedWidget;
+    browserPage = new BrowserPage(this);
+    stackedWidget->addWidget(browserPage);
 }
 
 WidgetsMediator::~WidgetsMediator()
 {
-    delete trainSearchPage;
-    if (scannerPage)
-        delete scannerPage;
+    delete browserPage;
+    if (settingsPage)
+        delete settingsPage;
     if (processingPage)
         delete processingPage;
     delete stackedWidget;
 }
 
-QWidget* WidgetsMediator::initializeWidgets()
+QWidget* WidgetsMediator::getStartWidgets()
 {
-    stackedWidget = new QStackedWidget;
-    trainSearchPage = new TrainSearchPage(this);
-    stackedWidget->addWidget(trainSearchPage);
-
     return stackedWidget;
 }
 
 
-void WidgetsMediator::prepareScannerPage()
+void WidgetsMediator::showBrowserPage()
 {
-    scannerPage = new ScannerPage(this);
-    stackedWidget->addWidget(scannerPage);
-    stackedWidget->setCurrentWidget(scannerPage);
+    stackedWidget->setCurrentWidget(browserPage);
 }
 
-void WidgetsMediator::prepareProcessingPage()
+void WidgetsMediator::showSettingPage()
 {
-    processingPage = new ProcessingPage(this);
-    stackedWidget->addWidget(processingPage);
+    if(!settingsPage) {
+        settingsPage = new SettingsPage(this);
+        stackedWidget->addWidget(settingsPage);
+    }
+    stackedWidget->setCurrentWidget(settingsPage);
+}
+
+void WidgetsMediator::showProcessingPage()
+{
+    if (!processingPage) {
+        processingPage = new ProcessingPage(this);
+        stackedWidget->addWidget(processingPage);
+    }
+    processingPage->updatePage();
     stackedWidget->setCurrentWidget(processingPage);
 }
 
@@ -63,44 +71,43 @@ void WidgetsMediator::setSearchParameters(std::shared_ptr<SearchParameters>& p)
 
 void WidgetsMediator::showAvailableTrains()
 {
-    trainSearchPage->showAvailableTrains();
+    browserPage->showAvailableTrains();
 }
 
 void WidgetsMediator::showAvailableCoaches(Train *train)
 {
-    trainSearchPage->showAvailableCoaches(train);
+    browserPage->showAvailableCoaches(train);
 }
 
 
 QString WidgetsMediator::getStationFrom()
 {
-    return trainSearchPage->fromEdit()->text();
+    return browserPage->editFrom->text();
 }
 
 QString WidgetsMediator::getStationTo()
 {
-    return trainSearchPage->toEdit()->text();
+    return browserPage->editTo->text();
 }
 
 QString WidgetsMediator::getStationIDFrom()
 {
-    return trainSearchPage->fromEdit()->getStationID();
+    return browserPage->editFrom->getStationID();
 }
 
 QString WidgetsMediator::getStationIDTo()
-{
-    return trainSearchPage->toEdit()->getStationID();
-    //check if I can send signal getStations from here.
+{    
+    return browserPage->editTo->getStationID();
 }
 
 QDate WidgetsMediator::tripDate()
 {
-    return trainSearchPage->tripDate();
+    return browserPage->tripDate();
 }
 
 const QVector<QString> &WidgetsMediator::getChosenTrains() const
 {
-    //return searchParameters->getTrains();
+
     return searchParameters->getTrains();
 
 }

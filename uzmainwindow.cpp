@@ -28,7 +28,7 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
     //networkManager = UZApplication::instance()->networkManager();
     widgetsMediator = new WidgetsMediator();
 
-    setCentralWidget(widgetsMediator->initializeWidgets());
+    setCentralWidget(widgetsMediator->getStartWidgets());
 
 }
 

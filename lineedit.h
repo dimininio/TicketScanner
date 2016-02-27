@@ -19,14 +19,10 @@ public:
     QString getStationID() const;
     QByteArray identifier();
 
-public slots:
-    void checkContent();
-
 private slots:
+    void checkContent();
     void updateContent(QNetworkReply* reply,QByteArray id);
 
-signals:
-    void getStations(QString prefix);
 
 private:
     QCompleter *currentCompleter;

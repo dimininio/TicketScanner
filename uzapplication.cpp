@@ -20,7 +20,7 @@ static const QByteArray coachesRequest = "coachesRequest";
 UZApplication::UZApplication(int &argc, char **argv):
     QApplication(argc,argv),
     mainWindow(nullptr),searchParameters(nullptr),
-    p_interval(300000) //10 min
+    p_interval(400000) //10 min
 {
     p_networkManager = new NetworkManager(this);
     connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
@@ -93,7 +93,7 @@ void UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContai
 
     QByteArray data = reply->readAll();
 
-    qDebug()<<"search result: "<<data;
+    //qDebug()<<"search result: "<<data;
     trainsContainer.clear();
 
     QJsonDocument responce;
@@ -114,11 +114,15 @@ void UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContai
 
              QJsonArray ticketTypes = jsonTrain["types"].toArray();
              QJsonObject ticketType;
+            // qDebug()<<trainNumber<<" :                       "<<QDateTime::currentDateTime();
+            // QString  tempstr;
              for(auto it2 = ticketTypes.begin(); it2!=ticketTypes.end();++it2)
              {
                  ticketType = it2->toObject();
                  train.freePlaces.push_back(FreePlaces(ticketType["letter"].toString(),ticketType["places"].toInt()));
+            // tempstr = tempstr + ticketType["letter"].toString()+ "    "+ QString::number(ticketType["places"].toInt()) + ",    ";
              }
+             //qDebug()<<tempstr;
              trainsContainer.insert(trainNumber,train);
          }
 
@@ -219,9 +223,10 @@ const Trains& UZApplication::trains() const
     return p_trains;
 }
 
-
+/*
 SearchParameters* UZApplication::getSearchParameters()
 {
     if (searchParameters)
         return searchParameters.get();
 }
+*/
