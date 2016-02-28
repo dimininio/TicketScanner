@@ -32,3 +32,6 @@ HEADERS  += uzmainwindow.h \
     widgetsmediator.h
 
 FORMS    += uzmainwindow.ui
+
+RESOURCES += \
+    res.qrc

@@ -20,6 +20,7 @@
 #include <algorithm>
 
 #include <QLabel>
+#include <QFile>
 
 const QByteArray searchRequest = "searchRequest";
 const QByteArray coachRequest = "coachRequest";
@@ -104,19 +105,39 @@ void BrowserPage::showAvailableTrains()
     QString trainData;
     textBrowser->clear();
 
+
+    QFile styleF;
+
+    styleF.setFileName("/css/style.css");
+    styleF.open(QFile::ReadOnly);
+    QString qssStr = styleF.readAll();
+
+
+textBrowser->setStyleSheet(qssStr);
     Trains trains = UZApplication::instance()->trains();
+
+   // trainData="<style> table, th, td {   border: 1px solid black; color:red;  border-collapse: collapse;   }            </style>" ;
+
+
+    trainData =trainData+ "<table>";
+    //textBrowser->append(trainData);
 
     for(auto train = trains.begin();train!=trains.end();++train)
     {
-        trainData = "<a href=\"" + train->number + "\">" +  train->number +"</a>";
-        trainData = trainData + " \t" + train->travelTime;
+        trainData = trainData + "<tr>";
+        trainData = trainData + "<td> <a href=\"" + train->number + "\">" +  train->number + "</a> </td>";
+        trainData = trainData + "<td>" + train->travelTime + "</td>";
         for(auto tickets = train->freePlaces.begin();tickets!=train->freePlaces.end(); ++tickets)
         {
-            trainData = trainData + "\t" + tickets->placeClass  + ": " + QString::number(tickets->placesNumber);
+            trainData = trainData + "<td>" + tickets->placeClass  + ": " + QString::number(tickets->placesNumber) + "</td>";
         }
-        textBrowser->append(trainData);
+        trainData = trainData + "</tr>";
+        //textBrowser->append(trainData);
     }
-
+    trainData = trainData + "</table>";
+    textBrowser->append(trainData);
+    textBrowser->append(" ");
+    qDebug()<<trainData;
 }
 
 
