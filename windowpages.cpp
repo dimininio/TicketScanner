@@ -42,6 +42,11 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
 
 
     textBrowser = new QTextBrowser(this);
+    QFile styleF;
+    styleF.setFileName(":/resources/styles.css");
+    styleF.open(QFile::ReadOnly);
+    QString qssStr = styleF.readAll();
+    textBrowser->document()->setDefaultStyleSheet(qssStr);
 
     //QWidget *pageWidget = new QWidget;
 
@@ -105,18 +110,8 @@ void BrowserPage::showAvailableTrains()
     QString trainData;
     textBrowser->clear();
 
-
-    QFile styleF;
-
-    styleF.setFileName("/css/style.css");
-    styleF.open(QFile::ReadOnly);
-    QString qssStr = styleF.readAll();
-
-
-textBrowser->setStyleSheet(qssStr);
     Trains trains = UZApplication::instance()->trains();
 
-   // trainData="<style> table, th, td {   border: 1px solid black; color:red;  border-collapse: collapse;   }            </style>" ;
 
 
     trainData =trainData+ "<table>";
