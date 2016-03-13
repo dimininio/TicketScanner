@@ -9,7 +9,6 @@ class QDateEdit;
 class NetworkManager;
 class QNetworkReply;
 class LineEdit;
-class QTextBrowser;
 
 class QGridLayout;
 class QHBoxLayout;
@@ -19,6 +18,7 @@ class Train;
 
 class SearchParameters;
 class QLabel;
+class QWebView;
 
 class WidgetsMediator;
 
@@ -65,7 +65,8 @@ private:
     QNetworkReply* searchReply;
     LineEdit* editFrom;
     LineEdit* editTo;
-    QTextBrowser* textBrowser;
+
+    QWebView* webView;
 
     void showSettings();
     void processTrain(const QUrl& link);

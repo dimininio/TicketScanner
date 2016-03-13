@@ -12,8 +12,8 @@
 #include <QCalendarWidget>
 #include <QDateEdit>
 #include <QPushButton>
-#include <QTextBrowser>
-
+//#include <QTextBrowser>
+#include <QWebView>
 #include <QRadioButton>
 #include <QGroupBox>
 #include <QCheckBox>
@@ -21,6 +21,8 @@
 
 #include <QLabel>
 #include <QFile>
+
+//#include <QUrl>
 
 const QByteArray searchRequest = "searchRequest";
 const QByteArray coachRequest = "coachRequest";
@@ -40,29 +42,33 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     searchButton = new QPushButton("Search",this);
     showSettingsButton = new QPushButton("Налаштування пошуку",this);
 
-
-    textBrowser = new QTextBrowser(this);
-    QFile styleF;
-    styleF.setFileName(":/resources/styles.css");
-    styleF.open(QFile::ReadOnly);
-    QString qssStr = styleF.readAll();
-    textBrowser->document()->setDefaultStyleSheet(qssStr);
-
     //QWidget *pageWidget = new QWidget;
+    webView = new QWebView;
+
+    webView->settings()->setUserStyleSheetUrl(QUrl("qrc:/resources/styles.css"));
+    webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+
+
+    webView->setHtml("<!DOCTYPE html><html><body><h1></h1></body></html>");
+    webView->setMaximumWidth(400);
+    webView->setMaximumHeight(250);
+
+
 
     QGridLayout *pagelayout = new QGridLayout;
     pagelayout->addWidget(editFrom,0,0);
     pagelayout->addWidget(editTo,0,2);
     pagelayout->addWidget(dateField,1,0);
     pagelayout->addWidget(searchButton,2,1);
-    pagelayout->addWidget(textBrowser,3,0,3,3);
-    pagelayout->addWidget(showSettingsButton,6,0,3,3);
+    pagelayout->addWidget(webView,3,0,3,3);
+    pagelayout->addWidget(showSettingsButton,6,0,1,3);
+
 
     setLayout(pagelayout);
 
     connect(searchButton,&QPushButton::clicked,this,&BrowserPage::ticketsSearch);
-    connect(textBrowser,&QTextBrowser::anchorClicked,this,&BrowserPage::processTrain);
     connect(showSettingsButton,&QPushButton::clicked,this,&BrowserPage::showSettings);
+    connect(webView,&QWebView::linkClicked,this,&BrowserPage::processTrain);
 
 }
 
@@ -91,8 +97,8 @@ void BrowserPage::processTrain(const QUrl &link)
      qDebug()<<"clicked "<<link;
      QString trainNum = link.toString();
     // Train* currentTrain = &(*trains)[trainNum];
-     const Trains trains = UZApplication::instance()->trains();
-     const Train* currentTrain = &trains[trainNum];
+     //const Trains trains = UZApplication::instance()->trains();
+     const Train* currentTrain = &UZApplication::instance()->trains()[trainNum];
      NetworkManager* networkManager = UZApplication::instance()->networkManager();
 
      for(auto p = currentTrain->freePlaces.begin();p!=currentTrain->freePlaces.end();++p)
@@ -108,14 +114,9 @@ void BrowserPage::processTrain(const QUrl &link)
 void BrowserPage::showAvailableTrains()
 {
     QString trainData;
-    textBrowser->clear();
-
     Trains trains = UZApplication::instance()->trains();
 
-
-
-    trainData =trainData+ "<table>";
-    //textBrowser->append(trainData);
+    trainData =trainData+ "<html><body><table>";
 
     for(auto train = trains.begin();train!=trains.end();++train)
     {
@@ -127,11 +128,10 @@ void BrowserPage::showAvailableTrains()
             trainData = trainData + "<td>" + tickets->placeClass  + ": " + QString::number(tickets->placesNumber) + "</td>";
         }
         trainData = trainData + "</tr>";
-        //textBrowser->append(trainData);
+
     }
-    trainData = trainData + "</table>";
-    textBrowser->append(trainData);
-    textBrowser->append(" ");
+    trainData = trainData + "</table></body></html>";
+    webView->setHtml(trainData);
     qDebug()<<trainData;
 }
 
@@ -143,26 +143,27 @@ void BrowserPage::showAvailableCoaches(Train *train)
     if (!train->checkComleteness()) return;
 //qDebug()<<"Run ";
 
-    QString data;
-    textBrowser->clear();
+    QString data = "<html><body><table>";
 
-    textBrowser->append("<span>Type \t   №   Qty</span>\n\n");
+    data = data + "<tr><th>Тип</th>"
+                  "<th>№</th>"
+                  "<th>Кількість</th></tr>";
 
     for(auto type = train->freePlaces.begin(); type!=train->freePlaces.end();++type)
     {
-        //textBrowser->append(type->placeClass);
-        textBrowser->append("<span>" + type->placeClass + "</span>");
         for(auto p = train->coaches.begin();p!= train->coaches.end(); ++p)
         {
             if (p->coachClass == type->placeClass)
             {
-                data = "\t" + QString::number(p->number)+ ":    " + QString::number(p->placesNumber);
-                data ="           " + QString::number(p->number)+ ":           " + QString::number(p->placesNumber);
-                //qDebug()<< p->number + "     " + p->placesNumber;
-                textBrowser->append("<span>" + data + "</span>");
+                data = data + "<tr><td>" + type->placeClass + "</td>" +
+                            + "<td>" + QString::number(p->number) + "</td>" +
+                        + "<td>" + QString::number(p->placesNumber) + "</td></tr>";
             }
         }
     }
+    data = data + "</table></body></html>";
+
+    webView->setHtml(data);
 
 }
 
