@@ -61,5 +61,9 @@ public:
     QMap<int,Coach> coaches;
 };
 
+
+typedef QMap<QString,Train> Trains;
+
+
 #endif // TRAIN
 

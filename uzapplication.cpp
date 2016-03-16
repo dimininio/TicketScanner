@@ -17,14 +17,19 @@ static const QByteArray coachRequest = "coachRequest";
 static const QByteArray coachesRequest = "coachesRequest";
 
 
+NetworkManager* UZApplication::p_networkManager = 0;
+
+
 UZApplication::UZApplication(int &argc, char **argv):
     QApplication(argc,argv),
-    mainWindow(nullptr),searchParameters(nullptr),
+    mainWindow(nullptr),searchParameters(nullptr),p_trains(nullptr),p_scanTrains(nullptr),
     p_interval(400000) //10 min
 {
     p_networkManager = new NetworkManager(this);
+    p_trains = new Trains();
     connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
     connect(p_networkManager,&NetworkManager::responseReady,this,&UZApplication::analizeResponse);
+
 }
 
 
@@ -46,6 +51,9 @@ UZApplication::~UZApplication()
 {
     delete mainWindow;
     delete p_networkManager;
+    delete p_trains;
+    if (p_scanTrains)
+        delete p_scanTrains;
 }
 
 
@@ -60,14 +68,14 @@ void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
     if (reply==nullptr) return;
 
     if (id == searchRequest) {
-        parseSearchResults(reply,p_trains);
-        mainWindow->showAvailableTrains();
+        if(parseSearchResults(reply,*p_trains))
+            mainWindow->showAvailableTrains();
     }
     if (id == coachesRequest){
-        parseCoachesSearchResults(reply);       
+        parseCoachesSearchResults(reply);
     }
     if (id == scanRequest){
-        parseSearchResults(reply,scan_trains);
+        parseSearchResults(reply,*p_scanTrains);
         if (checkScanningResults())
         {
             qDebug()<<"FOUND..";
@@ -88,7 +96,7 @@ QString whatType(QNetworkReply *coachesReply)
 }
 
 
-void UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContainer)
+bool UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContainer)
 {
 
     QByteArray data = reply->readAll();
@@ -129,23 +137,25 @@ void UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContai
         if (jsonobject["error"].toBool()){
             QString error = jsonobject["value"].toString();
             qDebug()<<error;
+            emit searchError(error);
+            return false;
         }
 
 
     }
 
-
+    return true;
     //reply->deleteLater();
     //delete searchReply;
 }
 
 
-void UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
+bool UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
 {
     QByteArray data = reply->readAll();
     QString trainNumber = whatTrain(reply);
     QString coachType = whatType(reply);
-    Train* train = &p_trains[trainNumber];
+    Train* train = setTrain(trainNumber);
     //qDebug()<<"coaches data: "<<data;
 
     QJsonDocument responce;
@@ -169,7 +179,7 @@ void UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
           }
     }
     mainWindow->showAvailableCoaches(train);
-
+    return true;
 }
 
 
@@ -178,6 +188,8 @@ void UZApplication::startScanning(std::shared_ptr<SearchParameters>& parameters)
 {
     searchParameters = parameters;
     timer = new QTimer(this);
+    if (!p_scanTrains)
+        p_scanTrains = new Trains();
     connect(timer,&QTimer::timeout,this,&UZApplication::sendScanRequest);
     timer->start(p_interval);
 
@@ -195,8 +207,8 @@ bool UZApplication::checkScanningResults()
 
     for(auto rightTrain = searchParameters->getTrains().begin(); rightTrain!=searchParameters->getTrains().end();++rightTrain)
     {
-        auto train = std::find_if(scan_trains.begin(),scan_trains.end(),[&rightTrain](Train trn){return trn.number==rightTrain;});
-        if (train!=scan_trains.end()) {
+        auto train = std::find_if(p_scanTrains->begin(),p_scanTrains->end(),[&rightTrain](Train trn){return trn.number==rightTrain;});
+        if (train!=p_scanTrains->end()) {
             for(auto placeType:train->freePlaces)
                 for (auto& rightPlace:searchParameters->getCoachTypes() )
                     if (rightPlace==placeType.placeClass)
@@ -213,20 +225,23 @@ NetworkManager*  UZApplication::networkManager()
 }
 
 
-Trains& UZApplication::trains()
+const Trains* UZApplication::trains() const
 {
     return p_trains;
 }
 
-const Trains& UZApplication::trains() const
+
+Trains* UZApplication::setTrains()
 {
     return p_trains;
 }
 
-/*
-SearchParameters* UZApplication::getSearchParameters()
+Train *UZApplication::setTrain(QString number)
 {
-    if (searchParameters)
-        return searchParameters.get();
+    return  &p_trains->operator [](number);
 }
-*/
+
+const Train *UZApplication::getTrain(QString number) const
+{
+    return  &p_trains->operator [](number);
+}

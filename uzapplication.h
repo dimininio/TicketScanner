@@ -11,7 +11,7 @@ class QNetworkReply;
 class QTimer;
 class SearchParameters;
 
-typedef QMap<QString,Train> Trains;
+//typedef QMap<QString,Train> Trains;
 
 class UZApplication: public QApplication
 {
@@ -23,22 +23,21 @@ public:
     ~UZApplication();
 
     static UZApplication* instance();
-
+    static NetworkManager* networkManager();
 
     UZMainWindow *mainWindow;
 
-    NetworkManager* networkManager();
-    Trains& trains();
-    const Trains& trains() const;
+    const Trains* trains() const;
+    const Train* getTrain(QString number) const;
 
-    void parseSearchResults(QNetworkReply *reply, Trains &trainsContainer);
-    void parseCoachesSearchResults(QNetworkReply *reply);
+    bool parseSearchResults(QNetworkReply *reply, Trains &trainsContainer);
+    bool parseCoachesSearchResults(QNetworkReply *reply);
     void startScanning(std::shared_ptr<SearchParameters> &parameters);
 
-    //SearchParameters* getSearchParameters(); //temporary
 
 signals:
     void updateSearchStatus(bool found);
+    void searchError(QString error);
 
 private slots:
     void showWindow();
@@ -46,15 +45,16 @@ private slots:
 
 private:
 
-    NetworkManager* p_networkManager;
-    Trains p_trains;
-    Trains scan_trains;
+    static NetworkManager* p_networkManager;
+    Trains* p_trains;
+    Trains* p_scanTrains;
     int p_interval;
     QTimer* timer;
 
-    //SearchParameters* searchParameters;
     std::shared_ptr<SearchParameters> searchParameters;
 
+    Trains* setTrains();
+    Train* setTrain(QString number);
     bool checkScanningResults();
     void sendScanRequest();
 

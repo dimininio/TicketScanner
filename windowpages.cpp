@@ -49,10 +49,9 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 
 
-    webView->setHtml("<!DOCTYPE html><html><body><h1></h1></body></html>");
+    webView->setHtml("<!DOCTYPE html><html><body></body></html>");
     webView->setMaximumWidth(400);
     webView->setMaximumHeight(250);
-
 
 
     QGridLayout *pagelayout = new QGridLayout;
@@ -69,6 +68,7 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     connect(searchButton,&QPushButton::clicked,this,&BrowserPage::ticketsSearch);
     connect(showSettingsButton,&QPushButton::clicked,this,&BrowserPage::showSettings);
     connect(webView,&QWebView::linkClicked,this,&BrowserPage::processTrain);
+    connect(UZApplication::instance(),&UZApplication::searchError,this,&BrowserPage::showError);
 
 }
 
@@ -96,9 +96,8 @@ void BrowserPage::processTrain(const QUrl &link)
 {
      qDebug()<<"clicked "<<link;
      QString trainNum = link.toString();
-    // Train* currentTrain = &(*trains)[trainNum];
-     //const Trains trains = UZApplication::instance()->trains();
-     const Train* currentTrain = &UZApplication::instance()->trains()[trainNum];
+     const Train* currentTrain = UZApplication::instance()->getTrain(trainNum);
+
      NetworkManager* networkManager = UZApplication::instance()->networkManager();
 
      for(auto p = currentTrain->freePlaces.begin();p!=currentTrain->freePlaces.end();++p)
@@ -114,11 +113,12 @@ void BrowserPage::processTrain(const QUrl &link)
 void BrowserPage::showAvailableTrains()
 {
     QString trainData;
-    Trains trains = UZApplication::instance()->trains();
+    const Trains* trains = UZApplication::instance()->trains();
+
 
     trainData =trainData+ "<html><body><table>";
 
-    for(auto train = trains.begin();train!=trains.end();++train)
+    for(auto train = trains->begin();train!=trains->end();++train)
     {
         trainData = trainData + "<tr>";
         trainData = trainData + "<td> <a href=\"" + train->number + "\">" +  train->number + "</a> </td>";
@@ -167,6 +167,12 @@ void BrowserPage::showAvailableCoaches(Train *train)
 
 }
 
+
+void BrowserPage::showError(QString error)
+{
+
+    webView->setHtml("<html><body><h4>" + error + "</h4></body></html>");
+}
 
 
 QDate BrowserPage::tripDate()

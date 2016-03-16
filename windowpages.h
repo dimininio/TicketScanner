@@ -51,6 +51,7 @@ public:
 
     void showAvailableTrains();
     void showAvailableCoaches(Train* train);
+    void showError(QString error);
 
     QDate tripDate();
 
