@@ -103,6 +103,7 @@ bool UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContai
 
     //qDebug()<<"search result: "<<data;
     trainsContainer.clear();
+    QDateTime datetime;
 
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
@@ -117,13 +118,14 @@ bool UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContai
              QString trainNumber = jsonTrain["num"].toString();
              Train train(trainNumber);
              train.travelTime = jsonTrain["travel_time"].toString();
-             int dateInSeconds = (jsonTrain["from"].toObject())["date"].toInt();
-             train.dateDeparture = QString::number(dateInSeconds);
+
+             datetime.setTime_t((jsonTrain["from"].toObject())["date"].toInt());
+             train.dateDeparture = datetime;
+             datetime.setTime_t((jsonTrain["till"].toObject())["date"].toInt());
+             train.dateArrival = datetime;
 
              QJsonArray ticketTypes = jsonTrain["types"].toArray();
              QJsonObject ticketType;
-            // qDebug()<<trainNumber<<" :                       "<<QDateTime::currentDateTime();
-            // QString  tempstr;
              for(auto it2 = ticketTypes.begin(); it2!=ticketTypes.end();++it2)
              {
                  ticketType = it2->toObject();

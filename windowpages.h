@@ -71,6 +71,7 @@ private:
 
     void showSettings();
     void processTrain(const QUrl& link);
+    void processLink(const QUrl& link);
 
     friend class WidgetsMediator;
 };

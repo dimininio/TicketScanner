@@ -27,6 +27,7 @@
 const QByteArray searchRequest = "searchRequest";
 const QByteArray coachRequest = "coachRequest";
 const QByteArray coachesRequest = "coachesRequest";
+const QString referenceTrains = "refTrains";
 
 
 BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
@@ -67,7 +68,7 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
 
     connect(searchButton,&QPushButton::clicked,this,&BrowserPage::ticketsSearch);
     connect(showSettingsButton,&QPushButton::clicked,this,&BrowserPage::showSettings);
-    connect(webView,&QWebView::linkClicked,this,&BrowserPage::processTrain);
+    connect(webView,&QWebView::linkClicked,this,&BrowserPage::processLink);
     connect(UZApplication::instance(),&UZApplication::searchError,this,&BrowserPage::showError);
 
 }
@@ -92,6 +93,14 @@ void BrowserPage::ticketsSearch()
 }
 
 
+void BrowserPage::processLink(const QUrl &link)
+{
+    if (link.toString()== referenceTrains)
+        showAvailableTrains();
+    else
+        processTrain(link);
+}
+
 void BrowserPage::processTrain(const QUrl &link)
 {
      qDebug()<<"clicked "<<link;
@@ -102,7 +111,7 @@ void BrowserPage::processTrain(const QUrl &link)
 
      for(auto p = currentTrain->freePlaces.begin();p!=currentTrain->freePlaces.end();++p)
      {
-        CoachesPOSTData postdata(editFrom->getStationID(),editTo->getStationID(),currentTrain->dateDeparture,
+        CoachesPOSTData postdata(editFrom->getStationID(),editTo->getStationID(),QString::number(currentTrain->dateDeparture.toTime_t()),
                               trainNum,p->placeClass);
         networkManager->sendCoachesRequest(postdata,coachesRequest);
      }
@@ -120,34 +129,42 @@ void BrowserPage::showAvailableTrains()
 
     for(auto train = trains->begin();train!=trains->end();++train)
     {
-        trainData = trainData + "<tr>";
-        trainData = trainData + "<td> <a href=\"" + train->number + "\">" +  train->number + "</a> </td>";
-        trainData = trainData + "<td>" + train->travelTime + "</td>";
+        trainData += "<tr>";
+        trainData += "<td> <a href=\"" + train->number + "\">" +  train->number + "</a> </td>";
+
+        trainData +=  "<td>";
+        trainData += "<div class=\"date\">" + train->dateDeparture.toString("ddd dd.MM.yy") + "</div>";
+        trainData += "<div class=\"date\">  " + train->dateArrival.toString("ddd dd.MM.yy") + "</div>";
+        trainData +=  "</td>";
+        trainData +=  "<td>";
+        trainData += "<div class=\"time\">" + train->dateDeparture.toString("HH:mm") + "</div>";
+        trainData += "<div class=\"time\">" + train->dateArrival.toString("HH:mm") + "</div>";
+        trainData +=  "</td>";
+
+        //trainData = trainData + "<td>" + train->travelTime + "</td>";
+        trainData += "<td>";
         for(auto tickets = train->freePlaces.begin();tickets!=train->freePlaces.end(); ++tickets)
         {
-            trainData = trainData + "<td>" + tickets->placeClass  + ": " + QString::number(tickets->placesNumber) + "</td>";
+            trainData += "<div class=\"places\">" + tickets->placeClass  + ": " + QString::number(tickets->placesNumber) + "</div>";
         }
-        trainData = trainData + "</tr>";
+        trainData += "</td></tr>";
 
     }
-    trainData = trainData + "</table></body></html>";
+    trainData += "</table></body></html>";
     webView->setHtml(trainData);
-    qDebug()<<trainData;
 }
 
 
 
 void BrowserPage::showAvailableCoaches(Train *train)
 {
- //   qDebug()<<"run ";
     if (!train->checkComleteness()) return;
-//qDebug()<<"Run ";
 
-    QString data = "<html><body><table>";
-
-    data = data + "<tr><th>Тип</th>"
-                  "<th>№</th>"
-                  "<th>Кількість</th></tr>";
+    QString data = "<html><body>";
+    data += "<h4 class=\"reference\"><a id=\"trainsRef\" href=\"" + referenceTrains + "\">Назад</a></h4>";
+    data += "<table><tr><th>Тип</th>"
+                              "<th>№</th>"
+                              "<th>Кількість</th></tr>";
 
     for(auto type = train->freePlaces.begin(); type!=train->freePlaces.end();++type)
     {
@@ -155,17 +172,17 @@ void BrowserPage::showAvailableCoaches(Train *train)
         {
             if (p->coachClass == type->placeClass)
             {
-                data = data + "<tr><td>" + type->placeClass + "</td>" +
-                            + "<td>" + QString::number(p->number) + "</td>" +
+                data += "<tr><td>" + type->placeClass + "</td>" +
+                        + "<td>" + QString::number(p->number) + "</td>" +
                         + "<td>" + QString::number(p->placesNumber) + "</td></tr>";
             }
         }
     }
-    data = data + "</table></body></html>";
+    data += "</table></body></html>";
 
     webView->setHtml(data);
-
 }
+
 
 
 void BrowserPage::showError(QString error)

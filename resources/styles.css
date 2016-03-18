@@ -1,6 +1,6 @@
 
 table {
-    color: brown;
+
     width: 100%;
     border-collapse: collapse
 
@@ -25,10 +25,28 @@ tr:hover{
 }
 
 
-h1 {
+.date {
+    font-size: 13;
 
-    color: red;
+}
+
+.time {
+    font-size: 17;
+    font-weight: bold;
+}
+
+.places {
+    font-size: 18;
+
+}
+
+
+h4.reference {
     text-align: right;
+}
+
+#trainsRef {
+    color: green
 }
 
 

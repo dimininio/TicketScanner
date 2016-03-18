@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QMap>
 #include <algorithm>
+#include <QDateTime>
 #include <QDebug>
 
 
@@ -56,7 +57,8 @@ public:
 
     QString number = "";
     QString travelTime = "";
-    QString dateDeparture = "";
+    QDateTime dateDeparture = QDateTime();
+    QDateTime dateArrival = QDateTime();
     QVector<FreePlaces> freePlaces;
     QMap<int,Coach> coaches;
 };
