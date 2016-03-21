@@ -9,7 +9,7 @@
 #include <QString>
 #include <QTimer>
 #include <algorithm>
-
+#include <QFile>
 
 static const QByteArray searchRequest = "searchRequest";
 static const QByteArray scanRequest = "scanRequest";
@@ -27,6 +27,13 @@ UZApplication::UZApplication(int &argc, char **argv):
 {
     p_networkManager = new NetworkManager(this);
     p_trains = new Trains();
+
+    QFile styleF;
+    styleF.setFileName(":/resources/widgetstyles.qss");
+    styleF.open(QFile::ReadOnly);
+    QString qssStr = styleF.readAll();
+    setStyleSheet(qssStr);
+
     connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
     connect(p_networkManager,&NetworkManager::responseReady,this,&UZApplication::analizeResponse);
 

@@ -37,3 +37,5 @@ RESOURCES += \
     res.qrc
 
 CONFIG+=c++11
+
+DISTFILES +=

@@ -40,7 +40,7 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     calendar->hide();
     dateField = new QDateEdit(QDate::currentDate(),this);
     dateField->setDisplayFormat("MMM d yyyy");
-    searchButton = new QPushButton("Search",this);
+    searchButton = new QPushButton("Пошук",this);
     showSettingsButton = new QPushButton("Налаштування пошуку",this);
 
     //QWidget *pageWidget = new QWidget;
@@ -356,6 +356,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
 {
     infoLabel = new QLabel;
     infoLabel->setWordWrap(true);
+    infoLabel->setAlignment(Qt::AlignJustify);
     statusLabel = new QLabel;
 
     showSettingsButton = new QPushButton("Змінити налаштування пошуку");
@@ -388,11 +389,11 @@ void ProcessingPage::showSettings()
 
 void ProcessingPage::updatePage()
 {
-    QString info = "Пошук залізничних квитків між станціями" + mediator()->getStationFrom() + " - " + mediator()->getStationTo() +
+    QString info = "Пошук залізничних квитків між станціями " + mediator()->getStationFrom() + " - " + mediator()->getStationTo() +
                     ", для поїздів: ";
     for(auto& num: mediator()->getChosenTrains())
-        info = info + num +  ",";
-    info = info + "Дата відправлення " +mediator()->tripDate().toString();
+        info = info + num +  " ";
+    info = info + "\nДата відправлення: " +mediator()->tripDate().toString("dd MMMM yyyy");
 
     infoLabel->setText(info);
     setSearchStatus(searchStatus);
