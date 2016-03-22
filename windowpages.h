@@ -3,7 +3,6 @@
 
 #include <QWidget>
 
-class QCalendarWidget;
 class QPushButton;
 class QDateEdit;
 class NetworkManager;
@@ -58,7 +57,6 @@ public:
     QPushButton* showSettingsButton;
 private:
 
-    QCalendarWidget* calendar;
     QPushButton* searchButton;
 
     QDateEdit* dateField;

@@ -9,7 +9,6 @@
 #include <memory>
 
 #include <QGridLayout>
-#include <QCalendarWidget>
 #include <QDateEdit>
 #include <QPushButton>
 //#include <QTextBrowser>
@@ -36,10 +35,9 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     editFrom = new LineEdit(this);
     editTo = new LineEdit(this);
 
-    calendar = new QCalendarWidget(this);
-    calendar->hide();
     dateField = new QDateEdit(QDate::currentDate(),this);
     dateField->setDisplayFormat("MMM d yyyy");
+    dateField->setCalendarPopup(true);
     searchButton = new QPushButton("Пошук",this);
     showSettingsButton = new QPushButton("Налаштування пошуку",this);
 
