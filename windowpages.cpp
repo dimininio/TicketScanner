@@ -256,10 +256,12 @@ void SettingsPage::exploreRout()
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
     QDate futuredate = QDate::currentDate();
     futuredate = futuredate.addDays(24);
-
     SearchPOSTData searchdata(mediator()->getStationIDFrom(),mediator()->getStationIDTo(),futuredate.toString("MM.dd.yyyy"));
-
     networkManager->sendSearchRequest(searchdata,trainsOnRoute);
+    futuredate = QDate::currentDate().addDays(1);
+    searchdata.tripDate = futuredate.toString("MM.dd.yyyy");
+    networkManager->sendSearchRequest(searchdata,trainsOnRoute);
+
 
 }
 
@@ -272,21 +274,52 @@ void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, QByteArray id)
     {
         Trains allTrainsOnRoute;
         UZApplication::instance()->parseSearchResults(reply,allTrainsOnRoute);
-        //for(auto train = allTrainsOnRoute.begin();train!=allTrainsOnRoute.end();++train)
-        int i = 0; int j = 0;
-        QVector<QString> uniqueTypes;
+        QVector<QString> placeTypes;
+        QVector<QString> trainsOnRoute;
         for(auto train : allTrainsOnRoute)
+        {
+            auto p = std::find_if(trainsGroup.begin(),trainsGroup.end(),[&train](QCheckBox* box){return train.number==box->text();});
+            if (p==trainsGroup.end()) {
+                trainsOnRoute.push_back(train.number);
+                for(auto&& placeType: train.freePlaces)
+                    placeTypes.push_back(placeType.placeClass);
+            }
+
+        }
+
+
+        std::sort(placeTypes.begin(),placeTypes.end());
+        auto pLast = std::unique(placeTypes.begin(),placeTypes.end());
+        placeTypes.erase(pLast,placeTypes.end());
+
+
+        for(auto pType = coachesTypes.begin();pType!=coachesTypes.end();++pType)
+       {     std::remove(placeTypes.begin(),placeTypes.end(),(*pType)->text());
+
+         qDebug()<<   (*pType)->text() << "      size " <<placeTypes.size();
+        }
+
+        drawTrainsWidgets(trainsOnRoute,placeTypes);
+
+
+    }
+
+}
+
+void SettingsPage::drawTrainsWidgets(QVector<QString> &trains, QVector<QString> &places)
+{
+
+        int j = trains.size() % 4;
+        int i = (trains.size()-j) / 4;
+
+        for(auto train : trains)
         {
             //qDebug()<<train.number<<"  "<<typeid(train).name();
 
-            QCheckBox* box = new QCheckBox(train.number);
+            QCheckBox* box = new QCheckBox(train);
             box->setEnabled(false);
             trainsGroup.push_back(box);
             trainsGroupLayout->addWidget(box,i,j);
-
-            for(auto&& placeType: train.freePlaces)
-                uniqueTypes.push_back(placeType.placeClass);
-
 
             ++j;
             if (j>3){
@@ -294,10 +327,8 @@ void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, QByteArray id)
             }
 
         }
-        std::sort(uniqueTypes.begin(),uniqueTypes.end());
-        auto pLast = std::unique(uniqueTypes.begin(),uniqueTypes.end());
-        uniqueTypes.erase(pLast,uniqueTypes.end());
-        for(auto&& coachType: uniqueTypes)
+
+        for(auto&& coachType: places)
         {
             QCheckBox* box2 = new QCheckBox(coachType);
             box2->setChecked(true);
@@ -305,7 +336,6 @@ void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, QByteArray id)
             coachesTypes.push_back(box2);
         }
 
-    }
 
 }
 

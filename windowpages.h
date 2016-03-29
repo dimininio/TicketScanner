@@ -93,6 +93,7 @@ private:
     BrowserPage* searchConfiguration;
 
     void getTrainsOnRoute(QNetworkReply *reply, QByteArray id);
+    void drawTrainsWidgets(QVector<QString> &trains, QVector<QString> &places);
     void onRadioButtonClick();
 
     QVector<QCheckBox*> trainsGroup;
