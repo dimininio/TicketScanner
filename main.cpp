@@ -3,7 +3,8 @@
 
 int main(int argc, char *argv[])
 {
-QApplication as();
+
+    QLocale::setDefault(QLocale(QLocale::Ukrainian,QLocale::Ukraine));
 
     UZApplication uz(argc,argv);
 

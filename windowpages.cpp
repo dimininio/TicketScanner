@@ -294,10 +294,9 @@ void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, QByteArray id)
 
 
         for(auto pType = coachesTypes.begin();pType!=coachesTypes.end();++pType)
-       {     std::remove(placeTypes.begin(),placeTypes.end(),(*pType)->text());
+            placeTypes.erase(std::remove(placeTypes.begin(),placeTypes.end(),(*pType)->text()),placeTypes.end());
 
-         qDebug()<<   (*pType)->text() << "      size " <<placeTypes.size();
-        }
+
 
         drawTrainsWidgets(trainsOnRoute,placeTypes);
 
@@ -309,13 +308,11 @@ void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, QByteArray id)
 void SettingsPage::drawTrainsWidgets(QVector<QString> &trains, QVector<QString> &places)
 {
 
-        int j = trains.size() % 4;
-        int i = (trains.size()-j) / 4;
+        int j = trainsGroup.size()>0 ? (trainsGroup.size()) % 4  :  0;
+        int i = trainsGroup.size()>0 ? (trainsGroup.size()-j) / 4  :  0;
 
         for(auto train : trains)
         {
-            //qDebug()<<train.number<<"  "<<typeid(train).name();
-
             QCheckBox* box = new QCheckBox(train);
             box->setEnabled(false);
             trainsGroup.push_back(box);
@@ -399,6 +396,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
 
     updatePage();
+
 }
 
 void ProcessingPage::setSearchStatus(bool isFound)
