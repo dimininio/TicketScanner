@@ -202,6 +202,9 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     :QWidget(parent), BasePage(widgetsMediator)
 {
     QGroupBox* trainsBox = new QGroupBox("Поїзди",this);
+    QGroupBox* coachesBox = new QGroupBox("Типи вагонів",this);
+    QGroupBox* buttonsBox = new QGroupBox();
+
     allTrainsBtn = new QRadioButton("Всі",this);
     oneTrainBtn = new QRadioButton("Окремі",this);
 
@@ -214,7 +217,7 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     trainsLayout->setAlignment(trainsGroupLayout,Qt::AlignRight);
     trainsBox->setLayout(trainsLayout);
 
-    QGroupBox* coachesBox = new QGroupBox("Типи вагонів",this);
+
     coachesTypesLayout = new QHBoxLayout;
     coachesBox->setLayout(coachesTypesLayout);
 
@@ -223,21 +226,18 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
     buttonsLayout->addWidget(showBrowserBtn);
     buttonsLayout->addWidget(startSearchBtn);
-    QGroupBox* buttonsBox = new QGroupBox();
+
     buttonsBox->setFlat(true);
     buttonsBox->setLayout(buttonsLayout);
 
 
 
     QVBoxLayout* pagelayout = new QVBoxLayout(this);
-    //pagelayout->addLayout(trainsLayout);
     pagelayout->addWidget(trainsBox);
     pagelayout->setAlignment(trainsBox,Qt::AlignTop);
     pagelayout->addWidget(coachesBox);
-    //pagelayout->addWidget(startSearchBtn);
     pagelayout->addWidget(buttonsBox);
     pagelayout->setAlignment(buttonsBox,Qt::AlignBottom);
-    //pagelayout->setAlignment(startSearchBtn,Qt::AlignBottom);
 
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
     connect(networkManager,&NetworkManager::responseReady,this,&SettingsPage::getTrainsOnRoute);
