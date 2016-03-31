@@ -23,8 +23,6 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 {
     //ui->setupUi(this);
 
-
-
     //networkManager = UZApplication::instance()->networkManager();
     widgetsMediator = new WidgetsMediator();
 

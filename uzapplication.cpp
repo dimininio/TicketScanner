@@ -23,7 +23,7 @@ NetworkManager* UZApplication::p_networkManager = 0;
 UZApplication::UZApplication(int &argc, char **argv):
     QApplication(argc,argv),
     mainWindow(nullptr),searchParameters(nullptr),p_trains(nullptr),p_scanTrains(nullptr),
-    p_interval(400000) //10 min
+    p_interval(100000) //10 min
 {
     p_networkManager = new NetworkManager(this);
     p_trains = new Trains();
@@ -213,7 +213,8 @@ void UZApplication::sendScanRequest()
 
 bool UZApplication::checkScanningResults()
 {
-
+    //How to guarantee that search is going for ALL trains on route?
+    //Now we ckeck trains for two dates, but we can miss something
     for(auto rightTrain = searchParameters->getTrains().begin(); rightTrain!=searchParameters->getTrains().end();++rightTrain)
     {
         auto train = std::find_if(p_scanTrains->begin(),p_scanTrains->end(),[&rightTrain](Train trn){return trn.number==rightTrain;});

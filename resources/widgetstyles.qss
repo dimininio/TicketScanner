@@ -1,4 +1,6 @@
-
+QWidget{
+    font-size: 14px;
+}
 
 QPushButton {
 
