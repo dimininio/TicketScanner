@@ -71,6 +71,8 @@ private:
     void processTrain(const QUrl& link);
     void processLink(const QUrl& link);
 
+    bool checkConditions();
+
     friend class WidgetsMediator;
 };
 
@@ -95,6 +97,7 @@ private:
     void getTrainsOnRoute(QNetworkReply *reply, QByteArray id);
     void drawTrainsWidgets(QVector<QString> &trains, QVector<QString> &places);
     void onRadioButtonClick();
+    bool checkConditions();
 
     QVector<QCheckBox*> trainsGroup;
     QGridLayout* trainsGroupLayout;
@@ -102,7 +105,7 @@ private:
     QVector<QCheckBox*> coachesTypes;
     QHBoxLayout* coachesTypesLayout;
 
-    void exploreRout();
+    void exploreRout();    
 };
 
 

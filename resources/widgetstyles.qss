@@ -147,3 +147,7 @@ QCalendarWidget QAbstractItemView:disabled {
     color: rgb(150, 150, 150);
 }
 
+
+QMessageBox {
+    background: #84CFCB;
+}

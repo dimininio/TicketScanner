@@ -16,6 +16,7 @@
 #include <QRadioButton>
 #include <QGroupBox>
 #include <QCheckBox>
+#include <QMessageBox>
 #include <algorithm>
 
 #include <QLabel>
@@ -40,6 +41,7 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     dateField->setCalendarPopup(true);
     searchButton = new QPushButton("Пошук",this);
     showSettingsButton = new QPushButton("Налаштування пошуку",this);
+    //showSettingsButton->setEnabled(false);
 
     //QWidget *pageWidget = new QWidget;
     webView = new QWebView;
@@ -73,6 +75,8 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
 
 void BrowserPage::showSettings()
 {
+    if(checkConditions()==false)
+        return;
 
     std::shared_ptr<SearchParameters> sParams = std::make_shared<SearchParameters>(editFrom->getStationID(),editTo->getStationID(),dateField->date());
     sParams->setStationsName(editFrom->text(),editTo->text());
@@ -90,6 +94,17 @@ void BrowserPage::ticketsSearch()
     networkManager->sendSearchRequest(searchdata,searchRequest);
 }
 
+bool BrowserPage::checkConditions()
+{
+    if (editFrom->text().length()==0 || editTo->text().length()==0) {
+        QMessageBox msgBox;
+        msgBox.setText("Оберіть станції відправлення та прибуття");
+        msgBox.exec();
+        return false;
+    }
+    return true;
+}
+
 
 void BrowserPage::processLink(const QUrl &link)
 {
@@ -98,6 +113,7 @@ void BrowserPage::processLink(const QUrl &link)
     else
         processTrain(link);
 }
+
 
 void BrowserPage::processTrain(const QUrl &link)
 {
@@ -201,9 +217,11 @@ QDate BrowserPage::tripDate()
 SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     :QWidget(parent), BasePage(widgetsMediator)
 {
+
     QGroupBox* trainsBox = new QGroupBox("Поїзди",this);
     QGroupBox* coachesBox = new QGroupBox("Типи вагонів",this);
     QGroupBox* buttonsBox = new QGroupBox();
+
 
     allTrainsBtn = new QRadioButton("Всі",this);
     oneTrainBtn = new QRadioButton("Окремі",this);
@@ -351,14 +369,32 @@ void SettingsPage::onRadioButtonClick()
         }
 }
 
+bool SettingsPage::checkConditions()
+{
+
+    auto trainsResult = std::find_if(trainsGroup.begin(),trainsGroup.end(),[](QCheckBox* box){return box->isChecked();});
+    auto coachesResult = std::find_if(coachesTypes.begin(),coachesTypes.end(),[](QCheckBox* box){return box->isChecked();});
+
+    if (trainsResult==trainsGroup.end() || coachesResult==coachesTypes.end()) {
+        QMessageBox msgBox;
+        msgBox.setText("Визначте умови для пошуку квитків");
+        msgBox.setInformativeText("Оберіть доступні поїзди і типи вагонів");
+        msgBox.exec();
+        return false;
+    }
+    return true;
+}
+
 
 
 void SettingsPage::startScanner()
 {
+    if (checkConditions()==false)
+        return;
 
-    for(auto trains: trainsGroup)
-        if (trains->isChecked())
-            mediator()->searchParameters->setTrains().push_back(trains->text());
+    for(auto train: trainsGroup)
+        if (train->isChecked())
+            mediator()->searchParameters->setTrains().push_back(train->text());
     for(auto coach: coachesTypes)
         if (coach->isChecked())
             mediator()->searchParameters->setCoachTypes().push_back(coach->text());
@@ -419,7 +455,7 @@ void ProcessingPage::updatePage()
                     ", для поїздів: ";
     for(auto& num: mediator()->getChosenTrains())
         info = info + num +  " ";
-    info = info + "\nДата відправлення: " +mediator()->tripDate().toString("dd MMMM yyyy");
+    info = info + "\nДата відправлення: " +mediator()->tripDate().toString("dd.MM.yyyy");
 
     infoLabel->setText(info);
     setSearchStatus(searchStatus);
