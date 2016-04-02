@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     lineedit.cpp \
     windowpages.cpp \
     searchparameters.cpp \
-    widgetsmediator.cpp
+    widgetsmediator.cpp \
+    animatedsearchwidget.cpp
 
 HEADERS  += uzmainwindow.h \
     uzapplication.h \
@@ -29,7 +30,8 @@ HEADERS  += uzmainwindow.h \
     train.h \
     windowpages.h \
     searchparameters.h \
-    widgetsmediator.h
+    widgetsmediator.h \
+    animatedsearchwidget.h
 
 FORMS    += uzmainwindow.ui
 

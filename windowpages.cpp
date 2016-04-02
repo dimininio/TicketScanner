@@ -22,6 +22,11 @@
 #include <QLabel>
 #include <QFile>
 
+#include <QPropertyAnimation>
+#include "animatedsearchwidget.h"
+
+#include "uzmainwindow.h"
+
 //#include <QUrl>
 
 const QByteArray searchRequest = "searchRequest";
@@ -54,6 +59,11 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     webView->setMaximumWidth(400);
     webView->setMaximumHeight(250);
 
+    QPropertyAnimation* animation = new QPropertyAnimation(searchButton,"maximumWidth");
+    animation->setDuration(5000);
+    animation->setStartValue(50);
+    animation->setEndValue(100);
+    animation->start();
 
     QGridLayout *pagelayout = new QGridLayout;
     pagelayout->addWidget(editFrom,0,0);
@@ -62,7 +72,6 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     pagelayout->addWidget(searchButton,2,1);
     pagelayout->addWidget(webView,3,0,3,3);
     pagelayout->addWidget(showSettingsButton,6,0,1,3);
-
 
     setLayout(pagelayout);
 
@@ -419,29 +428,38 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     infoLabel->setWordWrap(true);
     infoLabel->setAlignment(Qt::AlignJustify);
     statusLabel = new QLabel;
+    animatedSearchWidget =  new AnimatedSearchWidget(UZApplication::instance()->mainWindow->width(),this);
 
     showSettingsButton = new QPushButton("Змінити налаштування пошуку");
 
     QVBoxLayout* pagelayout = new QVBoxLayout(this);
     pagelayout->addWidget(infoLabel);
     pagelayout->addWidget(statusLabel);
+    pagelayout->addWidget(animatedSearchWidget);
     pagelayout->addWidget(showSettingsButton);
     pagelayout->setAlignment(showSettingsButton,Qt::AlignBottom);
+
 
     connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::setSearchStatus);
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
 
     updatePage();
+   // qDebug()<<UZApplication::instance()->mainWindow->width()  <<"     parent";
+
 
 }
 
 void ProcessingPage::setSearchStatus(bool isFound)
 {
     searchStatus = isFound;
-    if (searchStatus)
+    if (searchStatus) {
         statusLabel->setText("Знайдено");
-    else
+        animatedSearchWidget->setSearchStatus(1);
+        }//temp. will change to enum
+    else {
         statusLabel->setText("Пошук");
+        animatedSearchWidget->setSearchStatus(0);
+    }
 }
 
 void ProcessingPage::showSettings()

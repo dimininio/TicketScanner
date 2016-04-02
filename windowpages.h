@@ -21,6 +21,7 @@ class QWebView;
 
 class WidgetsMediator;
 
+class AnimatedSearchWidget;
 
 class BasePage
 {
@@ -122,6 +123,7 @@ private:
     QLabel* infoLabel;
     QLabel* statusLabel;
     QPushButton* showSettingsButton;
+    AnimatedSearchWidget* animatedSearchWidget;
     bool searchStatus;
 };
 
