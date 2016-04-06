@@ -20,8 +20,9 @@ class QLabel;
 class QWebView;
 
 class WidgetsMediator;
-
 class AnimatedSearchWidget;
+
+class StateKeeper;
 
 class BasePage
 {
@@ -38,6 +39,7 @@ protected:
         :_widgetsMediator(mediator) {}
 private:
     WidgetsMediator* _widgetsMediator;
+    friend class StateKeeper;
 };
 
 
@@ -73,6 +75,7 @@ private:
     void processLink(const QUrl& link);
 
     bool checkConditions();
+   // StateKeeper* state;
 
     friend class WidgetsMediator;
 };

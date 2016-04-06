@@ -6,6 +6,7 @@
 #include "searchparameters.h"
 
 #include "widgetsmediator.h"
+#include "statekeeper.h"
 #include <memory>
 
 #include <QGridLayout>
@@ -22,7 +23,7 @@
 #include <QLabel>
 #include <QFile>
 
-#include <QPropertyAnimation>
+//#include <QPropertyAnimation>
 #include "animatedsearchwidget.h"
 
 #include "uzmainwindow.h"
@@ -58,12 +59,8 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     webView->setHtml("<!DOCTYPE html><html><body></body></html>");
     webView->setMaximumWidth(400);
     webView->setMaximumHeight(250);
-
-    QPropertyAnimation* animation = new QPropertyAnimation(searchButton,"maximumWidth");
-    animation->setDuration(5000);
-    animation->setStartValue(50);
-    animation->setEndValue(100);
-    animation->start();
+webView->setObjectName("webCiew");
+    qDebug()<<webView->objectName()<< "    nema";
 
     QGridLayout *pagelayout = new QGridLayout;
     pagelayout->addWidget(editFrom,0,0);
@@ -74,6 +71,8 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     pagelayout->addWidget(showSettingsButton,6,0,1,3);
 
     setLayout(pagelayout);
+
+   // state = new BrowserPageStateKeeper(this);
 
     connect(searchButton,&QPushButton::clicked,this,&BrowserPage::ticketsSearch);
     connect(showSettingsButton,&QPushButton::clicked,this,&BrowserPage::showSettings);
