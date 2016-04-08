@@ -59,8 +59,7 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     webView->setHtml("<!DOCTYPE html><html><body></body></html>");
     webView->setMaximumWidth(400);
     webView->setMaximumHeight(250);
-webView->setObjectName("webCiew");
-    qDebug()<<webView->objectName()<< "    nema";
+
 
     QGridLayout *pagelayout = new QGridLayout;
     pagelayout->addWidget(editFrom,0,0);
@@ -72,7 +71,7 @@ webView->setObjectName("webCiew");
 
     setLayout(pagelayout);
 
-   // state = new BrowserPageStateKeeper(this);
+    state = new BrowserPageStateKeeper(this);
 
     connect(searchButton,&QPushButton::clicked,this,&BrowserPage::ticketsSearch);
     connect(showSettingsButton,&QPushButton::clicked,this,&BrowserPage::showSettings);
@@ -90,6 +89,7 @@ void BrowserPage::showSettings()
     sParams->setStationsName(editFrom->text(),editTo->text());
     mediator()->setSearchParameters(sParams);
     mediator()->showSettingPage();
+    state->setState(this);
 
 }
 
@@ -179,7 +179,7 @@ void BrowserPage::showAvailableTrains()
 
 
 void BrowserPage::showAvailableCoaches(Train *train)
-{
+{qDebug()<<"show";
     if (!train->checkComleteness()) return;
 
     QString data = "<html><body>";

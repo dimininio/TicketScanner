@@ -23,6 +23,7 @@ class WidgetsMediator;
 class AnimatedSearchWidget;
 
 class StateKeeper;
+class BrowserPageStateKeeper;
 
 class BasePage
 {
@@ -34,12 +35,13 @@ public:
         return _widgetsMediator;
     }
 
+
 protected:
     BasePage(WidgetsMediator* mediator)
         :_widgetsMediator(mediator) {}
 private:
     WidgetsMediator* _widgetsMediator;
-    friend class StateKeeper;
+
 };
 
 
@@ -75,9 +77,11 @@ private:
     void processLink(const QUrl& link);
 
     bool checkConditions();
-   // StateKeeper* state;
 
-    friend class WidgetsMediator;
+    BrowserPageStateKeeper* state;
+    friend class BrowserPageStateKeeper;
+ friend class WidgetsMediator;
+    //friend class WidgetsMediator;
 };
 
 

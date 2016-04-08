@@ -14,6 +14,7 @@
 //#include <QDateTime>
 #include <QDebug>
 
+#include "statekeeper.h"
 
 WidgetsMediator::WidgetsMediator()
     :browserPage(nullptr),settingsPage(nullptr),
@@ -47,6 +48,10 @@ void WidgetsMediator::showBrowserPage()
 
 void WidgetsMediator::showSettingPage()
 {
+    if (browserPage->state->isChanged(browserPage) && settingsPage) {
+        delete settingsPage;
+        settingsPage = nullptr;
+     }
     if(!settingsPage) {
         settingsPage = new SettingsPage(this);
         stackedWidget->addWidget(settingsPage);

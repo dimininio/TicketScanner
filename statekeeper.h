@@ -12,8 +12,10 @@ class BrowserPage;
 class SettingPage;
 class ProcessingPage;
 class WidgetsMediator;
+class QDate;
 
 #include <QMap>
+#include <QDate>
 #include <QObject>
 
 class StateKeeper{
@@ -21,8 +23,8 @@ class StateKeeper{
 public:
     virtual ~StateKeeper() {}
 
-    virtual bool isChanged()=0;
-    virtual void setState()=0;
+    virtual bool isChanged() {}
+    virtual void setState() {}
 
 protected:
     StateKeeper() {}
@@ -41,11 +43,14 @@ public:
     void setState(BrowserPage*);
 
 private:
+    QString fromStation;
+    QString toStation;
+    QDate tripDate;
 
 };
 
 
-
+/*
 class StateKeeper2{
 
 public:
@@ -65,6 +70,6 @@ void StateKeeper2::setState()
 {
 
 }
-
+*/
 #endif // STATEKEEPER
 
