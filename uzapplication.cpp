@@ -196,11 +196,15 @@ bool UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
 void UZApplication::startScanning(std::shared_ptr<SearchParameters>& parameters)
 {
     searchParameters = parameters;
-    timer = new QTimer(this);
-    if (!p_scanTrains)
-        p_scanTrains = new Trains();
-    connect(timer,&QTimer::timeout,this,&UZApplication::sendScanRequest);
-    timer->start(p_interval);
+    qDebug()<<searchParameters->stationTo()<< "    check search";
+    if (!timer) {
+        timer = new QTimer(this);
+        connect(timer,&QTimer::timeout,this,&UZApplication::sendScanRequest);
+        timer->start(p_interval);
+    }
+    if (p_scanTrains)
+        delete p_scanTrains;
+    p_scanTrains = new Trains();
 
 }
 

@@ -12,13 +12,13 @@
 //#include <QGridLayout>
 //#include <QCalendarWidget>
 //#include <QDateTime>
+#include <memory>
 #include <QDebug>
 
-#include "statekeeper.h"
 
 WidgetsMediator::WidgetsMediator()
     :browserPage(nullptr),settingsPage(nullptr),
-      processingPage(nullptr),stackedWidget(nullptr)
+      processingPage(nullptr),stackedWidget(nullptr),searchParameters(nullptr)
 {
     stackedWidget = new QStackedWidget;
     browserPage = new BrowserPage(this);
@@ -48,7 +48,7 @@ void WidgetsMediator::showBrowserPage()
 
 void WidgetsMediator::showSettingPage()
 {
-    if (browserPage->state->isChanged(browserPage) && settingsPage) {
+    if (browserPage->isChanged() && settingsPage) {
         delete settingsPage;
         settingsPage = nullptr;
      }
@@ -61,17 +61,38 @@ void WidgetsMediator::showSettingPage()
 
 void WidgetsMediator::showProcessingPage()
 {
+    if (settingsPage->isChanged() && processingPage) {
+        processingPage->updatePage();
+    }
     if (!processingPage) {
         processingPage = new ProcessingPage(this);
         stackedWidget->addWidget(processingPage);
     }
-    processingPage->updatePage();
     stackedWidget->setCurrentWidget(processingPage);
 }
 
-void WidgetsMediator::setSearchParameters(std::shared_ptr<SearchParameters>& p)
+void WidgetsMediator::setSearchParameters()
 {
-    if (p) searchParameters = p;
+   // if (p) searchParameters = p;
+
+    if (settingsPage->isChanged()) {
+
+        searchParameters = std::make_shared<SearchParameters>(getStationIDFrom(),getStationIDTo(),tripDate());
+        searchParameters->setStationsName(getStationFrom(),getStationTo());
+
+        searchParameters->setTrains().clear();
+        searchParameters->setCoachTypes().clear();
+
+        for(auto train: settingsPage->trainsGroup)
+            if (train->isChecked())
+                searchParameters->setTrains().push_back(train->text());
+        for(auto coach: settingsPage->coachesTypes)
+            if (coach->isChecked())
+                searchParameters->setCoachTypes().push_back(coach->text());
+
+        UZApplication::instance()->startScanning(searchParameters);
+    }
+
 }
 
 void WidgetsMediator::showAvailableTrains()

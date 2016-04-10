@@ -6,7 +6,6 @@
 #include "searchparameters.h"
 
 #include "widgetsmediator.h"
-#include "statekeeper.h"
 #include <memory>
 
 #include <QGridLayout>
@@ -71,7 +70,9 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
 
     setLayout(pagelayout);
 
-    state = new BrowserPageStateKeeper(this);
+    previousState_fromStation = "";
+    previousState_toStation = "";
+
 
     connect(searchButton,&QPushButton::clicked,this,&BrowserPage::ticketsSearch);
     connect(showSettingsButton,&QPushButton::clicked,this,&BrowserPage::showSettings);
@@ -85,12 +86,9 @@ void BrowserPage::showSettings()
     if(checkConditions()==false)
         return;
 
-    std::shared_ptr<SearchParameters> sParams = std::make_shared<SearchParameters>(editFrom->getStationID(),editTo->getStationID(),dateField->date());
-    sParams->setStationsName(editFrom->text(),editTo->text());
-    mediator()->setSearchParameters(sParams);
-    mediator()->showSettingPage();
-    state->setState(this);
 
+    mediator()->showSettingPage();
+    saveState();
 }
 
 
@@ -111,6 +109,21 @@ bool BrowserPage::checkConditions()
         return false;
     }
     return true;
+}
+
+bool BrowserPage::isChanged()
+{
+    if(previousState_fromStation!=editFrom->text() ||
+           previousState_toStation != editTo->text())
+        return true;
+    else
+        return false;
+}
+
+void BrowserPage::saveState()
+{
+    previousState_fromStation = editFrom->text();
+    previousState_toStation = editTo->text();
 }
 
 
@@ -225,7 +238,6 @@ QDate BrowserPage::tripDate()
 SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     :QWidget(parent), BasePage(widgetsMediator)
 {
-
     QGroupBox* trainsBox = new QGroupBox("Поїзди",this);
     QGroupBox* coachesBox = new QGroupBox("Типи вагонів",this);
     QGroupBox* buttonsBox = new QGroupBox();
@@ -289,6 +301,41 @@ void SettingsPage::exploreRout()
     networkManager->sendSearchRequest(searchdata,trainsOnRoute);
 
 
+}
+
+bool SettingsPage::isChanged()
+{
+    QVector<QString> currentTrains;
+    QVector<QString> currentCoachTypes;
+    for(auto train : trainsGroup)
+        if (train->isChecked())
+            currentTrains.push_back(train->text());
+    for(auto coachType : coachesTypes)
+        if (coachType->isChecked())
+            currentCoachTypes.push_back(coachType->text());
+    if (currentTrains!=prevState_trainsGroup || currentCoachTypes!=prevState_coachesTypes) {
+        qDebug()<<"settings were changed";
+        return true;
+
+    } else
+        return false;
+
+}
+
+void SettingsPage::saveState()
+{
+    prevState_trainsGroup.clear();
+    prevState_coachesTypes.clear();
+    for(auto train : trainsGroup)
+    {
+        if (train->isChecked())
+            prevState_trainsGroup.push_back(train->text());
+    }
+    for(auto coachType : coachesTypes)
+    {
+        if (coachType->isChecked())
+            prevState_coachesTypes.push_back(coachType->text());
+    }
 }
 
 
@@ -359,7 +406,8 @@ void SettingsPage::drawTrainsWidgets(QVector<QString> &trains, QVector<QString> 
             coachesTypes.push_back(box2);
         }
 
-
+        std::sort(trainsGroup.begin(),trainsGroup.end());
+        std::sort(coachesTypes.begin(),coachesTypes.end());
 }
 
 
@@ -400,17 +448,10 @@ void SettingsPage::startScanner()
     if (checkConditions()==false)
         return;
 
-    for(auto train: trainsGroup)
-        if (train->isChecked())
-            mediator()->searchParameters->setTrains().push_back(train->text());
-    for(auto coach: coachesTypes)
-        if (coach->isChecked())
-            mediator()->searchParameters->setCoachTypes().push_back(coach->text());
-    //temp.restart or not searching?
-        std::unique(mediator()->searchParameters->setTrains().begin(),mediator()->searchParameters->setTrains().end());
-        std::unique(mediator()->searchParameters->setCoachTypes().begin(),mediator()->searchParameters->setCoachTypes().end());
-    UZApplication::instance()->startScanning(mediator()->searchParameters);
-     mediator()->showProcessingPage();
+    mediator()->setSearchParameters();
+    mediator()->showProcessingPage();
+    saveState();
+
 }
 
 void SettingsPage::showBrowser()

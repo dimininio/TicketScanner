@@ -2,6 +2,7 @@
 #define WINDOWPAGES
 
 #include <QWidget>
+#include <QCheckBox>
 
 class QPushButton;
 class QDateEdit;
@@ -12,7 +13,7 @@ class LineEdit;
 class QGridLayout;
 class QHBoxLayout;
 class QRadioButton;
-class QCheckBox;
+//class QCheckBox;
 class Train;
 
 class SearchParameters;
@@ -22,8 +23,6 @@ class QWebView;
 class WidgetsMediator;
 class AnimatedSearchWidget;
 
-class StateKeeper;
-class BrowserPageStateKeeper;
 
 class BasePage
 {
@@ -35,6 +34,8 @@ public:
         return _widgetsMediator;
     }
 
+    virtual bool isChanged(){}
+    virtual void saveState() {}
 
 protected:
     BasePage(WidgetsMediator* mediator)
@@ -58,6 +59,7 @@ public:
     void showError(QString error);
 
     QDate tripDate();
+    bool isChanged();
 
     QPushButton* showSettingsButton;
 private:
@@ -78,10 +80,12 @@ private:
 
     bool checkConditions();
 
-    BrowserPageStateKeeper* state;
-    friend class BrowserPageStateKeeper;
- friend class WidgetsMediator;
-    //friend class WidgetsMediator;
+    //keep information about previous widget's state.
+    QString previousState_fromStation;
+    QString previousState_toStation;
+    void saveState();
+
+    friend class WidgetsMediator;
 };
 
 
@@ -93,6 +97,7 @@ public:
 
     void startScanner();
     void showBrowser();
+    bool isChanged();
 
     QPushButton* startSearchBtn;
     QPushButton* showBrowserBtn;
@@ -107,13 +112,20 @@ private:
     void onRadioButtonClick();
     bool checkConditions();
 
+    void exploreRout();
+
     QVector<QCheckBox*> trainsGroup;
     QGridLayout* trainsGroupLayout;
 
     QVector<QCheckBox*> coachesTypes;
     QHBoxLayout* coachesTypesLayout;
 
-    void exploreRout();    
+    //keep information about previous widget's state:
+    QVector<QString> prevState_trainsGroup;
+    QVector<QString> prevState_coachesTypes;
+    void saveState();
+
+    friend class WidgetsMediator;
 };
 
 
