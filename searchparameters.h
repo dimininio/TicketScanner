@@ -34,6 +34,9 @@ public:
     QString stationFromName();
     QString stationToName();
 
+    bool searchForAnyTrain();
+    void setSearchForAnyTrain(bool anytrain);
+
 private:
     QVector<QString> _trains;
     QVector<QString> _coachTypes;
@@ -42,6 +45,7 @@ private:
     QString _stationTo;
     QString _stationFromName;
     QString _stationToName;
+    bool _searchForAnyTrain;
 
 };
 

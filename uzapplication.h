@@ -22,6 +22,12 @@ public:
     UZApplication(int &argc, char **argv);
     ~UZApplication();
 
+    enum class SearchStatus{
+        Waiting,
+        Search,
+        Found
+    };
+
     static UZApplication* instance();
     static NetworkManager* networkManager();
 
@@ -34,9 +40,10 @@ public:
     bool parseCoachesSearchResults(QNetworkReply *reply);
     void startScanning(std::shared_ptr<SearchParameters> &parameters);
 
+    SearchStatus status();
 
 signals:
-    void updateSearchStatus(bool found);
+    void updateSearchStatus(SearchStatus);
     void searchError(QString error);
 
 private slots:
@@ -50,6 +57,7 @@ private:
     Trains* p_scanTrains;
     int p_interval;
     QTimer* timer;
+    SearchStatus searchStatus;
 
     std::shared_ptr<SearchParameters> searchParameters;
 
@@ -57,6 +65,7 @@ private:
     Train* setTrain(QString number);
     bool checkScanningResults();
     void sendScanRequest();
+    void setStatus(SearchStatus status);
 
 };
 

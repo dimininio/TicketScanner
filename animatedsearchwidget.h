@@ -16,8 +16,9 @@ public:
     qreal position();
     void setPosition(qreal pos);
 
-    int searchStatus();
-    void setSearchStatus(int searchStatus);
+  //  int searchStatus();
+    //void setSearchStatus(int searchStatus);
+    void updateSearchStatus();
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
@@ -27,7 +28,7 @@ private:
     int lineWidth = 250;
     int lineHeight = 4;
     int widgetWidth;
-    int status;
+    //int status;
 
     QPropertyAnimation* moveAnimation;
 };

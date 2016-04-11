@@ -11,9 +11,7 @@
 #include <QGridLayout>
 #include <QDateEdit>
 #include <QPushButton>
-//#include <QTextBrowser>
 #include <QWebView>
-#include <QRadioButton>
 #include <QGroupBox>
 #include <QCheckBox>
 #include <QMessageBox>
@@ -22,7 +20,6 @@
 #include <QLabel>
 #include <QFile>
 
-#include <QPropertyAnimation>
 #include "animatedsearchwidget.h"
 
 #include "uzmainwindow.h"
@@ -46,7 +43,6 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     dateField->setCalendarPopup(true);
     searchButton = new QPushButton("Пошук",this);
     showSettingsButton = new QPushButton("Налаштування пошуку",this);
-    //showSettingsButton->setEnabled(false);
 
     //QWidget *pageWidget = new QWidget;
     webView = new QWebView;
@@ -59,11 +55,6 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     webView->setMaximumWidth(400);
     webView->setMaximumHeight(250);
 
-    QPropertyAnimation* animation = new QPropertyAnimation(searchButton,"maximumWidth");
-    animation->setDuration(5000);
-    animation->setStartValue(50);
-    animation->setEndValue(100);
-    animation->start();
 
     QGridLayout *pagelayout = new QGridLayout;
     pagelayout->addWidget(editFrom,0,0);
@@ -74,6 +65,10 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     pagelayout->addWidget(showSettingsButton,6,0,1,3);
 
     setLayout(pagelayout);
+
+    previousState_fromStation = "";
+    previousState_toStation = "";
+
 
     connect(searchButton,&QPushButton::clicked,this,&BrowserPage::ticketsSearch);
     connect(showSettingsButton,&QPushButton::clicked,this,&BrowserPage::showSettings);
@@ -87,11 +82,9 @@ void BrowserPage::showSettings()
     if(checkConditions()==false)
         return;
 
-    std::shared_ptr<SearchParameters> sParams = std::make_shared<SearchParameters>(editFrom->getStationID(),editTo->getStationID(),dateField->date());
-    sParams->setStationsName(editFrom->text(),editTo->text());
-    mediator()->setSearchParameters(sParams);
-    mediator()->showSettingPage();
 
+    mediator()->showSettingPage();
+    saveState();
 }
 
 
@@ -114,6 +107,21 @@ bool BrowserPage::checkConditions()
     return true;
 }
 
+bool BrowserPage::isChanged()
+{
+    if(previousState_fromStation!=editFrom->text() ||
+           previousState_toStation != editTo->text())
+        return true;
+    else
+        return false;
+}
+
+void BrowserPage::saveState()
+{
+    previousState_fromStation = editFrom->text();
+    previousState_toStation = editTo->text();
+}
+
 
 void BrowserPage::processLink(const QUrl &link)
 {
@@ -132,7 +140,7 @@ void BrowserPage::processTrain(const QUrl &link)
 
      NetworkManager* networkManager = UZApplication::instance()->networkManager();
 
-     for(auto p = currentTrain->freePlaces.begin();p!=currentTrain->freePlaces.end();++p)
+     for(auto&& p = currentTrain->freePlaces.begin();p!=currentTrain->freePlaces.end();++p)
      {
         CoachesPOSTData postdata(editFrom->getStationID(),editTo->getStationID(),QString::number(currentTrain->dateDeparture.toTime_t()),
                               trainNum,p->placeClass);
@@ -150,7 +158,7 @@ void BrowserPage::showAvailableTrains()
 
     trainData =trainData+ "<html><body><table>";
 
-    for(auto train = trains->begin();train!=trains->end();++train)
+    for(auto& train = trains->begin();train!=trains->end();++train)
     {
         trainData += "<tr>";
         trainData += "<td> <a href=\"" + train->number + "\">" +  train->number + "</a> </td>";
@@ -180,7 +188,7 @@ void BrowserPage::showAvailableTrains()
 
 
 void BrowserPage::showAvailableCoaches(Train *train)
-{
+{qDebug()<<"show";
     if (!train->checkComleteness()) return;
 
     QString data = "<html><body>";
@@ -189,9 +197,9 @@ void BrowserPage::showAvailableCoaches(Train *train)
                               "<th>№</th>"
                               "<th>Кількість</th></tr>";
 
-    for(auto type = train->freePlaces.begin(); type!=train->freePlaces.end();++type)
+    for(auto&& type = train->freePlaces.begin(); type!=train->freePlaces.end();++type)
     {
-        for(auto p = train->coaches.begin();p!= train->coaches.end(); ++p)
+        for(auto& p = train->coaches.begin();p!= train->coaches.end(); ++p)
         {
             if (p->coachClass == type->placeClass)
             {
@@ -226,7 +234,6 @@ QDate BrowserPage::tripDate()
 SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     :QWidget(parent), BasePage(widgetsMediator)
 {
-
     QGroupBox* trainsBox = new QGroupBox("Поїзди",this);
     QGroupBox* coachesBox = new QGroupBox("Типи вагонів",this);
     QGroupBox* buttonsBox = new QGroupBox();
@@ -258,7 +265,6 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     buttonsBox->setLayout(buttonsLayout);
 
 
-
     QVBoxLayout* pagelayout = new QVBoxLayout(this);
     pagelayout->addWidget(trainsBox);
     pagelayout->setAlignment(trainsBox,Qt::AlignTop);
@@ -278,6 +284,9 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
 
 const QByteArray trainsOnRoute = "trainsOnRoute";
 
+
+//Ukrazaliznitsya doesn't have public request to get "all possible trains" between stations.
+//So,we send some "search" request for different dates to receive as much as possible existing trains.
 void SettingsPage::exploreRout()
 {
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
@@ -289,10 +298,50 @@ void SettingsPage::exploreRout()
     searchdata.tripDate = futuredate.toString("MM.dd.yyyy");
     networkManager->sendSearchRequest(searchdata,trainsOnRoute);
 
+}
+
+bool SettingsPage::isChanged()
+{
+    QVector<QString> currentTrains;
+    QVector<QString> currentCoachTypes;
+
+    if (prevState_allTrainBtn!=allTrainsBtn->isChecked())
+            return true;
+
+    for(auto train : trainsGroup)
+        if (train->isChecked())
+            currentTrains.push_back(train->text());
+    for(auto coachType : coachesTypes)
+        if (coachType->isChecked())
+            currentCoachTypes.push_back(coachType->text());
+    if (currentTrains!=prevState_trainsGroup || currentCoachTypes!=prevState_coachesTypes) {
+        qDebug()<<"settings were changed";
+        return true;
+    } else
+        return false;
 
 }
 
+void SettingsPage::saveState()
+{
+    prevState_trainsGroup.clear();
+    prevState_coachesTypes.clear();
+    for(auto train : trainsGroup)
+    {
+        if (train->isChecked())
+            prevState_trainsGroup.push_back(train->text());
+    }
+    for(auto coachType : coachesTypes)
+    {
+        if (coachType->isChecked())
+            prevState_coachesTypes.push_back(coachType->text());
+    }
+    prevState_allTrainBtn = allTrainsBtn->isChecked();
+}
 
+//It's response on the exploreRout() method.
+//when we get each responce from Ukrzaliznitsya, we parse existing trains, types of tickets
+//and create checkboxes by drawTrainsWidgets() function.
 void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, QByteArray id)
 {
     if (reply==nullptr) return;
@@ -311,25 +360,17 @@ void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, QByteArray id)
                 for(auto&& placeType: train.freePlaces)
                     placeTypes.push_back(placeType.placeClass);
             }
-
         }
-
 
         std::sort(placeTypes.begin(),placeTypes.end());
         auto pLast = std::unique(placeTypes.begin(),placeTypes.end());
         placeTypes.erase(pLast,placeTypes.end());
 
-
         for(auto pType = coachesTypes.begin();pType!=coachesTypes.end();++pType)
             placeTypes.erase(std::remove(placeTypes.begin(),placeTypes.end(),(*pType)->text()),placeTypes.end());
 
-
-
         drawTrainsWidgets(trainsOnRoute,placeTypes);
-
-
     }
-
 }
 
 void SettingsPage::drawTrainsWidgets(QVector<QString> &trains, QVector<QString> &places)
@@ -349,7 +390,6 @@ void SettingsPage::drawTrainsWidgets(QVector<QString> &trains, QVector<QString> 
             if (j>3){
                 j=0; ++i;
             }
-
         }
 
         for(auto&& coachType: places)
@@ -360,7 +400,8 @@ void SettingsPage::drawTrainsWidgets(QVector<QString> &trains, QVector<QString> 
             coachesTypes.push_back(box2);
         }
 
-
+        std::sort(trainsGroup.begin(),trainsGroup.end(),[](QCheckBox* a, QCheckBox* b){return a->text() < b->text();});
+        std::sort(coachesTypes.begin(),coachesTypes.end(),[](QCheckBox* a, QCheckBox* b){return a->text() < b->text();});
 }
 
 
@@ -386,8 +427,7 @@ bool SettingsPage::checkConditions()
 
     if (trainsResult==trainsGroup.end() || coachesResult==coachesTypes.end()) {
         QMessageBox msgBox;
-        msgBox.setText("Визначте умови для пошуку квитків");
-        msgBox.setInformativeText("Оберіть доступні поїзди і типи вагонів");
+        msgBox.setText("Визначте умови для пошуку квитків. Оберіть доступні поїзди і типи вагонів");
         msgBox.exec();
         return false;
     }
@@ -401,17 +441,10 @@ void SettingsPage::startScanner()
     if (checkConditions()==false)
         return;
 
-    for(auto train: trainsGroup)
-        if (train->isChecked())
-            mediator()->searchParameters->setTrains().push_back(train->text());
-    for(auto coach: coachesTypes)
-        if (coach->isChecked())
-            mediator()->searchParameters->setCoachTypes().push_back(coach->text());
-    //temp.restart or not searching?
-        std::unique(mediator()->searchParameters->setTrains().begin(),mediator()->searchParameters->setTrains().end());
-        std::unique(mediator()->searchParameters->setCoachTypes().begin(),mediator()->searchParameters->setCoachTypes().end());
-    UZApplication::instance()->startScanning(mediator()->searchParameters);
-     mediator()->showProcessingPage();
+    mediator()->setSearchParameters();
+    mediator()->showProcessingPage();
+    saveState();
+
 }
 
 void SettingsPage::showBrowser()
@@ -440,28 +473,28 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     pagelayout->setAlignment(showSettingsButton,Qt::AlignBottom);
 
 
-    connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::setSearchStatus);
+    //connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::setSearchStatus);
+    connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::updatePage);
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
 
     updatePage();
-   // qDebug()<<UZApplication::instance()->mainWindow->width()  <<"     parent";
 
 
 }
-
-void ProcessingPage::setSearchStatus(bool isFound)
+/*
+void ProcessingPage::setSearchStatus(UZApplication::SearchStatus status)
 {
-    searchStatus = isFound;
-    if (searchStatus) {
+   // searchStatus = isFound;
+    if (UZApplication::SearchStatus::Found) {
         statusLabel->setText("Знайдено");
-        animatedSearchWidget->setSearchStatus(1);
+        animatedSearchWidget->setSearchStatus(status);
         }//temp. will change to enum
     else {
         statusLabel->setText("Пошук");
-        animatedSearchWidget->setSearchStatus(0);
+        animatedSearchWidget->setSearchStatus(status);
     }
 }
-
+*/
 void ProcessingPage::showSettings()
 {
     mediator()->showSettingPage();
@@ -469,12 +502,24 @@ void ProcessingPage::showSettings()
 
 void ProcessingPage::updatePage()
 {
-    QString info = "Пошук залізничних квитків між станціями " + mediator()->getStationFrom() + " - " + mediator()->getStationTo() +
-                    ", для поїздів: ";
-    for(auto& num: mediator()->getChosenTrains())
-        info = info + num +  " ";
-    info = info + "\nДата відправлення: " +mediator()->tripDate().toString("dd.MM.yyyy");
+    QString info = "Пошук залізничних квитків між станціями " + mediator()->getStationFrom() + " - " + mediator()->getStationTo() + ", ";
+
+    if (mediator()->searchParameters->searchForAnyTrain())
+        info = info + "для всіх поїздів";
+    else {
+        info = info + "для поїздів: ";
+        for(auto& num: mediator()->getChosenTrains())
+            info = info + num +  " ";
+        info = info + "\nДата відправлення: " +mediator()->tripDate().toString("dd.MM.yyyy");
+    }
 
     infoLabel->setText(info);
-    setSearchStatus(searchStatus);
+   // setSearchStatus(UZApplication::instance()->status());
+    if (UZApplication::instance()->status()==UZApplication::SearchStatus::Found) {
+        statusLabel->setText("Знайдено");
+        animatedSearchWidget->updateSearchStatus();
+    }else {
+        statusLabel->setText("Пошук");
+        animatedSearchWidget->updateSearchStatus();
+    }
 }

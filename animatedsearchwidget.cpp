@@ -1,4 +1,5 @@
 #include "animatedsearchwidget.h"
+#include "uzapplication.h"
 
 #include <QPainter>
 #include <QPropertyAnimation>
@@ -37,20 +38,21 @@ void AnimatedSearchWidget::setPosition(qreal pos)
     currentInternalPosition = pos;
     repaint();
 }
-
+/*
 int AnimatedSearchWidget::searchStatus()
 {
     return status;
 }
-
-void AnimatedSearchWidget::setSearchStatus(int searchStatus)
+*/
+void AnimatedSearchWidget::updateSearchStatus()
 {
-    status = searchStatus;
+   // status = searchStatus;
+    UZApplication::SearchStatus status = UZApplication::instance()->status();
     switch (status) {
-    case 0:
+    case UZApplication::SearchStatus::Search:
         moveAnimation->start();
         break;
-    case 1:
+    default:
         setPosition(-lineWidth-100);
         repaint();
         moveAnimation->stop();

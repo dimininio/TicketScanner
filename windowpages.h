@@ -2,6 +2,8 @@
 #define WINDOWPAGES
 
 #include <QWidget>
+#include <QCheckBox>
+#include <QRadioButton>
 
 class QPushButton;
 class QDateEdit;
@@ -12,7 +14,7 @@ class LineEdit;
 class QGridLayout;
 class QHBoxLayout;
 class QRadioButton;
-class QCheckBox;
+//class QCheckBox;
 class Train;
 
 class SearchParameters;
@@ -20,8 +22,9 @@ class QLabel;
 class QWebView;
 
 class WidgetsMediator;
-
 class AnimatedSearchWidget;
+class UZApplication;
+
 
 class BasePage
 {
@@ -33,11 +36,15 @@ public:
         return _widgetsMediator;
     }
 
+    virtual bool isChanged(){return false;}
+    virtual void saveState() {}
+
 protected:
     BasePage(WidgetsMediator* mediator)
         :_widgetsMediator(mediator) {}
 private:
     WidgetsMediator* _widgetsMediator;
+
 };
 
 
@@ -54,6 +61,7 @@ public:
     void showError(QString error);
 
     QDate tripDate();
+    bool isChanged();
 
     QPushButton* showSettingsButton;
 private:
@@ -74,6 +82,11 @@ private:
 
     bool checkConditions();
 
+    //keep information about previous widget's state.
+    QString previousState_fromStation;
+    QString previousState_toStation;
+    void saveState();
+
     friend class WidgetsMediator;
 };
 
@@ -86,6 +99,7 @@ public:
 
     void startScanner();
     void showBrowser();
+    bool isChanged();
 
     QPushButton* startSearchBtn;
     QPushButton* showBrowserBtn;
@@ -100,13 +114,21 @@ private:
     void onRadioButtonClick();
     bool checkConditions();
 
+    void exploreRout();
+
     QVector<QCheckBox*> trainsGroup;
     QGridLayout* trainsGroupLayout;
 
     QVector<QCheckBox*> coachesTypes;
     QHBoxLayout* coachesTypesLayout;
 
-    void exploreRout();    
+    //keep information about previous widget's state:
+    QVector<QString> prevState_trainsGroup;
+    QVector<QString> prevState_coachesTypes;
+    bool prevState_allTrainBtn = false;
+    void saveState();
+
+    friend class WidgetsMediator;
 };
 
 
@@ -115,7 +137,7 @@ class ProcessingPage:public QWidget, public BasePage
 {
 public:
     ProcessingPage(WidgetsMediator* widgetsMediator, QWidget* parent=0);
-    void setSearchStatus(bool isFound);
+  //  void setSearchStatus(UZApplication::SearchStatus);
     void showSettings();
     void updatePage();
 
