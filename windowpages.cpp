@@ -473,27 +473,28 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     pagelayout->setAlignment(showSettingsButton,Qt::AlignBottom);
 
 
-    connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::setSearchStatus);
+    //connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::setSearchStatus);
+    connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::updatePage);
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
 
     updatePage();
 
 
 }
-
-void ProcessingPage::setSearchStatus(bool isFound)
+/*
+void ProcessingPage::setSearchStatus(UZApplication::SearchStatus status)
 {
-    searchStatus = isFound;
-    if (searchStatus) {
+   // searchStatus = isFound;
+    if (UZApplication::SearchStatus::Found) {
         statusLabel->setText("Знайдено");
-        animatedSearchWidget->setSearchStatus(1);
+        animatedSearchWidget->setSearchStatus(status);
         }//temp. will change to enum
     else {
         statusLabel->setText("Пошук");
-        animatedSearchWidget->setSearchStatus(0);
+        animatedSearchWidget->setSearchStatus(status);
     }
 }
-
+*/
 void ProcessingPage::showSettings()
 {
     mediator()->showSettingPage();
@@ -513,5 +514,12 @@ void ProcessingPage::updatePage()
     }
 
     infoLabel->setText(info);
-    setSearchStatus(searchStatus);
+   // setSearchStatus(UZApplication::instance()->status());
+    if (UZApplication::instance()->status()==UZApplication::SearchStatus::Found) {
+        statusLabel->setText("Знайдено");
+        animatedSearchWidget->updateSearchStatus();
+    }else {
+        statusLabel->setText("Пошук");
+        animatedSearchWidget->updateSearchStatus();
+    }
 }

@@ -86,7 +86,7 @@ void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
         if (checkScanningResults())
         {
             qDebug()<<"FOUND..";
-            emit updateSearchStatus(true);
+            setStatus(SearchStatus::Found);
             timer->stop();
         }
     }
@@ -208,12 +208,14 @@ void UZApplication::startScanning(std::shared_ptr<SearchParameters>& parameters)
 
 }
 
+
 void UZApplication::sendScanRequest()
 {
     QString date = searchParameters->getTripDate().toString("MM.dd.yyyy");
     SearchPOSTData searchdata(searchParameters->stationFrom(),searchParameters->stationTo(),date);
     p_networkManager->sendSearchRequest(searchdata,scanRequest);
 }
+
 
 bool UZApplication::checkScanningResults()
 {
@@ -272,4 +274,18 @@ Train *UZApplication::setTrain(QString number)
 const Train *UZApplication::getTrain(QString number) const
 {
     return  &p_trains->operator [](number);
+}
+
+
+
+void UZApplication::setStatus(UZApplication::SearchStatus status)
+{
+    emit updateSearchStatus(status);
+    searchStatus = status;
+}
+
+
+UZApplication::SearchStatus UZApplication::status()
+{
+    return searchStatus;
 }

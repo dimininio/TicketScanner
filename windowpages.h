@@ -23,6 +23,7 @@ class QWebView;
 
 class WidgetsMediator;
 class AnimatedSearchWidget;
+class UZApplication;
 
 
 class BasePage
@@ -136,7 +137,7 @@ class ProcessingPage:public QWidget, public BasePage
 {
 public:
     ProcessingPage(WidgetsMediator* widgetsMediator, QWidget* parent=0);
-    void setSearchStatus(bool isFound);
+  //  void setSearchStatus(UZApplication::SearchStatus);
     void showSettings();
     void updatePage();
 
