@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QCheckBox>
+#include <QRadioButton>
 
 class QPushButton;
 class QDateEdit;
@@ -34,7 +35,7 @@ public:
         return _widgetsMediator;
     }
 
-    virtual bool isChanged(){}
+    virtual bool isChanged(){return false;}
     virtual void saveState() {}
 
 protected:
@@ -123,6 +124,7 @@ private:
     //keep information about previous widget's state:
     QVector<QString> prevState_trainsGroup;
     QVector<QString> prevState_coachesTypes;
+    bool prevState_allTrainBtn = false;
     void saveState();
 
     friend class WidgetsMediator;

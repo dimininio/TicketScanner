@@ -217,16 +217,30 @@ void UZApplication::sendScanRequest()
 
 bool UZApplication::checkScanningResults()
 {
-    //How to guarantee that search is going for ALL trains on route?
-    //Now we ckeck trains for two dates, but we can miss something
-    for(auto rightTrain = searchParameters->getTrains().begin(); rightTrain!=searchParameters->getTrains().end();++rightTrain)
-    {
-        auto train = std::find_if(p_scanTrains->begin(),p_scanTrains->end(),[&rightTrain](Train trn){return trn.number==rightTrain;});
-        if (train!=p_scanTrains->end()) {
-            for(auto placeType:train->freePlaces)
-                for (auto& rightPlace:searchParameters->getCoachTypes() )
-                    if (rightPlace==placeType.placeClass)
-                        return true;
+    //Ukrazaliznitsya doesn't have public request to get all possible trains between stations.
+    //Now we check two dates for existing trains, but it cannot guarantee that available trains
+    //are all possible existing trains.
+    //So, we should to check trains by other way, if user choose "search for any train".
+    if (searchParameters->searchForAnyTrain()) {
+        //just check all available trains
+        for(auto& train = p_scanTrains->begin();train!=p_scanTrains->end();++train){
+                for(auto& placeType:train->freePlaces)
+                    for (auto& appropriatePlace:searchParameters->getCoachTypes() )
+                        if (appropriatePlace==placeType.placeClass)
+                            return true;
+        }
+
+    }else {
+        for(auto&& rightTrain = searchParameters->getTrains().begin(); rightTrain!=searchParameters->getTrains().end();++rightTrain)
+        {
+            //compare available trains with selected trains
+            auto train = std::find_if(p_scanTrains->begin(),p_scanTrains->end(),[&rightTrain](Train trn){return trn.number==rightTrain;});
+            if (train!=p_scanTrains->end()) {
+                for(auto& placeType:train->freePlaces)
+                    for (auto& appropriatePlace:searchParameters->getCoachTypes() )
+                        if (appropriatePlace==placeType.placeClass)
+                            return true;
+            }
         }
     }
     return false;

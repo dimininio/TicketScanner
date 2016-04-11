@@ -92,3 +92,13 @@ QString SearchParameters::stationToName()
 {
     return _stationToName;
 }
+
+bool SearchParameters::searchForAnyTrain()
+{
+    return _searchForAnyTrain;
+}
+
+void SearchParameters::setSearchForAnyTrain(bool anytrain)
+{
+    _searchForAnyTrain = anytrain;
+}

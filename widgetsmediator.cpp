@@ -73,8 +73,6 @@ void WidgetsMediator::showProcessingPage()
 
 void WidgetsMediator::setSearchParameters()
 {
-   // if (p) searchParameters = p;
-
     if (settingsPage->isChanged()) {
 
         searchParameters = std::make_shared<SearchParameters>(getStationIDFrom(),getStationIDTo(),tripDate());
@@ -89,6 +87,11 @@ void WidgetsMediator::setSearchParameters()
         for(auto coach: settingsPage->coachesTypes)
             if (coach->isChecked())
                 searchParameters->setCoachTypes().push_back(coach->text());
+
+        if (settingsPage->allTrainsBtn->isChecked())
+            searchParameters->setSearchForAnyTrain(true);
+        else
+            searchParameters->setSearchForAnyTrain(false);
 
         UZApplication::instance()->startScanning(searchParameters);
     }
