@@ -87,6 +87,8 @@ void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
         {
             qDebug()<<"FOUND..";
             setStatus(SearchStatus::Found);
+            //setActiveWindow(mainWindow);
+            mainWindow->activateWindow();
             timer->stop();
         }
     }
@@ -206,6 +208,7 @@ void UZApplication::startScanning(std::shared_ptr<SearchParameters>& parameters)
         delete p_scanTrains;
     p_scanTrains = new Trains();
 
+    setStatus(SearchStatus::Search);
 }
 
 
@@ -280,8 +283,8 @@ const Train *UZApplication::getTrain(QString number) const
 
 void UZApplication::setStatus(UZApplication::SearchStatus status)
 {
-    emit updateSearchStatus(status);
     searchStatus = status;
+    emit updateSearchStatus(status);
 }
 
 
