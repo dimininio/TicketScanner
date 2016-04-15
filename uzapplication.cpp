@@ -67,31 +67,31 @@ UZApplication::~UZApplication()
 
 
 
-void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
+//void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
+void UZApplication::analizeResponse(QNetworkReply *reply, RequestType id)
 {
-    //switch(id) {
-    //    case searchRequest: showSearchResults(reply);
-   // }
     if (reply==nullptr) return;
+RequestType::
+    switch (id) {
+        case    RequestType::SearchRequest :
+                    if(parseSearchResults(reply,*p_trains))
+                        mainWindow->showAvailableTrains();
 
-    if (id == searchRequest) {
-        if(parseSearchResults(reply,*p_trains))
-            mainWindow->showAvailableTrains();
-    }
-    if (id == coachesRequest){
-        parseCoachesSearchResults(reply);
-    }
-    if (id == scanRequest){
-        parseSearchResults(reply,*p_scanTrains);
-        if (checkScanningResults())
-        {
-            qDebug()<<"FOUND..";
-            setStatus(SearchStatus::Found);
-            //setActiveWindow(mainWindow);
-            mainWindow->activateWindow();
-            timer->stop();
-        }
-    }
+        case   NetworkManager::RequestType::CoachesRequest :
+                    parseCoachesSearchResults(reply);
+
+        case   NetworkManager::RequestType::ScanRequest:
+                    parseSearchResults(reply,*p_scanTrains);
+                    if (checkScanningResults())
+                    {
+                        qDebug()<<"FOUND..";
+                        setStatus(SearchStatus::Found);
+                        //setActiveWindow(mainWindow);
+                        mainWindow->activateWindow();
+                        timer->stop();
+                    }
+     }
+
 }
 
 

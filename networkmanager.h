@@ -12,6 +12,17 @@
 //class QNetworkCookie;
 //class QWebSettings;
 
+
+enum class RequestType{
+    SearchRequest,   //search available tickets beetween stations
+    ScanRequest,     //periodic SearchRequest with checking
+    CoachRequest,    //get available places of the coach
+    CoachesRequest   //get coaches of special type (with number of free places)
+
+   // operator int() const;
+};
+
+
 class NetworkManager: public QNetworkAccessManager
 {
     Q_OBJECT
@@ -47,6 +58,8 @@ private:
     void updateAttributes();
 
 };
+
+
 
 
 #endif // NETWORKMANAGER
