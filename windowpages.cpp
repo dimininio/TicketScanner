@@ -461,6 +461,9 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     infoLabel->setWordWrap(true);
     infoLabel->setAlignment(Qt::AlignJustify);
     statusLabel = new QLabel;
+    warningLabel = new QLabel;
+    warningLabel->setWordWrap(true);
+    warningLabel->setAlignment(Qt::AlignJustify);
     animatedSearchWidget =  new AnimatedSearchWidget(UZApplication::instance()->mainWindow->width(),this);
 
     showSettingsButton = new QPushButton("Змінити налаштування пошуку");
@@ -469,6 +472,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     pagelayout->addWidget(infoLabel);
     pagelayout->addWidget(statusLabel);
     pagelayout->addWidget(animatedSearchWidget);
+    pagelayout->addWidget(warningLabel,Qt::AlignBottom);
     pagelayout->addWidget(showSettingsButton);
     pagelayout->setAlignment(showSettingsButton,Qt::AlignBottom);
 
@@ -514,10 +518,12 @@ void ProcessingPage::updatePage()
     }
 
     infoLabel->setText(info);
+    warningLabel->setText("Не закривайте програму. Кожну хвилину перевіряється наявність квитків");
    // setSearchStatus(UZApplication::instance()->status());
     if (UZApplication::instance()->status()==UZApplication::SearchStatus::Found) {
         statusLabel->setText("Знайдено");
         animatedSearchWidget->updateSearchStatus();
+        warningLabel->setText("");
     }else {
         statusLabel->setText("Пошук");
         animatedSearchWidget->updateSearchStatus();

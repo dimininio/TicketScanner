@@ -144,6 +144,7 @@ public:
 private:
     QLabel* infoLabel;
     QLabel* statusLabel;
+    QLabel* warningLabel;
     QPushButton* showSettingsButton;
     AnimatedSearchWidget* animatedSearchWidget;
     bool searchStatus;

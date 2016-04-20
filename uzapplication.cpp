@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <algorithm>
 #include <QFile>
+#include <QSound>
 
 static const QByteArray searchRequest = "searchRequest";
 static const QByteArray scanRequest = "scanRequest";
@@ -23,7 +24,7 @@ NetworkManager* UZApplication::p_networkManager = 0;
 UZApplication::UZApplication(int &argc, char **argv):
     QApplication(argc,argv),
     mainWindow(nullptr),searchParameters(nullptr),p_trains(nullptr),p_scanTrains(nullptr),
-    p_interval(100000) //10 min
+    timer(nullptr),p_interval(200000) //10 min
 {
     p_networkManager = new NetworkManager(this);
     p_trains = new Trains();
@@ -90,6 +91,7 @@ void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
             //setActiveWindow(mainWindow);
             mainWindow->activateWindow();
             timer->stop();
+            QSound::play(":/resources/arfa.wav");
         }
     }
 }
