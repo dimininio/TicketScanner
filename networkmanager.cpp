@@ -203,8 +203,7 @@ void NetworkManager::sendCoachRequest(CoachPOSTData postdata, QByteArray sender)
 
 void NetworkManager::replyHandling(QNetworkReply *reply)
 {
-    RequestType d = 2;
-    RequestType identifier = reply->request().rawHeader("Sender");
+    QByteArray identifier = reply->request().rawHeader("Sender");
     emit responseReady(reply,identifier);
 }
 

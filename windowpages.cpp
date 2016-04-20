@@ -93,8 +93,7 @@ void BrowserPage::ticketsSearch()
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
     QString date = dateField->date().toString("MM.dd.yyyy");
     SearchPOSTData searchdata(editFrom->getStationID(),editTo->getStationID(),date);
-    networkManager->sendSearchRequest(searchdata,NetworkManager::RequestType::SearchRequest);
-
+    networkManager->sendSearchRequest(searchdata,searchRequest);
 }
 
 bool BrowserPage::checkConditions()

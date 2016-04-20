@@ -10,7 +10,6 @@ class NetworkManager;
 class QNetworkReply;
 class QTimer;
 class SearchParameters;
-class RequestType;
 
 //typedef QMap<QString,Train> Trains;
 
@@ -49,7 +48,7 @@ signals:
 
 private slots:
     void showWindow();
-    void analizeResponse(QNetworkReply *reply, RequestType id);
+    void analizeResponse(QNetworkReply *reply, QByteArray id);
 
 private:
 
