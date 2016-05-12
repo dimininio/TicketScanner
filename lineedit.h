@@ -8,6 +8,8 @@
 class NetworkManager;
 class QNetworkReply;
 class QByteArray;
+//enum class RequestType;
+#include "networkmanager.h"
 
 class LineEdit: public QLineEdit
 {
@@ -17,11 +19,11 @@ public:
     ~LineEdit();
 
     QString getStationID() const;
-    QByteArray identifier();
+    RequestType identifier();
 
 private slots:
     void checkContent();
-    void updateContent(QNetworkReply* reply,QByteArray id);
+    void updateContent(QNetworkReply* reply, RequestType id);
 
 
 private:

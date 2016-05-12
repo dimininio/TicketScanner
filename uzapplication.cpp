@@ -2,6 +2,7 @@
 #include "uzmainwindow.h"
 #include "networkmanager.h"
 #include "searchparameters.h"
+//#include "requestdata.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -38,6 +39,11 @@ UZApplication::UZApplication(int &argc, char **argv):
     connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
     connect(p_networkManager,&NetworkManager::responseReady,this,&UZApplication::analizeResponse);
 
+    //fillRequestTypes(); //Fill QMap for enum QRequestType
+    RequestType requestType;
+    qDebug()<<RequestType::getRequestType(RequestType::SearchRequest);
+    qDebug()<<"fr "<<RequestType::getRequestType(RequestType::SearchRequest);
+
 }
 
 
@@ -68,13 +74,38 @@ UZApplication::~UZApplication()
 
 
 
-void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
+void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request id)
 {
     //switch(id) {
     //    case searchRequest: showSearchResults(reply);
    // }
     if (reply==nullptr) return;
 
+    switch(id) {
+        case RequestType::SearchRequest:
+
+                if(parseSearchResults(reply,*p_trains))
+                    mainWindow->showAvailableTrains();
+
+        case RequestType::CoachesRequest:
+
+                parseCoachesSearchResults(reply);
+
+        case RequestType::ScanRequest:
+
+                parseSearchResults(reply,*p_scanTrains);
+                if (checkScanningResults())
+                {
+                    qDebug()<<"FOUND..";
+                    setStatus(SearchStatus::Found);
+                    //setActiveWindow(mainWindow);
+                    mainWindow->activateWindow();
+                    timer->stop();
+                    QSound::play(":/resources/arfa.wav");
+                }
+    }
+
+/*
     if (id == searchRequest) {
         if(parseSearchResults(reply,*p_trains))
             mainWindow->showAvailableTrains();
@@ -94,6 +125,8 @@ void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
             QSound::play(":/resources/arfa.wav");
         }
     }
+
+    */
 }
 
 
@@ -218,7 +251,7 @@ void UZApplication::sendScanRequest()
 {
     QString date = searchParameters->getTripDate().toString("MM.dd.yyyy");
     SearchPOSTData searchdata(searchParameters->stationFrom(),searchParameters->stationTo(),date);
-    p_networkManager->sendSearchRequest(searchdata,scanRequest);
+    p_networkManager->sendSearchRequest(searchdata,RequestType::ScanRequest);
 }
 
 
@@ -230,7 +263,7 @@ bool UZApplication::checkScanningResults()
     //So, we should to check trains by other way, if user choose "search for any train".
     if (searchParameters->searchForAnyTrain()) {
         //just check all available trains
-        for(auto& train = p_scanTrains->begin();train!=p_scanTrains->end();++train){
+        for(auto&& train = p_scanTrains->begin();train!=p_scanTrains->end();++train){
                 for(auto& placeType:train->freePlaces)
                     for (auto& appropriatePlace:searchParameters->getCoachTypes() )
                         if (appropriatePlace==placeType.placeClass)
@@ -294,3 +327,11 @@ UZApplication::SearchStatus UZApplication::status()
 {
     return searchStatus;
 }
+
+
+
+
+
+
+
+

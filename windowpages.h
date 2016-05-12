@@ -24,6 +24,7 @@ class QWebView;
 class WidgetsMediator;
 class AnimatedSearchWidget;
 class UZApplication;
+//enum class RequestType;
 
 
 class BasePage
@@ -109,7 +110,7 @@ private:
 
     BrowserPage* searchConfiguration;
 
-    void getTrainsOnRoute(QNetworkReply *reply, QByteArray id);
+    void getTrainsOnRoute(QNetworkReply *reply, RequestType id);
     void drawTrainsWidgets(QVector<QString> &trains, QVector<QString> &places);
     void onRadioButtonClick();
     bool checkConditions();
