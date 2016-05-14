@@ -30,13 +30,12 @@ void LineEdit::checkContent()
 {
     if (text().length()>=2 && currentBegin!=text().mid(0,2).toLower()) {
         currentBegin = text().mid(0,2).toLower();
-
         networkManager->sendGetStationsRequest(currentBegin,identifier());
         //qDebug()<<"id  "<<identifier();
     }
 }
 
-void LineEdit::updateContent(QNetworkReply *reply, QByteArray id)
+void LineEdit::updateContent(QNetworkReply *reply, RequestType::Request id)
 {
     if (reply==nullptr) return;
 
@@ -80,10 +79,14 @@ QString LineEdit::getStationID() const
     return stations[this->text()];
 }
 
-QByteArray LineEdit::identifier()
+RequestType::Request LineEdit::identifier()
 {
-    //return QString::number(p_identifier);
-    return QByteArray::number(p_identifier);
+    switch (p_identifier){
+        case 1:
+                return RequestType::GetStationsFrom;
+        case 2:
+                return RequestType::GetStationsTo;
+    }
 }
 
 

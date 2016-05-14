@@ -2,6 +2,7 @@
 #define REQUESTDATA_H
 
 #include <QString>
+#include <QMap>
 
 struct SearchPOSTData{
     SearchPOSTData(QString from,QString to,QString date)
@@ -38,6 +39,50 @@ struct CoachPOSTData{
     QString coachNum;
     QString coachType;
 };
+
+
+
+
+//This class wraps enum only
+//QMap and functions need for convertation from enum to string types and back.
+class RequestType{
+public:
+    RequestType(){
+        fillRequestTypes();
+    }
+
+    enum Request {
+        SearchRequest,   //search available tickets beetween stations
+        ScanRequest,     //periodic SearchRequest with checking
+        CoachRequest,    //get available places of the coach
+        CoachesRequest,  //get coaches of special type (with number of free places)
+        TrainsOnRoute,    //the same as SearchRequest, but doesn't update browser and current trains
+        GetStationsFrom,
+        GetStationsTo
+    };
+
+    static Request getRequestTypeByString(QByteArray identifier){
+         return requestTypes.key(identifier);
+    }
+
+    static QByteArray getStringByRequestType(Request identifier) {
+        return requestTypes[identifier];
+    }
+
+private:
+    static QMap<RequestType::Request,QByteArray> requestTypes;
+
+    void fillRequestTypes(){
+        requestTypes.insert(RequestType::SearchRequest,"searchRequest");
+        requestTypes.insert(RequestType::ScanRequest,"scanRequest");
+        requestTypes.insert(RequestType::CoachRequest,"coachRequest");
+        requestTypes.insert(RequestType::CoachesRequest,"coachesRequest");
+        requestTypes.insert(RequestType::TrainsOnRoute,"trainsOnRoute");
+        requestTypes.insert(RequestType::GetStationsFrom,QByteArray("fr"));
+        requestTypes.insert(RequestType::GetStationsTo,"to");
+    }
+};
+
 
 
 #endif // REQUESTDATA_H

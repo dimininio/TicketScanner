@@ -77,7 +77,7 @@ void NetworkManager::getAttributes(bool ok)
 
 
 
-void NetworkManager::sendGetStationsRequest(QString prefix, QByteArray sender)
+void NetworkManager::sendGetStationsRequest(QString prefix, RequestType::Request sender)
 {
     QNetworkRequest request;
 
@@ -86,14 +86,14 @@ void NetworkManager::sendGetStationsRequest(QString prefix, QByteArray sender)
     request.setRawHeader("Connection",connectionType);
     request.setRawHeader("Origin",originURL);
     request.setRawHeader("Referer",bookingUZ);
-    request.setRawHeader("Sender",sender);
+    request.setRawHeader("Sender",RequestType::getStringByRequestType(sender)); //get QByteArray equivalent to RequestType
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
     post(request,"");
     //return this->post(request,"");
 }
 
 
-void NetworkManager::sendSearchRequest(SearchPOSTData searchdata,QByteArray sender)
+void NetworkManager::sendSearchRequest(SearchPOSTData searchdata,RequestType::Request sender)
 {
     QNetworkRequest request;
 
@@ -106,7 +106,7 @@ void NetworkManager::sendSearchRequest(SearchPOSTData searchdata,QByteArray send
     request.setRawHeader("GV-Ajax",gv_ajax);
     request.setRawHeader("GV-Referer",bookingUZ);
     request.setRawHeader("Referer",bookingUZ);
-    request.setRawHeader("Sender",sender);
+    request.setRawHeader("Sender",RequestType::getStringByRequestType(sender));
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 
 
@@ -132,11 +132,12 @@ QString URLencode(QString str)
     return urldata.toEncoded();
 }
 
-void NetworkManager::sendCoachesRequest(CoachesPOSTData postdata, QByteArray sender)
+void NetworkManager::sendCoachesRequest(CoachesPOSTData postdata, RequestType::Request sender)
 {
     QNetworkRequest request;
     QByteArray train;train.append(postdata.train);
     QByteArray coachType;coachType.append(postdata.coachType);
+
 
     request.setUrl(coachesURL);
     request.setRawHeader("Host",host);
@@ -147,7 +148,7 @@ void NetworkManager::sendCoachesRequest(CoachesPOSTData postdata, QByteArray sen
     request.setRawHeader("GV-Ajax",gv_ajax);
     request.setRawHeader("GV-Referer",bookingUZ);
     request.setRawHeader("Referer",bookingUZ);
-    request.setRawHeader("Sender",sender);
+    request.setRawHeader("Sender",RequestType::getStringByRequestType(sender));
     request.setRawHeader("Train",train);
     request.setRawHeader("CoachType",coachType);
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
@@ -168,7 +169,7 @@ void NetworkManager::sendCoachesRequest(CoachesPOSTData postdata, QByteArray sen
  }
 
 
-void NetworkManager::sendCoachRequest(CoachPOSTData postdata, QByteArray sender)
+void NetworkManager::sendCoachRequest(CoachPOSTData postdata, RequestType::Request sender)
 {
     QNetworkRequest request;
 
@@ -181,7 +182,7 @@ void NetworkManager::sendCoachRequest(CoachPOSTData postdata, QByteArray sender)
     request.setRawHeader("GV-Ajax",gv_ajax);
     request.setRawHeader("GV-Referer",bookingUZ);
     request.setRawHeader("Referer",bookingUZ);
-    request.setRawHeader("Sender",sender);
+    request.setRawHeader("Sender",RequestType::getStringByRequestType(sender));
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 
     QString postBody = "station_id_from=" + postdata.stationFrom +
@@ -204,7 +205,9 @@ void NetworkManager::sendCoachRequest(CoachPOSTData postdata, QByteArray sender)
 void NetworkManager::replyHandling(QNetworkReply *reply)
 {
     QByteArray identifier = reply->request().rawHeader("Sender");
-    emit responseReady(reply,identifier);
+    RequestType::Request requestType = RequestType::getRequestTypeByString(identifier);
+    //qDebug()<<"id   " << identifier;
+    emit responseReady(reply,requestType);
 }
 
 

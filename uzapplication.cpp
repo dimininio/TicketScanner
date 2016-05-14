@@ -2,6 +2,7 @@
 #include "uzmainwindow.h"
 #include "networkmanager.h"
 #include "searchparameters.h"
+//#include "requestdata.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -10,6 +11,7 @@
 #include <QTimer>
 #include <algorithm>
 #include <QFile>
+#include <QSound>
 
 static const QByteArray searchRequest = "searchRequest";
 static const QByteArray scanRequest = "scanRequest";
@@ -23,7 +25,7 @@ NetworkManager* UZApplication::p_networkManager = 0;
 UZApplication::UZApplication(int &argc, char **argv):
     QApplication(argc,argv),
     mainWindow(nullptr),searchParameters(nullptr),p_trains(nullptr),p_scanTrains(nullptr),
-    p_interval(100000) //10 min
+    timer(nullptr),p_interval(200000) //10 min
 {
     p_networkManager = new NetworkManager(this);
     p_trains = new Trains();
@@ -36,6 +38,8 @@ UZApplication::UZApplication(int &argc, char **argv):
 
     connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
     connect(p_networkManager,&NetworkManager::responseReady,this,&UZApplication::analizeResponse);
+
+    RequestType requestType; //initialization of requests' types
 
 }
 
@@ -67,29 +71,37 @@ UZApplication::~UZApplication()
 
 
 
-void UZApplication::analizeResponse(QNetworkReply *reply, QByteArray id)
+void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request id)
 {
-    //switch(id) {
-    //    case searchRequest: showSearchResults(reply);
-   // }
     if (reply==nullptr) return;
 
-    if (id == searchRequest) {
-        if(parseSearchResults(reply,*p_trains))
-            mainWindow->showAvailableTrains();
+    switch(id) {
+        case RequestType::SearchRequest:
+
+                if(parseSearchResults(reply,*p_trains))
+                    mainWindow->showAvailableTrains();
+                break;
+
+        case RequestType::CoachesRequest:
+
+                parseCoachesSearchResults(reply);
+                break;
+
+        case RequestType::ScanRequest:               
+                parseSearchResults(reply,*p_scanTrains);
+                if (checkScanningResults())
+                {
+                    qDebug()<<"FOUND..";
+                    setStatus(SearchStatus::Found);
+                    //setActiveWindow(mainWindow);
+                    mainWindow->activateWindow();
+                    timer->stop();
+                    QSound::play(":/resources/arfa.wav");
+                }
+                break;
+
     }
-    if (id == coachesRequest){
-        parseCoachesSearchResults(reply);
-    }
-    if (id == scanRequest){
-        parseSearchResults(reply,*p_scanTrains);
-        if (checkScanningResults())
-        {
-            qDebug()<<"FOUND..";
-            setStatus(SearchStatus::Found);
-            timer->stop();
-        }
-    }
+
 }
 
 
@@ -206,6 +218,7 @@ void UZApplication::startScanning(std::shared_ptr<SearchParameters>& parameters)
         delete p_scanTrains;
     p_scanTrains = new Trains();
 
+    setStatus(SearchStatus::Search);
 }
 
 
@@ -213,7 +226,7 @@ void UZApplication::sendScanRequest()
 {
     QString date = searchParameters->getTripDate().toString("MM.dd.yyyy");
     SearchPOSTData searchdata(searchParameters->stationFrom(),searchParameters->stationTo(),date);
-    p_networkManager->sendSearchRequest(searchdata,scanRequest);
+    p_networkManager->sendSearchRequest(searchdata,RequestType::ScanRequest);
 }
 
 
@@ -225,7 +238,7 @@ bool UZApplication::checkScanningResults()
     //So, we should to check trains by other way, if user choose "search for any train".
     if (searchParameters->searchForAnyTrain()) {
         //just check all available trains
-        for(auto& train = p_scanTrains->begin();train!=p_scanTrains->end();++train){
+        for(auto&& train = p_scanTrains->begin();train!=p_scanTrains->end();++train){
                 for(auto& placeType:train->freePlaces)
                     for (auto& appropriatePlace:searchParameters->getCoachTypes() )
                         if (appropriatePlace==placeType.placeClass)
@@ -280,8 +293,8 @@ const Train *UZApplication::getTrain(QString number) const
 
 void UZApplication::setStatus(UZApplication::SearchStatus status)
 {
-    emit updateSearchStatus(status);
     searchStatus = status;
+    emit updateSearchStatus(status);
 }
 
 
@@ -289,3 +302,10 @@ UZApplication::SearchStatus UZApplication::status()
 {
     return searchStatus;
 }
+
+
+
+
+
+
+

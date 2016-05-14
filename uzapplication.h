@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QApplication>
 #include "train.h"
+#include "requestdata.h"
 #include <memory>
 
 class UZMainWindow;
@@ -10,6 +11,7 @@ class NetworkManager;
 class QNetworkReply;
 class QTimer;
 class SearchParameters;
+
 
 //typedef QMap<QString,Train> Trains;
 
@@ -48,7 +50,7 @@ signals:
 
 private slots:
     void showWindow();
-    void analizeResponse(QNetworkReply *reply, QByteArray id);
+    void analizeResponse(QNetworkReply *reply, RequestType::Request id);
 
 private:
 
@@ -68,6 +70,9 @@ private:
     void setStatus(SearchStatus status);
 
 };
+
+
+
 
 
 #endif // UZAPPLICATION

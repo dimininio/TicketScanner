@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <QRadioButton>
+#include "requestdata.h"
 
 class QPushButton;
 class QDateEdit;
@@ -109,7 +110,7 @@ private:
 
     BrowserPage* searchConfiguration;
 
-    void getTrainsOnRoute(QNetworkReply *reply, QByteArray id);
+    void getTrainsOnRoute(QNetworkReply *reply, RequestType::Request id);
     void drawTrainsWidgets(QVector<QString> &trains, QVector<QString> &places);
     void onRadioButtonClick();
     bool checkConditions();
@@ -137,13 +138,14 @@ class ProcessingPage:public QWidget, public BasePage
 {
 public:
     ProcessingPage(WidgetsMediator* widgetsMediator, QWidget* parent=0);
-  //  void setSearchStatus(UZApplication::SearchStatus);
+
     void showSettings();
     void updatePage();
 
 private:
     QLabel* infoLabel;
     QLabel* statusLabel;
+    QLabel* warningLabel;
     QPushButton* showSettingsButton;
     AnimatedSearchWidget* animatedSearchWidget;
     bool searchStatus;

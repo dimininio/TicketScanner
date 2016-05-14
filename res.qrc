@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>resources/styles.css</file>
         <file>resources/widgetstyles.qss</file>
+        <file>resources/arfa.wav</file>
     </qresource>
 </RCC>

@@ -93,7 +93,7 @@ void BrowserPage::ticketsSearch()
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
     QString date = dateField->date().toString("MM.dd.yyyy");
     SearchPOSTData searchdata(editFrom->getStationID(),editTo->getStationID(),date);
-    networkManager->sendSearchRequest(searchdata,searchRequest);
+    networkManager->sendSearchRequest(searchdata,RequestType::SearchRequest);
 }
 
 bool BrowserPage::checkConditions()
@@ -144,7 +144,7 @@ void BrowserPage::processTrain(const QUrl &link)
      {
         CoachesPOSTData postdata(editFrom->getStationID(),editTo->getStationID(),QString::number(currentTrain->dateDeparture.toTime_t()),
                               trainNum,p->placeClass);
-        networkManager->sendCoachesRequest(postdata,coachesRequest);
+        networkManager->sendCoachesRequest(postdata,RequestType::CoachesRequest);
      }
 
 }
@@ -158,7 +158,7 @@ void BrowserPage::showAvailableTrains()
 
     trainData =trainData+ "<html><body><table>";
 
-    for(auto& train = trains->begin();train!=trains->end();++train)
+    for(auto&& train = trains->begin();train!=trains->end();++train)
     {
         trainData += "<tr>";
         trainData += "<td> <a href=\"" + train->number + "\">" +  train->number + "</a> </td>";
@@ -188,7 +188,7 @@ void BrowserPage::showAvailableTrains()
 
 
 void BrowserPage::showAvailableCoaches(Train *train)
-{qDebug()<<"show";
+{
     if (!train->checkComleteness()) return;
 
     QString data = "<html><body>";
@@ -199,7 +199,7 @@ void BrowserPage::showAvailableCoaches(Train *train)
 
     for(auto&& type = train->freePlaces.begin(); type!=train->freePlaces.end();++type)
     {
-        for(auto& p = train->coaches.begin();p!= train->coaches.end(); ++p)
+        for(auto&& p = train->coaches.begin();p!= train->coaches.end(); ++p)
         {
             if (p->coachClass == type->placeClass)
             {
@@ -282,21 +282,20 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     exploreRout();
 }
 
-const QByteArray trainsOnRoute = "trainsOnRoute";
 
 
 //Ukrazaliznitsya doesn't have public request to get "all possible trains" between stations.
-//So,we send some "search" request for different dates to receive as much as possible existing trains.
+//So,we send several "search" requests with different dates to receive as much as possible existing trains.
 void SettingsPage::exploreRout()
 {
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
     QDate futuredate = QDate::currentDate();
     futuredate = futuredate.addDays(24);
     SearchPOSTData searchdata(mediator()->getStationIDFrom(),mediator()->getStationIDTo(),futuredate.toString("MM.dd.yyyy"));
-    networkManager->sendSearchRequest(searchdata,trainsOnRoute);
+    networkManager->sendSearchRequest(searchdata,RequestType::TrainsOnRoute);
     futuredate = QDate::currentDate().addDays(1);
     searchdata.tripDate = futuredate.toString("MM.dd.yyyy");
-    networkManager->sendSearchRequest(searchdata,trainsOnRoute);
+    networkManager->sendSearchRequest(searchdata,RequestType::TrainsOnRoute);
 
 }
 
@@ -342,11 +341,11 @@ void SettingsPage::saveState()
 //It's response on the exploreRout() method.
 //when we get each responce from Ukrzaliznitsya, we parse existing trains, types of tickets
 //and create checkboxes by drawTrainsWidgets() function.
-void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, QByteArray id)
+void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, RequestType::Request id)
 {
     if (reply==nullptr) return;
 
-    if (id == trainsOnRoute)
+    if (id == RequestType::TrainsOnRoute)
     {
         Trains allTrainsOnRoute;
         UZApplication::instance()->parseSearchResults(reply,allTrainsOnRoute);
@@ -461,6 +460,9 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     infoLabel->setWordWrap(true);
     infoLabel->setAlignment(Qt::AlignJustify);
     statusLabel = new QLabel;
+    warningLabel = new QLabel;
+    warningLabel->setWordWrap(true);
+    warningLabel->setAlignment(Qt::AlignJustify);
     animatedSearchWidget =  new AnimatedSearchWidget(UZApplication::instance()->mainWindow->width(),this);
 
     showSettingsButton = new QPushButton("Змінити налаштування пошуку");
@@ -469,11 +471,11 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     pagelayout->addWidget(infoLabel);
     pagelayout->addWidget(statusLabel);
     pagelayout->addWidget(animatedSearchWidget);
+    pagelayout->addWidget(warningLabel,Qt::AlignBottom);
     pagelayout->addWidget(showSettingsButton);
     pagelayout->setAlignment(showSettingsButton,Qt::AlignBottom);
 
 
-    //connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::setSearchStatus);
     connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::updatePage);
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
 
@@ -481,20 +483,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
 
 
 }
-/*
-void ProcessingPage::setSearchStatus(UZApplication::SearchStatus status)
-{
-   // searchStatus = isFound;
-    if (UZApplication::SearchStatus::Found) {
-        statusLabel->setText("Знайдено");
-        animatedSearchWidget->setSearchStatus(status);
-        }//temp. will change to enum
-    else {
-        statusLabel->setText("Пошук");
-        animatedSearchWidget->setSearchStatus(status);
-    }
-}
-*/
+
 void ProcessingPage::showSettings()
 {
     mediator()->showSettingPage();
@@ -514,10 +503,12 @@ void ProcessingPage::updatePage()
     }
 
     infoLabel->setText(info);
-   // setSearchStatus(UZApplication::instance()->status());
+    warningLabel->setText("Не закривайте програму. Кожну хвилину перевіряється наявність квитків");
+
     if (UZApplication::instance()->status()==UZApplication::SearchStatus::Found) {
         statusLabel->setText("Знайдено");
         animatedSearchWidget->updateSearchStatus();
+        warningLabel->setText("");
     }else {
         statusLabel->setText("Пошук");
         animatedSearchWidget->updateSearchStatus();
