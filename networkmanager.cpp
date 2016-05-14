@@ -81,15 +81,12 @@ void NetworkManager::sendGetStationsRequest(QString prefix, RequestType::Request
 {
     QNetworkRequest request;
 
-    qDebug()<<"send.. " << requestTypes[sender];
-qDebug()<<"check2   "<< requestTypes[RequestType::GetStationsTo];
-
     request.setUrl(QUrl(stationsURL + prefix + "//"));
     request.setRawHeader("Host",host);
     request.setRawHeader("Connection",connectionType);
     request.setRawHeader("Origin",originURL);
     request.setRawHeader("Referer",bookingUZ);
-    request.setRawHeader("Sender",requestTypes[sender]); //get QByteArray equivalent to RequestType
+    request.setRawHeader("Sender",RequestType::getStringByRequestType(sender)); //get QByteArray equivalent to RequestType
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
     post(request,"");
     //return this->post(request,"");
@@ -109,7 +106,7 @@ void NetworkManager::sendSearchRequest(SearchPOSTData searchdata,RequestType::Re
     request.setRawHeader("GV-Ajax",gv_ajax);
     request.setRawHeader("GV-Referer",bookingUZ);
     request.setRawHeader("Referer",bookingUZ);
-    request.setRawHeader("Sender",requestTypes[sender]);
+    request.setRawHeader("Sender",RequestType::getStringByRequestType(sender));
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 
 
@@ -141,7 +138,6 @@ void NetworkManager::sendCoachesRequest(CoachesPOSTData postdata, RequestType::R
     QByteArray train;train.append(postdata.train);
     QByteArray coachType;coachType.append(postdata.coachType);
 
-    QByteArray a = requestTypes[RequestType::CoachesRequest];
 
     request.setUrl(coachesURL);
     request.setRawHeader("Host",host);
@@ -152,7 +148,7 @@ void NetworkManager::sendCoachesRequest(CoachesPOSTData postdata, RequestType::R
     request.setRawHeader("GV-Ajax",gv_ajax);
     request.setRawHeader("GV-Referer",bookingUZ);
     request.setRawHeader("Referer",bookingUZ);
-    request.setRawHeader("Sender",requestTypes[sender]);
+    request.setRawHeader("Sender",RequestType::getStringByRequestType(sender));
     request.setRawHeader("Train",train);
     request.setRawHeader("CoachType",coachType);
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
@@ -186,7 +182,7 @@ void NetworkManager::sendCoachRequest(CoachPOSTData postdata, RequestType::Reque
     request.setRawHeader("GV-Ajax",gv_ajax);
     request.setRawHeader("GV-Referer",bookingUZ);
     request.setRawHeader("Referer",bookingUZ);
-    request.setRawHeader("Sender",requestTypes[sender]);
+    request.setRawHeader("Sender",RequestType::getStringByRequestType(sender));
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 
     QString postBody = "station_id_from=" + postdata.stationFrom +
@@ -209,8 +205,8 @@ void NetworkManager::sendCoachRequest(CoachPOSTData postdata, RequestType::Reque
 void NetworkManager::replyHandling(QNetworkReply *reply)
 {
     QByteArray identifier = reply->request().rawHeader("Sender");
-    RequestType requestType = requestTypes.key(identifier);
-    qDebug()<<"id   " << identifier;
+    RequestType::Request requestType = RequestType::getRequestTypeByString(identifier);
+    //qDebug()<<"id   " << identifier;
     emit responseReady(reply,requestType);
 }
 

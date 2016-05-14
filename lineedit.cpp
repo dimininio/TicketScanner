@@ -1,6 +1,6 @@
 #include "lineedit.h"
 #include "uzapplication.h"
-//#include "networkmanager.h"
+#include "networkmanager.h"
 
 #include <QStringList>
 #include <QNetworkReply>
@@ -21,7 +21,7 @@ LineEdit::LineEdit(QWidget *parent):
 
     networkManager = UZApplication::instance()->networkManager();
     p_identifier = ++senderIdentifier;
-qDebug()<<p_identifier;
+
     connect(this,SIGNAL(textEdited(QString)),this,SLOT(checkContent()));
     connect(networkManager,&NetworkManager::responseReady,this,&LineEdit::updateContent);
 }
@@ -30,19 +30,16 @@ void LineEdit::checkContent()
 {
     if (text().length()>=2 && currentBegin!=text().mid(0,2).toLower()) {
         currentBegin = text().mid(0,2).toLower();
- qDebug()<<"line send.. " << requestTypes[identifier()];
         networkManager->sendGetStationsRequest(currentBegin,identifier());
         //qDebug()<<"id  "<<identifier();
     }
 }
 
-void LineEdit::updateContent(QNetworkReply *reply, RequestType id)
+void LineEdit::updateContent(QNetworkReply *reply, RequestType::Request id)
 {
     if (reply==nullptr) return;
 
     if(id!=identifier()) return;
-
-    qDebug()<<"list  "<<p_identifier;
 
     QByteArray data = reply->readAll();
     //qDebug()<<"cities :  "<< data;
@@ -82,15 +79,8 @@ QString LineEdit::getStationID() const
     return stations[this->text()];
 }
 
-RequestType LineEdit::identifier()
+RequestType::Request LineEdit::identifier()
 {
-    //return QString::number(p_identifier);
-    //return QByteArray::number(p_identifier);
-
-
-    qDebug()<<"check   "<< requestTypes[RequestType::GetStationsTo];
-
-    qDebug()<<"identifier()   "<< p_identifier;
     switch (p_identifier){
         case 1:
                 return RequestType::GetStationsFrom;

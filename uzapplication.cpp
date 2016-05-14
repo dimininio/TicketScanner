@@ -39,10 +39,7 @@ UZApplication::UZApplication(int &argc, char **argv):
     connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
     connect(p_networkManager,&NetworkManager::responseReady,this,&UZApplication::analizeResponse);
 
-    //fillRequestTypes(); //Fill QMap for enum QRequestType
-    RequestType requestType;
-    qDebug()<<RequestType::getRequestType(RequestType::SearchRequest);
-    qDebug()<<"fr "<<RequestType::getRequestType(RequestType::SearchRequest);
+    RequestType requestType; //initialization of requests' types
 
 }
 
@@ -76,9 +73,6 @@ UZApplication::~UZApplication()
 
 void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request id)
 {
-    //switch(id) {
-    //    case searchRequest: showSearchResults(reply);
-   // }
     if (reply==nullptr) return;
 
     switch(id) {
@@ -86,13 +80,14 @@ void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request i
 
                 if(parseSearchResults(reply,*p_trains))
                     mainWindow->showAvailableTrains();
+                break;
 
         case RequestType::CoachesRequest:
 
                 parseCoachesSearchResults(reply);
+                break;
 
-        case RequestType::ScanRequest:
-
+        case RequestType::ScanRequest:               
                 parseSearchResults(reply,*p_scanTrains);
                 if (checkScanningResults())
                 {
@@ -103,30 +98,10 @@ void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request i
                     timer->stop();
                     QSound::play(":/resources/arfa.wav");
                 }
+                break;
+
     }
 
-/*
-    if (id == searchRequest) {
-        if(parseSearchResults(reply,*p_trains))
-            mainWindow->showAvailableTrains();
-    }
-    if (id == coachesRequest){
-        parseCoachesSearchResults(reply);
-    }
-    if (id == scanRequest){
-        parseSearchResults(reply,*p_scanTrains);
-        if (checkScanningResults())
-        {
-            qDebug()<<"FOUND..";
-            setStatus(SearchStatus::Found);
-            //setActiveWindow(mainWindow);
-            mainWindow->activateWindow();
-            timer->stop();
-            QSound::play(":/resources/arfa.wav");
-        }
-    }
-
-    */
 }
 
 
@@ -327,7 +302,6 @@ UZApplication::SearchStatus UZApplication::status()
 {
     return searchStatus;
 }
-
 
 
 

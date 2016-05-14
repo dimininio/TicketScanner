@@ -43,7 +43,8 @@ struct CoachPOSTData{
 
 
 
-
+//This class wraps enum only
+//QMap and functions need for convertation from enum to string types and back.
 class RequestType{
 public:
     RequestType(){
@@ -60,33 +61,28 @@ public:
         GetStationsTo
     };
 
-    static Request getRequestType(QByteArray identifier){
+    static Request getRequestTypeByString(QByteArray identifier){
          return requestTypes.key(identifier);
+    }
+
+    static QByteArray getStringByRequestType(Request identifier) {
+        return requestTypes[identifier];
     }
 
 private:
     static QMap<RequestType::Request,QByteArray> requestTypes;
-    void fillRequestTypes();
+
+    void fillRequestTypes(){
+        requestTypes.insert(RequestType::SearchRequest,"searchRequest");
+        requestTypes.insert(RequestType::ScanRequest,"scanRequest");
+        requestTypes.insert(RequestType::CoachRequest,"coachRequest");
+        requestTypes.insert(RequestType::CoachesRequest,"coachesRequest");
+        requestTypes.insert(RequestType::TrainsOnRoute,"trainsOnRoute");
+        requestTypes.insert(RequestType::GetStationsFrom,QByteArray("fr"));
+        requestTypes.insert(RequestType::GetStationsTo,"to");
+    }
 };
 
-
-
-void RequestType::fillRequestTypes(){
-    //requestTypes.insert(RequestType::SearchRequest,QByteArray("searchRequest"));
-    requestTypes[RequestType::SearchRequest] = QByteArray("searchRequest");
-
-    requestTypes.insert(RequestType::ScanRequest,"scanRequest");
-    requestTypes.insert(RequestType::CoachRequest,"coachRequest");
-    requestTypes.insert(RequestType::CoachesRequest,"coachesRequest");
-    requestTypes.insert(RequestType::TrainsOnRoute,"trainsOnRoute");
-    requestTypes.insert(RequestType::GetStationsFrom,QByteArray("fr"));
-    requestTypes.insert(RequestType::GetStationsTo,"to");
-}
-/*
-RequestType::Request RequestType::getRequestType(QByteArray identifier)
-{
-    return requestTypes.key(identifier);
-}*/
 
 
 #endif // REQUESTDATA_H

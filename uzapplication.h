@@ -11,7 +11,7 @@ class NetworkManager;
 class QNetworkReply;
 class QTimer;
 class SearchParameters;
-//enum class RequestType;
+
 
 //typedef QMap<QString,Train> Trains;
 
@@ -74,47 +74,6 @@ private:
 
 
 
-/*
-enum class RequestType{
-    SearchRequest,   //search available tickets beetween stations
-    ScanRequest,     //periodic SearchRequest with checking
-    CoachRequest,    //get available places of the coach
-    CoachesRequest,  //get coaches of special type (with number of free places)
-    TrainsOnRoute,    //the same as SearchRequest, but doesn't update browser and current trains
-    GetStationsFrom,
-    GetStationsTo
-};
-
-static QMap<RequestType,QByteArray> requestTypes;
-*/
-
-
-
-
-/*
-class RequestTypeee
-{
-public:
-
-
-
-    RequestTypee(){
-        fillRequestTypes();
-    }
-
-
-    static QMap<RequestType::RequestTypel,QByteArray> requestTypes;
-
-    void fillRequestTypes(){
-        //requestTypes.insert(RequestType::SearchRequest,QByteArray("searchRequest"));
-        requestTypes[RequestType::SearchRequest] = QByteArray("searchRequest");
-
-        requestTypes.insert(RequestType::ScanRequest,"scanRequest");
-        requestTypes.insert(RequestType::CoachRequest,"coachRequest");
-        requestTypes.insert(RequestType::CoachesRequest,"coachesRequest");
-    }
-};
-*/
 
 #endif // UZAPPLICATION
 

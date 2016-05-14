@@ -10,15 +10,6 @@
 #include <QMap>
 #include "requestdata.h"
 
-//class QNetworkCookie;
-//class QWebSettings;
-//enum class RequestType;
-
-
-
-
-
-
 
 
 
@@ -34,18 +25,11 @@ signals:
     void networkManagerReady();
 
 public slots:
-/*
-    void sendGetStationsRequest(QString prefix,QByteArray sender);
-    void sendSearchRequest(SearchPOSTData searchdata,QByteArray sender);
-    void sendCoachesRequest(CoachesPOSTData postdata, QByteArray sender);
-    void sendCoachRequest(CoachPOSTData postdata, QByteArray sender);
-*/
 
     void sendGetStationsRequest(QString prefix,RequestType::Request sender);
     void sendSearchRequest(SearchPOSTData searchdata,RequestType::Request sender);
     void sendCoachesRequest(CoachesPOSTData postdata, RequestType::Request sender);
     void sendCoachRequest(CoachPOSTData postdata, RequestType::Request sender);
-
 
     void replyHandling(QNetworkReply* reply);
 
@@ -59,7 +43,6 @@ private:
     QList<QNetworkCookie> cookies;
     QWebView* hiddenView;
     QNetworkReply* networkReply;
-    //void getAttributes();
 
     void updateAttributes();
 

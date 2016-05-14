@@ -188,7 +188,7 @@ void BrowserPage::showAvailableTrains()
 
 
 void BrowserPage::showAvailableCoaches(Train *train)
-{qDebug()<<"show";
+{
     if (!train->checkComleteness()) return;
 
     QString data = "<html><body>";
@@ -282,7 +282,6 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     exploreRout();
 }
 
-const QByteArray trainsOnRoute = "trainsOnRoute";
 
 
 //Ukrazaliznitsya doesn't have public request to get "all possible trains" between stations.
@@ -342,7 +341,7 @@ void SettingsPage::saveState()
 //It's response on the exploreRout() method.
 //when we get each responce from Ukrzaliznitsya, we parse existing trains, types of tickets
 //and create checkboxes by drawTrainsWidgets() function.
-void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, RequestType id)
+void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, RequestType::Request id)
 {
     if (reply==nullptr) return;
 
@@ -477,7 +476,6 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     pagelayout->setAlignment(showSettingsButton,Qt::AlignBottom);
 
 
-    //connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::setSearchStatus);
     connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::updatePage);
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
 
@@ -485,20 +483,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
 
 
 }
-/*
-void ProcessingPage::setSearchStatus(UZApplication::SearchStatus status)
-{
-   // searchStatus = isFound;
-    if (UZApplication::SearchStatus::Found) {
-        statusLabel->setText("Знайдено");
-        animatedSearchWidget->setSearchStatus(status);
-        }//temp. will change to enum
-    else {
-        statusLabel->setText("Пошук");
-        animatedSearchWidget->setSearchStatus(status);
-    }
-}
-*/
+
 void ProcessingPage::showSettings()
 {
     mediator()->showSettingPage();
@@ -519,7 +504,7 @@ void ProcessingPage::updatePage()
 
     infoLabel->setText(info);
     warningLabel->setText("Не закривайте програму. Кожну хвилину перевіряється наявність квитків");
-   // setSearchStatus(UZApplication::instance()->status());
+
     if (UZApplication::instance()->status()==UZApplication::SearchStatus::Found) {
         statusLabel->setText("Знайдено");
         animatedSearchWidget->updateSearchStatus();

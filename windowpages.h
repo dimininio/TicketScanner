@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <QRadioButton>
+#include "requestdata.h"
 
 class QPushButton;
 class QDateEdit;
@@ -24,7 +25,6 @@ class QWebView;
 class WidgetsMediator;
 class AnimatedSearchWidget;
 class UZApplication;
-//enum class RequestType;
 
 
 class BasePage
@@ -110,7 +110,7 @@ private:
 
     BrowserPage* searchConfiguration;
 
-    void getTrainsOnRoute(QNetworkReply *reply, RequestType id);
+    void getTrainsOnRoute(QNetworkReply *reply, RequestType::Request id);
     void drawTrainsWidgets(QVector<QString> &trains, QVector<QString> &places);
     void onRadioButtonClick();
     bool checkConditions();
@@ -138,7 +138,7 @@ class ProcessingPage:public QWidget, public BasePage
 {
 public:
     ProcessingPage(WidgetsMediator* widgetsMediator, QWidget* parent=0);
-  //  void setSearchStatus(UZApplication::SearchStatus);
+
     void showSettings();
     void updatePage();
 
