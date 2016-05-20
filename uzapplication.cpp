@@ -2,6 +2,7 @@
 #include "uzmainwindow.h"
 #include "networkmanager.h"
 #include "searchparameters.h"
+#include "config.h"
 //#include "requestdata.h"
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -25,7 +26,7 @@ NetworkManager* UZApplication::p_networkManager = 0;
 UZApplication::UZApplication(int &argc, char **argv):
     QApplication(argc,argv),
     mainWindow(nullptr),searchParameters(nullptr),p_trains(nullptr),p_scanTrains(nullptr),
-    timer(nullptr),p_interval(200000) //10 min
+    timer(nullptr),p_interval(20000) //10 min
 {
     p_networkManager = new NetworkManager(this);
     p_trains = new Trains();
@@ -224,7 +225,7 @@ void UZApplication::startScanning(std::shared_ptr<SearchParameters>& parameters)
 
 void UZApplication::sendScanRequest()
 {
-    QString date = searchParameters->getTripDate().toString("MM.dd.yyyy");
+    QString date = searchParameters->getTripDate().toString(Config::RequestDateFormat);
     SearchPOSTData searchdata(searchParameters->stationFrom(),searchParameters->stationTo(),date);
     p_networkManager->sendSearchRequest(searchdata,RequestType::ScanRequest);
 }

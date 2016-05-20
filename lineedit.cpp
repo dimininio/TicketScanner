@@ -33,6 +33,9 @@ void LineEdit::checkContent()
         networkManager->sendGetStationsRequest(currentBegin,identifier());
         //qDebug()<<"id  "<<identifier();
     }
+
+    //QUrl decode cyrillic letters automatically
+    //networkManager->sendGetStationsRequest(QUrl::toPercentEncoding(currentBegin),identifier());
 }
 
 void LineEdit::updateContent(QNetworkReply *reply, RequestType::Request id)

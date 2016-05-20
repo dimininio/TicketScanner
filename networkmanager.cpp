@@ -10,8 +10,22 @@
 #include <QDebug>
 #include <QUrl>
 #include "uzapplication.h"
+//#include <QNetworkProxy>
+
+static const QUrl searchURL("http://booking.uz.gov.ua/purchase/search/");
+static const QUrl coachesURL("http://booking.uz.gov.ua/purchase/coaches/");
+static const QUrl coachURL("http://booking.uz.gov.ua/purchase/coach/");
+static const QString stationsURL = "http://booking.uz.gov.ua/purchase/station/";
+static const QByteArray host = "booking.uz.gov.ua";
+static const QByteArray bookingUZ = "http://booking.uz.gov.ua/";
+static const QByteArray originURL = "http://booking.uz.gov.ua";
+static const QByteArray connectionType = "keep-alive";
+static const QByteArray contentType = "application/x-www-form-urlencoded";
+static const QByteArray gv_ajax = "1";
+static const QByteArray acceptLanguage = "ua-UA,*";
 
 
+/* ENglish
 static const QUrl searchURL("http://booking.uz.gov.ua/en/purchase/search/");
 static const QString stationsURL = "http://booking.uz.gov.ua/en/purchase/station/";
 static const QUrl coachesURL("http://booking.uz.gov.ua/en/purchase/coaches/");
@@ -22,6 +36,21 @@ static const QByteArray originURL = "http://booking.uz.gov.ua";
 static const QByteArray connectionType = "keep-alive";
 static const QByteArray contentType = "application/x-www-form-urlencoded";
 static const QByteArray gv_ajax = "1";
+*/
+
+
+/* RUssian
+static const QUrl searchURL("http://booking.uz.gov.ua/ru/purchase/search/");
+static const QString stationsURL = "http://booking.uz.gov.ua/ru/purchase/station/";
+static const QUrl coachesURL("http://booking.uz.gov.ua/ru/purchase/coaches/");
+static const QUrl coachURL("http://booking.uz.gov.ua/ru/purchase/coach/");
+static const QByteArray host = "booking.uz.gov.ua";
+static const QByteArray bookingUZ = "http://booking.uz.gov.ua/ru/";
+static const QByteArray originURL = "http://booking.uz.gov.ua";
+static const QByteArray connectionType = "keep-alive";
+static const QByteArray contentType = "application/x-www-form-urlencoded";
+static const QByteArray gv_ajax = "1";
+*/
 
 
 
@@ -32,8 +61,20 @@ NetworkManager::NetworkManager(QObject *parent):
     QWebSettings *defsetting = QWebSettings::globalSettings();
     defsetting->setAttribute(QWebSettings::LocalStorageEnabled,true);
 
+
     hiddenView = new QWebView();
-    hiddenView->setUrl(QUrl(bookingUZ));
+    updateAttributes();
+/*
+ * Proxy settings for Fiddler, for example
+    QNetworkProxy * proxy = new QNetworkProxy() ;
+    proxy->setType(QNetworkProxy::HttpProxy);
+    proxy->setHostName("127.0.0.1");
+    proxy->setPort(8888);
+    QNetworkProxy::setApplicationProxy(*proxy);
+*/
+
+
+
 
     connect(hiddenView,SIGNAL(loadFinished(bool)),this,SLOT(getAttributes(bool)));
     connect(this,&NetworkManager::finished,this,&NetworkManager::replyHandling);
@@ -49,7 +90,19 @@ NetworkManager::~NetworkManager()
 
 void NetworkManager::updateAttributes()
 {
-    hiddenView->reload();
+    //hiddenView->reload();
+    QNetworkRequest request;
+    request.setUrl(QUrl(bookingUZ));
+    request.setRawHeader("Host",host);
+    request.setRawHeader("Connection",connectionType);
+    request.setRawHeader("Referer",bookingUZ);
+    request.setRawHeader("Accept-Language","ua-UA,*");
+    hiddenView->load(request);
+
+    // Some headers added to request in the "void QHttpNetworkConnectionPrivate::prepareRequest"
+    //Accept-Language depends from the localization (QLocale class)
+    //So we force this header for correct work, in other way "token" and "session-id" will be incorrect
+
 }
 
 void NetworkManager::getAttributes(bool ok)
@@ -81,7 +134,7 @@ void NetworkManager::sendGetStationsRequest(QString prefix, RequestType::Request
 {
     QNetworkRequest request;
 
-    request.setUrl(QUrl(stationsURL + prefix + "//"));
+    request.setUrl(QUrl(stationsURL + prefix + "/"));
     request.setRawHeader("Host",host);
     request.setRawHeader("Connection",connectionType);
     request.setRawHeader("Origin",originURL);
@@ -106,6 +159,7 @@ void NetworkManager::sendSearchRequest(SearchPOSTData searchdata,RequestType::Re
     request.setRawHeader("GV-Ajax",gv_ajax);
     request.setRawHeader("GV-Referer",bookingUZ);
     request.setRawHeader("Referer",bookingUZ);
+    request.setRawHeader("Accept-Language","ua-UA,*");
     request.setRawHeader("Sender",RequestType::getStringByRequestType(sender));
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 

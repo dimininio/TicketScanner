@@ -4,7 +4,7 @@
 #include "uzapplication.h"
 #include "networkmanager.h"
 #include "searchparameters.h"
-
+#include "config.h"
 #include "widgetsmediator.h"
 #include <memory>
 
@@ -91,7 +91,7 @@ void BrowserPage::showSettings()
 void BrowserPage::ticketsSearch()
 {
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
-    QString date = dateField->date().toString("MM.dd.yyyy");
+    QString date = dateField->date().toString(Config::RequestDateFormat);
     SearchPOSTData searchdata(editFrom->getStationID(),editTo->getStationID(),date);
     networkManager->sendSearchRequest(searchdata,RequestType::SearchRequest);
 }
@@ -291,10 +291,10 @@ void SettingsPage::exploreRout()
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
     QDate futuredate = QDate::currentDate();
     futuredate = futuredate.addDays(24);
-    SearchPOSTData searchdata(mediator()->getStationIDFrom(),mediator()->getStationIDTo(),futuredate.toString("MM.dd.yyyy"));
+    SearchPOSTData searchdata(mediator()->getStationIDFrom(),mediator()->getStationIDTo(),futuredate.toString(Config::RequestDateFormat));
     networkManager->sendSearchRequest(searchdata,RequestType::TrainsOnRoute);
     futuredate = QDate::currentDate().addDays(1);
-    searchdata.tripDate = futuredate.toString("MM.dd.yyyy");
+    searchdata.tripDate = futuredate.toString(Config::RequestDateFormat);
     networkManager->sendSearchRequest(searchdata,RequestType::TrainsOnRoute);
 
 }
@@ -499,7 +499,7 @@ void ProcessingPage::updatePage()
         info = info + "для поїздів: ";
         for(auto& num: mediator()->getChosenTrains())
             info = info + num +  " ";
-        info = info + "\nДата відправлення: " +mediator()->tripDate().toString("dd.MM.yyyy");
+        info = info + "\nДата відправлення: " +mediator()->tripDate().toString(Config::RequestDateFormat);
     }
 
     infoLabel->setText(info);
