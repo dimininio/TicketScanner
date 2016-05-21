@@ -141,12 +141,14 @@ public:
 
     void showSettings();
     void updatePage();
+    void openBrowser();
 
 private:
     QLabel* infoLabel;
     QLabel* statusLabel;
     QLabel* warningLabel;
     QPushButton* showSettingsButton;
+    QPushButton* openDefaultBrowserButton;
     AnimatedSearchWidget* animatedSearchWidget;
     bool searchStatus;
 };

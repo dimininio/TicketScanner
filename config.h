@@ -5,6 +5,7 @@
 class Config{
 public:
     static const QString RequestDateFormat;
+    static const QString BookingUZsite;
 };
 
 

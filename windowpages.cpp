@@ -15,6 +15,7 @@
 #include <QGroupBox>
 #include <QCheckBox>
 #include <QMessageBox>
+#include <QDesktopServices>
 #include <algorithm>
 
 #include <QLabel>
@@ -466,18 +467,22 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     animatedSearchWidget =  new AnimatedSearchWidget(UZApplication::instance()->mainWindow->width(),this);
 
     showSettingsButton = new QPushButton("Змінити налаштування пошуку");
+    openDefaultBrowserButton = new QPushButton("Відкрити браузер для замовлення квитків");
+    openDefaultBrowserButton->hide();
 
     QVBoxLayout* pagelayout = new QVBoxLayout(this);
     pagelayout->addWidget(infoLabel);
     pagelayout->addWidget(statusLabel);
     pagelayout->addWidget(animatedSearchWidget);
     pagelayout->addWidget(warningLabel,Qt::AlignBottom);
+    pagelayout->addWidget(openDefaultBrowserButton,Qt::AlignBottom);
     pagelayout->addWidget(showSettingsButton);
     pagelayout->setAlignment(showSettingsButton,Qt::AlignBottom);
 
 
     connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::updatePage);
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
+    connect(openDefaultBrowserButton,&QPushButton::clicked,this,&ProcessingPage::openBrowser);
 
     updatePage();
 
@@ -509,8 +514,24 @@ void ProcessingPage::updatePage()
         statusLabel->setText("Знайдено");
         animatedSearchWidget->updateSearchStatus();
         warningLabel->setText("");
+        openDefaultBrowserButton->show();
     }else {
         statusLabel->setText("Пошук");
         animatedSearchWidget->updateSearchStatus();
     }
+}
+
+void ProcessingPage::openBrowser()
+{
+    bool result = QDesktopServices::openUrl(QUrl(Config::BookingUZsite));
+
+    qDebug()<<"open"<<result;
+    if (!result) {
+        QMessageBox msgBox;
+        msgBox.setText("Не відкривається ваш браузер (Mozilla, Google Chrome, Safari..)."
+                       " Перевірте налаштування вашого браузера за замовчуванням"
+                       " або відкрийте сайт Укрзалізниці самостійно");
+        msgBox.exec();
+    }
+
 }
