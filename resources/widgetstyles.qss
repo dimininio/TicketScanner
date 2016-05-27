@@ -2,6 +2,17 @@ QWidget{
     font-size: 14px;
 }
 
+QWidget#bodyWindowWidget
+{
+        border-style: solid;
+        border-top-style: none;
+        border-width: 1px;
+        border-color: rgb(0, 100, 150);
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        background-color: #84CFCB;
+}
+
 QPushButton {
 
     background: #3B9C97;

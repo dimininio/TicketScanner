@@ -4,10 +4,6 @@
 #include <QMainWindow>
 class Train;
 
-namespace Ui {
-class UZMainWindow;
-}
-
 
 class WidgetsMediator;
 
@@ -32,7 +28,6 @@ public slots:
 
 
 private:
-    Ui::UZMainWindow *ui;
     WidgetsMediator* widgetsMediator;
 };
 

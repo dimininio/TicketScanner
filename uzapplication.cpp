@@ -49,7 +49,11 @@ void UZApplication::showWindow()
 {
     if (!mainWindow) {
         mainWindow = new UZMainWindow();
-        mainWindow->show();
+        windowWrapper = new WindowWrapper();
+        windowWrapper->setMainWidget(mainWindow);
+        windowWrapper->show();
+        //mainWindow->show();
+
      }
 }
 
@@ -96,6 +100,7 @@ void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request i
                     setStatus(SearchStatus::Found);
                     //setActiveWindow(mainWindow);
                     mainWindow->activateWindow();
+                    //alert(mainWindow,10);
                     timer->stop();
                     QSound::play(":/resources/arfa.wav");
                 }

@@ -13,7 +13,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        uzmainwindow.cpp \
     uzapplication.cpp \
     networkmanager.cpp \
     lineedit.cpp \
@@ -22,10 +21,14 @@ SOURCES += main.cpp\
     widgetsmediator.cpp \
     animatedsearchwidget.cpp \
     requestdata.cpp \
-    config.cpp
+    config.cpp \
+    windowtitlebar.cpp \
+    uzmainwindow.cpp \
+    mainwindowwrapper2.cpp \
+    windowwrapper.cpp
 
 
-HEADERS  += uzmainwindow.h \
+HEADERS  += \
     uzapplication.h \
     networkmanager.h \
     lineedit.h \
@@ -35,9 +38,14 @@ HEADERS  += uzmainwindow.h \
     searchparameters.h \
     widgetsmediator.h \
     animatedsearchwidget.h \
-    config.h
+    config.h \
+    windowtitlebar.h \
+    uzmainwindow.h \
+    mainwindowwrappe2r.h \
+    windowwrapper.h
 
-FORMS    += uzmainwindow.ui
+FORMS    += \
+    windowwrapper.ui
 
 RESOURCES += \
     res.qrc

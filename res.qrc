@@ -3,5 +3,6 @@
         <file>resources/styles.css</file>
         <file>resources/widgetstyles.qss</file>
         <file>resources/arfa.wav</file>
+        <file>resources/titleBar.qss</file>
     </qresource>
 </RCC>

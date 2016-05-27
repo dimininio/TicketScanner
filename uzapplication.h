@@ -6,6 +6,8 @@
 #include "requestdata.h"
 #include <memory>
 
+#include "windowwrapper.h"
+
 class UZMainWindow;
 class NetworkManager;
 class QNetworkReply;
@@ -60,6 +62,7 @@ private:
     int p_interval;
     QTimer* timer;
     SearchStatus searchStatus;
+    WindowWrapper* windowWrapper;
 
     std::shared_ptr<SearchParameters> searchParameters;
 

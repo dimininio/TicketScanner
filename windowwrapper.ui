@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WindowWrapper</class>
+ <widget class="QWidget" name="WindowWrapper">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>529</width>
+    <height>465</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">WindowTitleBar#titleBar
+{
+        border-style: solid;
+        border-width: 1px;
+        border-color: rgb(0, 100, 150);
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(132,207,203, 180), stop:0.45 rgba(132,207,203, 230), stop:0.55 rgba(35, 50, 60, 240), stop:1 rgba(132,207,203, 255));
+
+}
+
+
+QWidget#bodyWindowWidget
+{
+        border-style: solid;
+        border-top-style: none;
+        border-width: 1px;
+        border-color: rgb(0, 100, 150);
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        background-color: #84CFCB;
+}
+
+
+QLabel#titleText
+{
+        color: black;
+}
+
+QToolButton
+{
+        color: rgb(255, 255, 255);
+        border-style: solid;
+        border-width: 1px;
+        border-color: rgb(0, 128, 85);
+        background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(0, 255, 0, 255), stop:1 rgba(0, 60, 0, 255));
+}
+
+QToolButton:hover
+{
+        border-color: rgb(128, 85, 85);
+        background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(70, 0, 0, 255));
+}
+
+QToolButton:pressed
+{
+        border-color: rgb(255, 85, 85);
+        background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(70, 0, 0, 255), stop:1 rgba(255, 0, 0, 255));
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="WindowTitleBar" name="titleBar" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>29</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>29</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="bodyWindowWidget" native="true"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>WindowTitleBar</class>
+   <extends>QWidget</extends>
+   <header>windowtitlebar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

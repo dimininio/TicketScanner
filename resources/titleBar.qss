@@ -1,0 +1,38 @@
+WindowTitleBar
+{
+        border-style: solid;
+        border-width: 1px;
+        border-color: rgb(0, 100, 150);
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(85, 220, 255, 180), stop:0.45 rgba(0, 115, 175, 230), stop:0.55 rgba(35, 50, 60, 240), stop:1 rgba(0, 85, 130, 255));
+
+}
+
+
+
+QLabel#titleText
+{
+        color: black;
+}
+
+QToolButton
+{
+        color: rgb(255, 255, 255);
+        border-style: solid;
+        border-width: 1px;
+        border-color: rgb(0, 128, 85);
+        background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(0, 255, 0, 255), stop:1 rgba(0, 60, 0, 255));
+}
+
+QToolButton:hover
+{
+        border-color: rgb(128, 85, 85);
+        background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(70, 0, 0, 255));
+}
+
+QToolButton:pressed
+{
+        border-color: rgb(255, 85, 85);
+        background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(70, 0, 0, 255), stop:1 rgba(255, 0, 0, 255));
+}
