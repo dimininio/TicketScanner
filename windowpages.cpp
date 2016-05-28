@@ -39,6 +39,7 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     editFrom = new LineEdit(this);
     editTo = new LineEdit(this);
 
+
     dateField = new QDateEdit(QDate::currentDate(),this);
     dateField->setDisplayFormat("MMM d yyyy");
     dateField->setCalendarPopup(true);

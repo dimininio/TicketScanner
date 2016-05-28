@@ -8,7 +8,7 @@ QT    += core gui network webkitwidgets webkit multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = UZscanner
+TARGET = TicketScanner
 TEMPLATE = app
 
 
@@ -24,7 +24,6 @@ SOURCES += main.cpp\
     config.cpp \
     windowtitlebar.cpp \
     uzmainwindow.cpp \
-    mainwindowwrapper2.cpp \
     windowwrapper.cpp
 
 
@@ -41,11 +40,9 @@ HEADERS  += \
     config.h \
     windowtitlebar.h \
     uzmainwindow.h \
-    mainwindowwrappe2r.h \
     windowwrapper.h
 
-FORMS    += \
-    windowwrapper.ui
+FORMS    +=
 
 RESOURCES += \
     res.qrc

@@ -1,17 +1,19 @@
 #ifndef WINDOWWRAPPER_H
 #define WINDOWWRAPPER_H
 
-#include <QWidget>
-#include <QHBoxLayout>
+/*
+ * The borderless window which contains(wraps) the main window of applications.
+ * This allow to create your own type of window,title bar, toolbuttons (close, minimize)
+*/
 
-namespace Ui {
-class WindowWrapper;
-}
+#include <QWidget>
+#include "windowtitlebar.h"
+
+
 
 class WindowWrapper : public QWidget
 {
     Q_OBJECT
-
 public:
     explicit WindowWrapper(QWidget *parent = 0);
     ~WindowWrapper();
@@ -19,7 +21,10 @@ public:
     void setMainWidget(QWidget* w);
 
 private:
-    Ui::WindowWrapper *ui;
+
+    QVBoxLayout *verticalLayout;
+    WindowTitleBar *titleBar;
+    QWidget *bodyWindowWidget;
     QHBoxLayout innerLayout;
 };
 

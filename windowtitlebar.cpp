@@ -19,16 +19,16 @@ WindowTitleBar::WindowTitleBar(QWidget *parent): QWidget(parent)
 
     horizontalLayout = new QHBoxLayout(this);
     horizontalLayout->setSpacing(6);
-    horizontalLayout->setContentsMargins(3, 3, 11, 11);
+    horizontalLayout->setContentsMargins(5, 5, 5, 5);
 
     titleText = new QLabel("TicketScanner",this);
-    titleText->setObjectName(QStringLiteral("titleText"));
+
+    titleText->setObjectName(QStringLiteral("titleText"));    
     QFont font;
     font.setBold(true);
     font.setWeight(75);
     titleText->setFont(font);
     titleText->setAlignment(Qt::AlignCenter);
-
     horizontalLayout->addWidget(titleText);
 
     minimizeButton = new QToolButton(this);
@@ -47,6 +47,9 @@ WindowTitleBar::WindowTitleBar(QWidget *parent): QWidget(parent)
 
     horizontalLayout->addWidget(closeButton);
     mousePressed = false;
+
+    setMaximumHeight(29);// fixed height of titlebar widget
+    setMinimumHeight(29);
 
     connect(closeButton,SIGNAL(clicked(bool)),this,SIGNAL(closeApp()));
     connect(minimizeButton,SIGNAL(clicked(bool)),this,SIGNAL(minimize()));

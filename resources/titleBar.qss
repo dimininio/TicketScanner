@@ -3,9 +3,9 @@ WindowTitleBar
         border-style: solid;
         border-width: 1px;
         border-color: rgb(0, 100, 150);
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-        background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(85, 220, 255, 180), stop:0.45 rgba(0, 115, 175, 230), stop:0.55 rgba(35, 50, 60, 240), stop:1 rgba(0, 85, 130, 255));
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+        background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(152,227,223, 220), stop:0.40 rgba(43,135,131, 230), stop:0.60 rgba(43,135,131, 240), stop:1 rgba(132,207,203, 255));
 
 }
 

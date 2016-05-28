@@ -6,6 +6,13 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QToolButton>
 
+/*
+ * The borderless window lose titlebar and possibility of moving
+ * So, this class represents widget for moving the application's window
+
+*/
+
+
 class WindowTitleBar: public QWidget
 {
     Q_OBJECT

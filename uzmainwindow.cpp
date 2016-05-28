@@ -12,11 +12,7 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 
     setCentralWidget(widgetsMediator->getStartWidgets());
 
-   // Qt::WindowFlags flags = 0;
-   // flags = Qt::Window | Qt::WindowCloseButtonHint | Qt::FramelessWindowHint ;//| Qt::WindowMinimizeButtonHint;
-  //  setWindowFlags(flags);
-
-    qDebug()<<this->windowFlags();
+    //qDebug()<<this->windowFlags();
 
 }
 
