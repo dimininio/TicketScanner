@@ -3,6 +3,7 @@
 #include "config.h"
 
 #include <QtWidgets/QVBoxLayout>
+#include <QGraphicsDropShadowEffect>
 
 
 
@@ -26,13 +27,26 @@ WindowWrapper::WindowWrapper(QWidget *parent) :
     verticalLayout->addWidget(titleBar);
     verticalLayout->addWidget(bodyWindowWidget);
 
+    QGraphicsDropShadowEffect *titleShadow = new QGraphicsDropShadowEffect(this);
+    titleShadow->setBlurRadius(9.0);
+    titleShadow->setColor(QColor(70, 140, 137, 130));
+    titleShadow->setOffset(4.0);
+    titleBar->setGraphicsEffect(titleShadow);
+
+    QGraphicsDropShadowEffect *bodyWidgetShadow = new QGraphicsDropShadowEffect(this);
+    bodyWidgetShadow->setBlurRadius(9.0);
+    bodyWidgetShadow->setColor(QColor(0, 0, 0, 160));
+    bodyWidgetShadow->setOffset(4.0);
+    bodyWindowWidget->setGraphicsEffect(bodyWidgetShadow);
+
     connect(titleBar,&WindowTitleBar::closeApp,UZApplication::instance(),&UZApplication::quit);
     connect(titleBar,&WindowTitleBar::minimize,this,&WindowWrapper::showMinimized);
 }
 
 WindowWrapper::~WindowWrapper()
 {
-
+    delete bodyWindowWidget;
+    delete titleBar;
 }
 
 

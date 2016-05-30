@@ -42,8 +42,8 @@ WindowTitleBar::WindowTitleBar(QWidget *parent): QWidget(parent)
     closeButton->setFont(font);
 
 
-    minimizeButton->setText("_");
-    closeButton->setText("X");
+    //minimizeButton->setText("_");
+    //closeButton->setText("X");
 
     horizontalLayout->addWidget(closeButton);
     mousePressed = false;

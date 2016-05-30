@@ -480,6 +480,8 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     pagelayout->addWidget(showSettingsButton);
     pagelayout->setAlignment(showSettingsButton,Qt::AlignBottom);
 
+    pagelayout->setSpacing(10);
+
 
     connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::updatePage);
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);

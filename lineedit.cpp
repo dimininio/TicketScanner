@@ -59,10 +59,11 @@ void LineEdit::updateContent(QNetworkReply *reply, RequestType::Request id)
          for(auto it2 = jsonStations.begin();it2 != jsonStations.end();++it2)
          {
              station = it2->toObject();
-             stations.insert(station["title"].toString(), QString::number(station["station_id"].toInt()));
+             stations.insert(station["title"].toString(), station["station_id"].toString());
+             //stations.insert(station["title"].toString(), QString::number(station["station_id"].toInt()));
              stationsList<<station["title"].toString();
 
-             //qDebug()<<"-- :  "<< station["title"].toString()<<" "<<QString::number(station["station_id"].toInt());
+            // qDebug()<<"-- :  "<< station["title"].toString()<<" "<<station["station_id"].toString();
          }
 
     }

@@ -1,7 +1,7 @@
 WindowTitleBar
 {
         border-style: solid;
-        border-width: 1px;
+        border-width: 0px;
         border-color: rgb(0, 100, 150);
         border-top-left-radius: 0px;
         border-top-right-radius: 0px;
@@ -16,23 +16,35 @@ QLabel#titleText
         color: black;
 }
 
-QToolButton
+QToolButton#closeButton
 {
-        color: rgb(255, 255, 255);
-        border-style: solid;
-        border-width: 1px;
-        border-color: rgb(0, 128, 85);
-        background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(0, 255, 0, 255), stop:1 rgba(0, 60, 0, 255));
+        background-color: transparent;
+        border-image: url(:resources/close.png);
 }
 
-QToolButton:hover
+QToolButton#minimizeButton
 {
-        border-color: rgb(128, 85, 85);
-        background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(70, 0, 0, 255));
+        background-color: transparent;
+        border-image: url(:resources/minimize.png);
+
 }
 
-QToolButton:pressed
+QToolButton#closeButton:hover
 {
-        border-color: rgb(255, 85, 85);
-        background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(70, 0, 0, 255), stop:1 rgba(255, 0, 0, 255));
+        background-color: #D43A35;
+}
+
+QToolButton#minimizeButton:hover
+{
+        background-color: #387875;
+}
+
+QToolButton#closeButton:pressed
+{
+        background-color: #BC5956;
+}
+
+QToolButton#minimizeButton:pressed
+{
+        background-color: #1E6360;
 }

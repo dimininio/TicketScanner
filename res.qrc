@@ -4,5 +4,8 @@
         <file>resources/widgetstyles.qss</file>
         <file>resources/arfa.wav</file>
         <file>resources/titleBar.qss</file>
+        <file>resources/close.png</file>
+        <file>resources/minimize.png</file>
+        <file>resources/splash.jpg</file>
     </qresource>
 </RCC>

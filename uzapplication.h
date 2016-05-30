@@ -9,6 +9,7 @@
 #include "windowwrapper.h"
 
 class UZMainWindow;
+class QSplashScreen;
 class NetworkManager;
 class QNetworkReply;
 class QTimer;
@@ -63,6 +64,7 @@ private:
     QTimer* timer;
     SearchStatus searchStatus;
     WindowWrapper* windowWrapper;
+    QSplashScreen* splashScreen;
 
     std::shared_ptr<SearchParameters> searchParameters;
 

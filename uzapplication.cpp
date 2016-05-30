@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <QFile>
 #include <QSound>
+#include <QSplashScreen>
 
 static const QByteArray searchRequest = "searchRequest";
 static const QByteArray scanRequest = "scanRequest";
@@ -26,8 +27,11 @@ NetworkManager* UZApplication::p_networkManager = 0;
 UZApplication::UZApplication(int &argc, char **argv):
     QApplication(argc,argv),
     mainWindow(nullptr),searchParameters(nullptr),p_trains(nullptr),p_scanTrains(nullptr),
-    timer(nullptr),p_interval(20000) //10 min
+    timer(nullptr),p_interval(150000) //10 min
 {
+    splashScreen = new QSplashScreen(QPixmap(":/resources/splash.jpg"));
+    splashScreen->show(); //need tests: destroing while errors
+
     p_networkManager = new NetworkManager(this);
     p_trains = new Trains();
 
@@ -52,6 +56,7 @@ void UZApplication::showWindow()
         windowWrapper = new WindowWrapper();
         windowWrapper->setMainWidget(mainWindow);
         windowWrapper->show();
+        splashScreen->finish(windowWrapper);
         //mainWindow->show();
 
      }
@@ -100,7 +105,7 @@ void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request i
                     setStatus(SearchStatus::Found);
                     //setActiveWindow(mainWindow);
                     mainWindow->activateWindow();
-                    //alert(mainWindow,10);
+                    //alert(windowWrapper,10);
                     timer->stop();
                     QSound::play(":/resources/arfa.wav");
                 }
