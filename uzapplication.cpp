@@ -15,11 +15,6 @@
 #include <QSound>
 #include <QSplashScreen>
 
-static const QByteArray searchRequest = "searchRequest";
-static const QByteArray scanRequest = "scanRequest";
-static const QByteArray coachRequest = "coachRequest";
-static const QByteArray coachesRequest = "coachesRequest";
-
 
 NetworkManager* UZApplication::p_networkManager = 0;
 
@@ -104,8 +99,8 @@ void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request i
                     qDebug()<<"FOUND..";
                     setStatus(SearchStatus::Found);
                     //setActiveWindow(mainWindow);
-                    mainWindow->activateWindow();
-                    //alert(windowWrapper,10);
+                    //mainWindow->activateWindow();
+                    alert(mainWindow,0); //causes flash of icon on taskbar (if window is not active)
                     timer->stop();
                     QSound::play(":/resources/arfa.wav");
                 }

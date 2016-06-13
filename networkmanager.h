@@ -23,6 +23,7 @@ public:
 signals:
     void responseReady(QNetworkReply* reply,RequestType::Request identifier);
     void networkManagerReady();
+    void connectionDoesNotWork();
 
 public slots:
 
@@ -32,8 +33,8 @@ public slots:
     void sendCoachRequest(CoachPOSTData postdata, RequestType::Request sender);
 
     void replyHandling(QNetworkReply* reply);
-
-    void errorSlot(QNetworkReply::NetworkError err);
+    void connectionErrorSlot();
+    void errorSlot(QNetworkReply::NetworkError err);    
 private slots:
     void getAttributes(bool ok);
 

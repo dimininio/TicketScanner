@@ -12,6 +12,8 @@ UZMainWindow::UZMainWindow(QWidget *parent) :
 
     setCentralWidget(widgetsMediator->getStartWidgets());
 
+   // connect(p_networkManager,&NetworkManager::connectionDoesNotWork,this,&UZMainWindow::connectionErrorSlot);
+
     //qDebug()<<this->windowFlags();
 
 }

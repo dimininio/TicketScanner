@@ -10,7 +10,7 @@
 WindowWrapper::WindowWrapper(QWidget *parent) :
     QWidget(parent)
 {
-    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setMaximumWidth(Config::ApplicationWidth);
 

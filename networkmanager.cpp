@@ -78,6 +78,8 @@ NetworkManager::NetworkManager(QObject *parent):
 
     connect(hiddenView,SIGNAL(loadFinished(bool)),this,SLOT(getAttributes(bool)));
     connect(this,&NetworkManager::finished,this,&NetworkManager::replyHandling);
+    connect(this,&NetworkManager::connectionDoesNotWork,this,&NetworkManager::connectionErrorSlot);
+
     //connect(networkReply,SIGNAL(error(QNetworkReply::NetworkError)),this,SLOT(error(QNetworkReply::NetworkError)));
 }
 
@@ -107,7 +109,7 @@ void NetworkManager::updateAttributes()
 
 void NetworkManager::getAttributes(bool ok)
 {
-    if (!ok)  qDebug()<<"fatality!!";
+    if (!ok)  emit this->connectionDoesNotWork();
 
     QWebFrame *frame = hiddenView->page()->mainFrame();
     frame->setParent(this);
@@ -278,6 +280,16 @@ void NetworkManager::errorSlot(QNetworkReply::NetworkError err)
 
 
     //int ret = QMessageBox::critical(UZApplication::instance()->mainWindow, tr("UZ scanner"),networkReply->errorString(),QMessageBox::Ok);
+}
+
+
+//temporary
+void NetworkManager::connectionErrorSlot()
+{
+    QMessageBox msgBox;
+    msgBox.setText("Відсутній зв'язок з інтернетом. Перевірте мережу");
+    msgBox.exec();
+
 }
 
 

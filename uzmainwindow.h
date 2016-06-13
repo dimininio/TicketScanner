@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 class Train;
+//class NetworkManager;
 
 
 class WidgetsMediator;
@@ -25,10 +26,12 @@ public:
 
 public slots:
     //void error(QNetworkReply::NetworkError err);
+    //void connectionErrorSlot();
 
 
 private:
     WidgetsMediator* widgetsMediator;
+    //NetworkManager* p_networkManager;
 };
 
 #endif // UZMAINWINDOW_H

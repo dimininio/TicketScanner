@@ -27,9 +27,6 @@
 
 //#include <QUrl>
 
-const QByteArray searchRequest = "searchRequest";
-const QByteArray coachRequest = "coachRequest";
-const QByteArray coachesRequest = "coachesRequest";
 const QString referenceTrains = "refTrains";
 
 
