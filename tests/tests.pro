@@ -15,5 +15,14 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 
-SOURCES += tst_teststest.cpp
+SOURCES += \
+    test_main.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
+
+
+INCLUDEPATH += $$PWD/../TicketScanner
+
+
+HEADERS +=
+
+CONFIG+=c++11
