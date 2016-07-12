@@ -15,6 +15,8 @@
 #include <QSound>
 #include <QSplashScreen>
 
+#include "parser.h"
+
 
 NetworkManager* UZApplication::p_networkManager = 0;
 
@@ -127,6 +129,7 @@ bool UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContai
     QByteArray data = reply->readAll();
 
     //qDebug()<<"search result: "<<data;
+  /*
     trainsContainer.clear();
     QDateTime datetime;
 
@@ -172,6 +175,10 @@ bool UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContai
     }
 
     return true;
+    */
+
+    return Parser::parseSearchResults(data,trainsContainer);
+
     //reply->deleteLater();
     //delete searchReply;
 }

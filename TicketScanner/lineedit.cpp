@@ -10,6 +10,9 @@
 #include <QJsonArray>
 #include <QStringListModel>
 
+#include <QFile>
+#include <QTextStream>
+
 int LineEdit::senderIdentifier = 0;
 
 LineEdit::LineEdit(QWidget *parent):
@@ -45,6 +48,11 @@ void LineEdit::updateContent(QNetworkReply *reply, RequestType::Request id)
     if(id!=identifier()) return;
 
     QByteArray data = reply->readAll();
+    QFile file("lineedit.txt");
+    file.close();
+    file.open( QIODevice::WriteOnly);
+    file.write(data);
+    file.close();
     //qDebug()<<"cities :  "<< data;
 
     stations.clear();

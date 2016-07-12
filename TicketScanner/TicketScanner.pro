@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     config.cpp \
     windowtitlebar.cpp \
     uzmainwindow.cpp \
-    windowwrapper.cpp
+    windowwrapper.cpp \
+    parser.cpp
 
 
 HEADERS  += \
@@ -40,7 +41,8 @@ HEADERS  += \
     config.h \
     windowtitlebar.h \
     uzmainwindow.h \
-    windowwrapper.h
+    windowwrapper.h \
+    parser.h
 
 FORMS    +=
 
