@@ -192,6 +192,19 @@ bool UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
     Train* train = setTrain(trainNumber);
     //qDebug()<<"coaches data: "<<data;
 
+    Parser::parseCoachesSearchResults(data,*train,coachType); {
+        mainWindow->showAvailableCoaches(train);
+        return true;
+    }
+
+/*
+    QFile file("coaches.txt");
+    file.close();
+    file.open( QIODevice::WriteOnly);
+    file.write(data);
+    file.close();
+
+
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
     if (responce.isObject()) {
@@ -207,12 +220,15 @@ bool UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
              Coach coach(number);
              coach.coachTypeID = QString::number(jsonCoach["coach_type_id"].toInt());
              coach.placesNumber = jsonCoach["places_cnt"].toInt();
+             //coach.coachClass = jsonCoach["coach_class"].toInt();
              coach.coachClass = coachType;
-             train->coaches.insert(number,coach);            
+             qDebug()<<coachType;
+             train->coaches.insert(number,coach);
 
           }
+        // return true;
     }
-    mainWindow->showAvailableCoaches(train);
+*/
     return true;
 }
 

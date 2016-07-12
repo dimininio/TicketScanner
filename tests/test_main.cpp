@@ -1,7 +1,9 @@
 #include <QString>
 #include <QtTest>
+#include <QFile>
 
 #include "train.h"
+#include "parser.h"
 
 class TestsTicketScanner : public QObject
 {
@@ -14,6 +16,7 @@ private Q_SLOTS:
     void testCase1_data();
     void testCase1();
     void train();
+    void parseSearchRequest();
 
 
 private:
@@ -70,6 +73,12 @@ void TestsTicketScanner::train()
     QVERIFY2(train.checkComleteness()==true,"train is complete");
 
 
+}
+
+void TestsTicketScanner::parseSearchRequest()
+{
+    QFile file1("test_SearchReply.json");
+    QVERIFY2(file1.open(QIODevice::ReadOnly)==true,"file cannot open");
 }
 
 

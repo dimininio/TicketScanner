@@ -3,11 +3,25 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QFile>
+#include <QDebug>
+
+
+
+void CreateJsonFileForTest(QByteArray &data,QString filename)
+{
+    QFile file("../tests/" + filename); //save file to the tests project
+    file.close();
+    file.open( QIODevice::WriteOnly);
+    file.write(data);
+    file.close();
+}
 
 
 bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer)
 {
     QDateTime datetime;
+    CreateJsonFileForTest(data,"test_SearchReply.json");
 
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
@@ -53,12 +67,56 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer)
     return true;
 }
 
-bool Parser::parseCoachesSearchResults(QByteArray &data, Train &trainsContainer)
+bool Parser::parseCoachesSearchResults(QByteArray &data, Train &train,QString coachType)
 {
-    return true;
+
+    CreateJsonFileForTest(data,"test_SearchCoachesReply.json");
+
+    QJsonDocument responce;
+    responce = QJsonDocument::fromJson(data);
+    if (responce.isObject()) {
+        QJsonObject jsonobject = responce.object();
+
+         QJsonObject jsonValue = jsonobject["value"].toObject();
+         QJsonArray jsonCoaches = jsonValue["coaches"].toArray();
+         QJsonObject jsonCoach;
+         for(auto it = jsonCoaches.begin();it != jsonCoaches.end();++it)
+         {
+             jsonCoach = it->toObject();
+             int number = jsonCoach["num"].toInt();
+             Coach coach(number);
+             coach.coachTypeID = QString::number(jsonCoach["coach_type_id"].toInt());
+             coach.placesNumber = jsonCoach["places_cnt"].toInt();
+             //coach.coachClass = jsonCoach["coach_class"].toInt();
+             coach.coachClass = coachType;
+             qDebug()<<coachType;
+             train.coaches.insert(number,coach);
+
+          }
+         return true;
+    }
+    return false;
 }
 
-bool Parser::parseStations(QByteArray &data, QStringList &stations)
+bool Parser::parseStations(QByteArray &data, QMap<QString,QString> &stations)
 {
-    return true;
+
+    CreateJsonFileForTest(data,"test_StationReply.json");
+
+    QJsonDocument responce;
+    responce = QJsonDocument::fromJson(data);
+    if (responce.isObject()) {
+        QJsonObject jsonobject = responce.object();
+         QJsonArray jsonStations = jsonobject["value"].toArray();
+         QJsonObject station;
+         for(auto it2 = jsonStations.begin();it2 != jsonStations.end();++it2)
+         {
+             station = it2->toObject();
+             stations.insert(station["title"].toString(), station["station_id"].toString());
+             //stations.insert(station["title"].toString(), QString::number(station["station_id"].toInt()));
+            // qDebug()<<"-- :  "<< station["title"].toString()<<" "<<station["station_id"].toString();
+         }
+        return true;
+    }
+    return false;
 }

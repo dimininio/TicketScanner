@@ -12,6 +12,7 @@
 
 #include <QFile>
 #include <QTextStream>
+#include "parser.h"
 
 int LineEdit::senderIdentifier = 0;
 
@@ -48,16 +49,12 @@ void LineEdit::updateContent(QNetworkReply *reply, RequestType::Request id)
     if(id!=identifier()) return;
 
     QByteArray data = reply->readAll();
-    QFile file("lineedit.txt");
-    file.close();
-    file.open( QIODevice::WriteOnly);
-    file.write(data);
-    file.close();
     //qDebug()<<"cities :  "<< data;
 
     stations.clear();
     QStringList stationsList;
     stationsList.clear();
+    /*
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
     if (responce.isObject()) {
@@ -75,6 +72,10 @@ void LineEdit::updateContent(QNetworkReply *reply, RequestType::Request id)
          }
 
     }
+    */
+    auto result = Parser::parseStations(data,stations);
+    for (auto p = stations.begin();p!=stations.end();++p)
+        stationsList<<p.key();
 
     delete currentCompleter;
     currentCompleter = new QCompleter(this);
