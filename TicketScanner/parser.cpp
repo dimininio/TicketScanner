@@ -6,7 +6,8 @@
 #include <QFile>
 #include <QDebug>
 
-
+#define _PREPARATION_FOR_TESTS_
+//#undef _PREPARATION_FOR_TESTS_
 
 void CreateJsonFileForTest(QByteArray &data,QString filename)
 {
@@ -21,7 +22,9 @@ void CreateJsonFileForTest(QByteArray &data,QString filename)
 bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer)
 {
     QDateTime datetime;
+#ifdef    _PREPARATION_FOR_TESTS_
     CreateJsonFileForTest(data,"test_SearchReply.json");
+#endif
 
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
@@ -70,15 +73,19 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer)
 bool Parser::parseCoachesSearchResults(QByteArray &data, Train &train,QString coachType)
 {
 
+#ifdef    _PREPARATION_FOR_TESTS_
     CreateJsonFileForTest(data,"test_SearchCoachesReply.json");
+#endif
+
 
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
     if (responce.isObject()) {
         QJsonObject jsonobject = responce.object();
 
-         QJsonObject jsonValue = jsonobject["value"].toObject();
-         QJsonArray jsonCoaches = jsonValue["coaches"].toArray();
+         //QJsonObject jsonValue = jsonobject["value"].toObject();
+         //QJsonArray jsonCoaches = jsonValue["coaches"].toArray();
+         QJsonArray jsonCoaches = jsonobject["coaches"].toArray();
          QJsonObject jsonCoach;
          for(auto it = jsonCoaches.begin();it != jsonCoaches.end();++it)
          {
@@ -87,9 +94,8 @@ bool Parser::parseCoachesSearchResults(QByteArray &data, Train &train,QString co
              Coach coach(number);
              coach.coachTypeID = QString::number(jsonCoach["coach_type_id"].toInt());
              coach.placesNumber = jsonCoach["places_cnt"].toInt();
-             //coach.coachClass = jsonCoach["coach_class"].toInt();
              coach.coachClass = coachType;
-             qDebug()<<coachType;
+             //qDebug()<<coachType;
              train.coaches.insert(number,coach);
 
           }
@@ -101,7 +107,9 @@ bool Parser::parseCoachesSearchResults(QByteArray &data, Train &train,QString co
 bool Parser::parseStations(QByteArray &data, QMap<QString,QString> &stations)
 {
 
+#ifdef    _PREPARATION_FOR_TESTS_
     CreateJsonFileForTest(data,"test_StationReply.json");
+#endif
 
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
