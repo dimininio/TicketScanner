@@ -23,6 +23,12 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 INCLUDEPATH += $$PWD/../TicketScanner
 
 
-HEADERS +=
+HEADERS += $$PWD/../TicketScanner/parser.h
+SOURCES += $$PWD/../TicketScanner/parser.cpp
 
 CONFIG+=c++11
+
+DISTFILES +=
+
+RESOURCES += \
+    resources.qrc

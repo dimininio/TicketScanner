@@ -16,8 +16,6 @@ class QTimer;
 class SearchParameters;
 
 
-//typedef QMap<QString,Train> Trains;
-
 class UZApplication: public QApplication
 {
     Q_OBJECT

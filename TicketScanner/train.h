@@ -47,9 +47,10 @@ public:
 
     bool checkComleteness()
     {
-        for(auto type = freePlaces.begin();type!= freePlaces.end();++type)
+       for(auto type = freePlaces.begin();type!= freePlaces.end();++type)
        {
-         auto p = std::find_if(coaches.begin(),coaches.end(),[&type](Coach& coach){return coach.coachClass==type->placeClass;});
+         auto p = std::find_if(coaches.begin(),coaches.end(),[&type](Coach& coach){
+                                                            return coach.coachClass==type->placeClass;});
          if (p==coaches.end()) return false;
         }
         return true;

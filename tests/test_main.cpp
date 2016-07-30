@@ -2,8 +2,10 @@
 #include <QtTest>
 #include <QFile>
 
-#include "train.h"
-#include "parser.h"
+#include "../TicketScanner/train.h"
+#include "../TicketScanner/parser.h"
+
+
 
 class TestsTicketScanner : public QObject
 {
@@ -16,8 +18,9 @@ private Q_SLOTS:
     void testCase1_data();
     void testCase1();
     void train();
-    void parseSearchRequest();
-
+    void parseSearchResponse();
+    void parseStationsResponse();
+    void parseCoachesResponse();
 
 private:
 
@@ -75,10 +78,69 @@ void TestsTicketScanner::train()
 
 }
 
-void TestsTicketScanner::parseSearchRequest()
+void TestsTicketScanner::parseSearchResponse()
 {
-    QFile file1("test_SearchReply.json");
-    QVERIFY2(file1.open(QIODevice::ReadOnly)==true,"file cannot open");
+    //test_SearchReply.json is result of next request:
+    //Kyiv - Lviv,  date departure 04.08.2016
+    //Київ - Львів
+
+    QFile file1(":/test_SearchReply.json");
+    QVERIFY2(file1.open(QFile::ReadOnly)==true,"file opened");
+    QByteArray data = file1.readAll();
+
+
+    Trains trains;
+    Parser parser;
+
+    auto result = parser.parseSearchResults(data,trains);
+
+
+    QVERIFY2(trains.size()==6,"number of available trains is 6");
+
+    Train train = trains["141К"]; //K - is cyrillic letter, not latin!!
+
+    QVERIFY2(train.number=="141К","train's number check");
+    QVERIFY2(train.travelTime=="12:56","train's time check");
+
+    //qDebug()<<"# "<<train.number<<"  "<<train.travelTime;
+
+
+}
+
+void TestsTicketScanner::parseStationsResponse()
+{
+    //test_StationReply.json is result of next request: "Ль" (in the edit field)
+
+    QFile file1(":/test_StationReply.json");
+    QVERIFY2(file1.open(QFile::ReadOnly)==true,"file opened");
+    QByteArray data = file1.readAll();
+    QMap<QString,QString> stations;
+
+    Parser::parseStations(data,stations);
+    QVERIFY2(stations["Львів"]=="2218000","city's index");
+}
+
+
+
+void TestsTicketScanner::parseCoachesResponse()
+{
+    //test_SearchCoachesReply.json is result of next request:
+    //Click on the "141K" train (in the search result window)
+
+
+    QFile file1(":/test_SearchCoachesReply.json");
+    QVERIFY2(file1.open(QFile::ReadOnly)==true,"file opened");
+    QByteArray data = file1.readAll();
+
+    Train train;
+    QString coachType = "К";
+    Parser::parseCoachesSearchResults(data,train,coachType);
+
+    //Coach coach  = train.coaches[15];
+
+    QVERIFY2(train.coaches.size()==5,"number of free coaches in the train");
+    QVERIFY2(train.coaches[15].number==15,"check parsed coach .. 1");
+    QVERIFY2(train.coaches[15].placesNumber==1,"check parsed coach .. 2");
 }
 
 

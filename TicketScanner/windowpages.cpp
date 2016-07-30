@@ -188,7 +188,8 @@ void BrowserPage::showAvailableTrains()
 
 void BrowserPage::showAvailableCoaches(Train *train)
 {
-    if (!train->checkComleteness()) return;
+    if (!train->checkComleteness())
+                    return;
 
     QString data = "<html><body>";
     data += "<h4 class=\"reference\"><a id=\"trainsRef\" href=\"" + referenceTrains + "\">Назад</a></h4>";
