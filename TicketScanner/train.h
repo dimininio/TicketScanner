@@ -58,6 +58,8 @@ public:
 
     QString number = "";
     QString travelTime = "";
+    QString stationDeparture = "";
+    QString stationArrival = "";
     QDateTime dateDeparture = QDateTime();
     QDateTime dateArrival = QDateTime();
     QVector<FreePlaces> freePlaces;

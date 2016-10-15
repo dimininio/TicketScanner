@@ -163,6 +163,11 @@ void BrowserPage::showAvailableTrains()
         trainData += "<td> <a href=\"" + train->number + "\">" +  train->number + "</a> </td>";
 
         trainData +=  "<td>";
+        trainData += "<div class=\"stations\">" + train->stationDeparture + "</div>";
+        trainData += "<div class=\"stations\">  " + train->stationArrival + "</div>";
+        trainData +=  "</td>";
+
+        trainData +=  "<td>";
         trainData += "<div class=\"date\">" + train->dateDeparture.toString("ddd dd.MM.yy") + "</div>";
         trainData += "<div class=\"date\">  " + train->dateArrival.toString("ddd dd.MM.yy") + "</div>";
         trainData +=  "</td>";

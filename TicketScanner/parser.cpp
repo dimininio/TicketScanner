@@ -45,6 +45,9 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer)
              datetime.setTime_t((jsonTrain["till"].toObject())["date"].toInt());
              train.dateArrival = datetime;
 
+             train.stationDeparture = (jsonTrain["from"].toObject())["station"].toString();
+             train.stationArrival = (jsonTrain["till"].toObject())["station"].toString();
+
              QJsonArray ticketTypes = jsonTrain["types"].toArray();
              QJsonObject ticketType;
              for(auto it2 = ticketTypes.begin(); it2!=ticketTypes.end();++it2)
