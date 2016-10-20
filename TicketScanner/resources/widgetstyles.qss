@@ -10,16 +10,16 @@ QWidget#bodyWindowWidget
         border-color: rgb(0, 100, 150);
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
-        background-color: #84CFCB;
+        background-color: white;
 }
 
 QPushButton {
 
-    background: #3B9C97;
-    border-radius: 5px;
-    border-style: outset;
-    border-width: 2px;
-    border-color: #7BC3C6;
+    background: #FFFFFF;
+    border-radius: 2px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #91D9D3;
     padding: 5px;
     min-width: 5em;
 
@@ -27,20 +27,20 @@ QPushButton {
 
 
 QPushButton:hover {
-    background: #17736F;
-    color: white
+    background: #91D9D3;
+    color: black
 
 }
 
 
 QPushButton:pressed {
 
-    background: #25706C;
-    border-radius: 5px;
+    background: #91D9D3;
+    border-radius: 2px;
     border-style: inset;
     border-width: 2px;
     border-color: #478D94;
-    color:white;
+    color:black;
     padding-left: 6px;
     padding-top: 6px;
     min-width: 5em;
@@ -55,22 +55,22 @@ QPushButton:focus {
 
 
 QLineEdit {
-    background-color:#91D9D3;
-    border: 1px solid #478D94;
+    background-color: #FFFFFF;
+    border: 2px solid #91D9D3;
     border-radius: 2px;
     background-position:center left;
 }
 
 QDateEdit{
-    background-color:#91D9D3;
-    border: 1px solid #478D94;
+    background-color:#FFFFFF;
+    border: 2px solid #91D9D3;
     padding-right:15px;
     border-radius: 2px;
 }
 
 
 QRadioButton:hover{
-    background-color:#84CFCC;
+    background-color:#FFFFFF;
     border: 0px solid red;
 }
 
@@ -96,9 +96,27 @@ QLabel{
     margin-top: 30px;
 }
 
+QLabel#processingLabel{
+    border: 2px solid #91D9D3;
+    background-color: #60B3D7;
+    max-height: 3em;
+}
+
+QLabel#searchLabel{
+    border: 1px solid #91D9D3;
+    background-color: white;
+
+}
+
+
+QFrame#webViewFrame
+{
+    border: 2px solid #91D9D3;
+}
+
 
 QMainWindow{
-    background: #84CFCB;
+    background: white;
 
 }
 
@@ -162,3 +180,6 @@ QCalendarWidget QAbstractItemView:disabled {
 QMessageBox {
     background: #84CFCB;
 }
+
+
+

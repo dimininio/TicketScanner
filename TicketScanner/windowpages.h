@@ -21,6 +21,7 @@ class Train;
 class SearchParameters;
 class QLabel;
 class QWebView;
+class QFrame;
 
 class WidgetsMediator;
 class AnimatedSearchWidget;
@@ -76,6 +77,7 @@ private:
     LineEdit* editTo;
 
     QWebView* webView;
+    QFrame* webFrame;
 
     void showSettings();
     void processTrain(const QUrl& link);

@@ -65,7 +65,7 @@ void AnimatedSearchWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    painter.setBrush(QBrush(Qt::white));
+    painter.setBrush(QBrush(QColor(145,217,211)));
     painter.setPen(Qt::transparent);
 
     painter.drawRect(QRectF(currentInternalPosition,0.0,lineWidth,lineHeight));

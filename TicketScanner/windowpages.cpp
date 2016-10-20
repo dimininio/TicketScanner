@@ -20,6 +20,7 @@
 
 #include <QLabel>
 #include <QFile>
+#include <QSpacerItem>
 
 #include "animatedsearchwidget.h"
 
@@ -44,23 +45,35 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     showSettingsButton = new QPushButton("Налаштування пошуку",this);
 
     //QWidget *pageWidget = new QWidget;
-    webView = new QWebView;
-
+    webFrame = new QFrame(this);
+    webFrame->setObjectName(QStringLiteral("webViewFrame"));
+    webFrame->setMinimumSize(QSize(400,250));
+    webFrame->setFrameShape(QFrame::Box);
+    webFrame->setFrameShadow(QFrame::Plain);
+    webView = new QWebView(webFrame);
+    webView->setGeometry(2,2,396,246);
     webView->settings()->setUserStyleSheetUrl(QUrl("qrc:/resources/styles.css"));
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-
-
     webView->setHtml("<!DOCTYPE html><html><body></body></html>");
-    webView->setMaximumWidth(400);
-    webView->setMaximumHeight(250);
+    //webView->setMaximumWidth(400);
+    //webView->setMaximumHeight(250);
+
+    QWidget* stationsWidget = new QWidget(this);
+    QHBoxLayout* stationsLayout = new QHBoxLayout(this);
+    stationsLayout->setMargin(0);
+    stationsLayout->addWidget(editFrom);
+    stationsLayout->insertSpacing(1,20);
+    stationsLayout->addWidget(editTo);
+    stationsWidget->setLayout(stationsLayout);
 
 
     QGridLayout *pagelayout = new QGridLayout;
-    pagelayout->addWidget(editFrom,0,0);
-    pagelayout->addWidget(editTo,0,2);
+    //pagelayout->addWidget(editFrom,0,0);
+    //pagelayout->addWidget(editTo,0,2);
+    pagelayout->addWidget(stationsWidget,0,0,1,3);
     pagelayout->addWidget(dateField,1,0);
     pagelayout->addWidget(searchButton,2,1);
-    pagelayout->addWidget(webView,3,0,3,3);
+    pagelayout->addWidget(webFrame,3,0,3,3);
     pagelayout->addWidget(showSettingsButton,6,0,1,3);
 
     setLayout(pagelayout);
@@ -241,7 +254,7 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
 {
     QGroupBox* trainsBox = new QGroupBox("Поїзди",this);
     QGroupBox* coachesBox = new QGroupBox("Типи вагонів",this);
-    QGroupBox* buttonsBox = new QGroupBox();
+    QWidget* buttonsBox = new QWidget();
 
 
     allTrainsBtn = new QRadioButton("Всі",this);
@@ -266,7 +279,7 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     buttonsLayout->addWidget(showBrowserBtn);
     buttonsLayout->addWidget(startSearchBtn);
 
-    buttonsBox->setFlat(true);
+    //buttonsBox->setFlat(true);
     buttonsBox->setLayout(buttonsLayout);
 
 
@@ -461,13 +474,15 @@ void SettingsPage::showBrowser()
 ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     :BasePage(widgetsMediator),QWidget(parent),searchStatus(false)
 {
-    infoLabel = new QLabel;
+    infoLabel = new QLabel(this);
+    infoLabel->setObjectName(QStringLiteral("searchLabel"));
     infoLabel->setWordWrap(true);
     infoLabel->setAlignment(Qt::AlignJustify);
-    statusLabel = new QLabel;
-    warningLabel = new QLabel;
+    statusLabel = new QLabel(this);
+    warningLabel = new QLabel(this);
+    warningLabel->setObjectName(QStringLiteral("processingLabel"));
     warningLabel->setWordWrap(true);
-    warningLabel->setAlignment(Qt::AlignJustify);
+    warningLabel->setAlignment(Qt::AlignJustify|Qt::AlignVCenter);
     animatedSearchWidget =  new AnimatedSearchWidget(UZApplication::instance()->mainWindow->width(),this);
 
     showSettingsButton = new QPushButton("Змінити налаштування пошуку");
@@ -514,7 +529,7 @@ void ProcessingPage::updatePage()
     }
 
     infoLabel->setText(info);
-    warningLabel->setText("Не закривайте програму. Кожну хвилину перевіряється наявність квитків");
+    warningLabel->setText("Не закривайте програму. Наявність квитків перевіряється щохвилинно.");
 
     if (UZApplication::instance()->status()==UZApplication::SearchStatus::Found) {
         statusLabel->setText("Знайдено");
