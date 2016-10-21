@@ -127,8 +127,15 @@ bool UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContai
 {
 
     QByteArray data = reply->readAll();
+    QString errors = "";
 
-    return Parser::parseSearchResults(data,trainsContainer);
+    bool parseResult = Parser::parseSearchResults(data,trainsContainer,errors);
+
+    if (!errors.isEmpty())
+       emit searchError(errors);
+
+    return parseResult;
+
 
     //reply->deleteLater();
     //delete searchReply;

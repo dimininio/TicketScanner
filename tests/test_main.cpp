@@ -91,8 +91,9 @@ void TestsTicketScanner::parseSearchResponse()
 
     Trains trains;
     Parser parser;
+    QString errors = "";
 
-    auto result = parser.parseSearchResults(data,trains);
+    auto result = parser.parseSearchResults(data,trains,errors);
 
 
     QVERIFY2(trains.size()==6,"number of available trains is 6");

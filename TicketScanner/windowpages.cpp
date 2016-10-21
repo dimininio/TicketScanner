@@ -27,7 +27,7 @@
 #include "uzmainwindow.h"
 
 //#include <QUrl>
-
+#include "parser.h"
 const QString referenceTrains = "refTrains";
 
 

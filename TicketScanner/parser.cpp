@@ -19,7 +19,7 @@ void CreateJsonFileForTest(QByteArray &data,QString filename)
 }
 
 
-bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer)
+bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QString &error)
 {
     QDateTime datetime;
 #ifdef    _PREPARATION_FOR_TESTS_
@@ -61,9 +61,8 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer)
          }
 
         if (jsonobject["error"].toBool()){
-            QString error = jsonobject["value"].toString();
+            error = jsonobject["value"].toString();
             qDebug()<<error;
-            //emit searchError(error);
             return false;
         }
 
