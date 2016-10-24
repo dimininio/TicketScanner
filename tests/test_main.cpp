@@ -5,6 +5,21 @@
 #include "../TicketScanner/train.h"
 #include "../TicketScanner/parser.h"
 
+/*
+*  -- Manual tests for Parser --
+* These tests checks whether Parser's logic corresponds to the  network API of booking.uz.gov.ua
+* The folder ../tests/ contains some .json files. These are HTTP-bodies of the server's(booking.uz.gov.ua) response.
+* If you want to update these files, you should make next steps:
+*
+* Steps for testing:
+* 1) check if #defined macro  _PREPARATION_FOR_TESTS_ in the parser.cpp
+*    It allows to create .json files with responses during programm working.
+* 2) Move generated test_..._.json files from the build folder to the project folder  TicketScanner/tests/.
+*   Add these files to the project resources: tests->resources->Add existing files.
+* 3) Make sure, that json-files correspond to the tests functions.
+*
+*
+*/
 
 
 class TestsTicketScanner : public QObject
@@ -19,6 +34,7 @@ private Q_SLOTS:
     void testCase1();
     void train();
     void parseSearchResponse();
+    void parseSearchErrorResponse();
     void parseStationsResponse();
     void parseCoachesResponse();
 
@@ -85,7 +101,7 @@ void TestsTicketScanner::parseSearchResponse()
     //Київ - Львів
 
     QFile file1(":/test_SearchReply.json");
-    QVERIFY2(file1.open(QFile::ReadOnly)==true,"file opened");
+    QVERIFY2(file1.open(QFile::ReadOnly)==true,"file reading");
     QByteArray data = file1.readAll();
 
 
@@ -108,12 +124,41 @@ void TestsTicketScanner::parseSearchResponse()
 
 }
 
+
+void TestsTicketScanner::parseSearchErrorResponse()
+{
+    //test_SearchErrorReply.json is result of next request:
+    //any stations and just invalid date
+
+
+    QFile file1(":/test_SearchErrorReply.json");
+    QVERIFY2(file1.open(QFile::ReadOnly)==true,"file reading");
+    QByteArray data = file1.readAll();
+
+
+    Trains trains;
+    Parser parser;
+    QString errors = "";
+
+    auto result = parser.parseSearchResults(data,trains,errors);
+
+
+    QVERIFY2(trains.size()==0,"not found trains");
+    QVERIFY2(!errors.isEmpty(),"errors catched. OK");
+
+
+    //qDebug()<<"# "<<train.number<<"  "<<train.travelTime;
+
+
+}
+
+
 void TestsTicketScanner::parseStationsResponse()
 {
     //test_StationReply.json is result of next request: "Ль" (in the edit field)
 
     QFile file1(":/test_StationReply.json");
-    QVERIFY2(file1.open(QFile::ReadOnly)==true,"file opened");
+    QVERIFY2(file1.open(QFile::ReadOnly)==true,"file reading");
     QByteArray data = file1.readAll();
     QMap<QString,QString> stations;
 
@@ -130,7 +175,7 @@ void TestsTicketScanner::parseCoachesResponse()
 
 
     QFile file1(":/test_SearchCoachesReply.json");
-    QVERIFY2(file1.open(QFile::ReadOnly)==true,"file opened");
+    QVERIFY2(file1.open(QFile::ReadOnly)==true,"file reading");
     QByteArray data = file1.readAll();
 
     Train train;

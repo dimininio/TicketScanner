@@ -7,24 +7,27 @@
 #include <QDebug>
 
 #define _PREPARATION_FOR_TESTS_
-//#undef _PREPARATION_FOR_TESTS_
+#undef _PREPARATION_FOR_TESTS_
+
 
 void CreateJsonFileForTest(QByteArray &data,QString filename)
 {
+#if    defined(_PREPARATION_FOR_TESTS_) &&  defined(QT_DEBUG)
     QFile file("../tests/" + filename); //save file to the tests project
     file.close();
     file.open( QIODevice::WriteOnly);
     file.write(data);
     file.close();
+#endif
 }
 
 
 bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QString &error)
 {
     QDateTime datetime;
-#ifdef    _PREPARATION_FOR_TESTS_
+
     CreateJsonFileForTest(data,"test_SearchReply.json");
-#endif
+
 
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
@@ -62,7 +65,8 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QStri
 
         if (jsonobject["error"].toBool()){
             error = jsonobject["value"].toString();
-            qDebug()<<error;
+            //qDebug()<<error;
+            CreateJsonFileForTest(data,"test_SearchErrorReply.json");
             return false;
         }
 
@@ -75,10 +79,7 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QStri
 bool Parser::parseCoachesSearchResults(QByteArray &data, Train &train,QString coachType)
 {
 
-#ifdef    _PREPARATION_FOR_TESTS_
     CreateJsonFileForTest(data,"test_SearchCoachesReply.json");
-#endif
-
 
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
@@ -108,10 +109,7 @@ bool Parser::parseCoachesSearchResults(QByteArray &data, Train &train,QString co
 
 bool Parser::parseStations(QByteArray &data, QMap<QString,QString> &stations)
 {
-
-#ifdef    _PREPARATION_FOR_TESTS_
     CreateJsonFileForTest(data,"test_StationReply.json");
-#endif
 
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);

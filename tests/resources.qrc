@@ -3,5 +3,6 @@
         <file>test_SearchCoachesReply.json</file>
         <file>test_SearchReply.json</file>
         <file>test_StationReply.json</file>
+        <file>test_SearchErrorReply.json</file>
     </qresource>
 </RCC>
