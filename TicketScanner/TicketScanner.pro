@@ -42,7 +42,8 @@ HEADERS  += \
     windowtitlebar.h \
     uzmainwindow.h \
     windowwrapper.h \
-    parser.h
+    parser.h \
+    tooltips.h
 
 FORMS    +=
 

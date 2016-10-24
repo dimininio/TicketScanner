@@ -113,7 +113,7 @@ private:
     BrowserPage* searchConfiguration;
 
     void getTrainsOnRoute(QNetworkReply *reply, RequestType::Request id);
-    void drawTrainsWidgets(QVector<QString> &trains, QVector<QString> &places);
+    void drawTrainsWidgets(QVector<Train> &trains, QVector<QString> &places);
     void onRadioButtonClick();
     bool checkConditions();
 

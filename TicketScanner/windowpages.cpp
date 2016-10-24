@@ -6,6 +6,7 @@
 #include "searchparameters.h"
 #include "config.h"
 #include "widgetsmediator.h"
+#include "tooltips.h"
 #include <memory>
 
 #include <QGridLayout>
@@ -368,12 +369,12 @@ void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, RequestType::Request i
         Trains allTrainsOnRoute;
         UZApplication::instance()->parseSearchResults(reply,allTrainsOnRoute);
         QVector<QString> placeTypes;
-        QVector<QString> trainsOnRoute;
+        QVector<Train> trainsOnRoute;
         for(auto train : allTrainsOnRoute)
         {
             auto p = std::find_if(trainsGroup.begin(),trainsGroup.end(),[&train](QCheckBox* box){return train.number==box->text();});
             if (p==trainsGroup.end()) {
-                trainsOnRoute.push_back(train.number);
+                trainsOnRoute.push_back(train);
                 for(auto&& placeType: train.freePlaces)
                     placeTypes.push_back(placeType.placeClass);
             }
@@ -390,16 +391,18 @@ void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, RequestType::Request i
     }
 }
 
-void SettingsPage::drawTrainsWidgets(QVector<QString> &trains, QVector<QString> &places)
+void SettingsPage::drawTrainsWidgets(QVector<Train>& trains, QVector<QString>& places)
 {
+        ToolTipsWagonTypes coachToolTips;
 
         int j = trainsGroup.size()>0 ? (trainsGroup.size()) % 4  :  0;
         int i = trainsGroup.size()>0 ? (trainsGroup.size()-j) / 4  :  0;
 
-        for(auto train : trains)
+        for(auto& train : trains)
         {
-            QCheckBox* box = new QCheckBox(train);
+            QCheckBox* box = new QCheckBox(train.number);
             box->setEnabled(false);
+            box->setToolTip(train.stationDeparture + " - " + train.stationArrival);
             trainsGroup.push_back(box);
             trainsGroupLayout->addWidget(box,i,j);
 
@@ -409,9 +412,10 @@ void SettingsPage::drawTrainsWidgets(QVector<QString> &trains, QVector<QString> 
             }
         }
 
-        for(auto&& coachType: places)
+        for(auto& coachType: places)
         {
             QCheckBox* box2 = new QCheckBox(coachType);
+            box2->setToolTip(std::move(coachToolTips.getToolTip(coachType)));
             box2->setChecked(true);
             coachesTypesLayout->addWidget(box2);
             coachesTypes.push_back(box2);
