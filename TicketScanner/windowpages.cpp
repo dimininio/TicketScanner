@@ -260,6 +260,7 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
 
     allTrainsBtn = new QRadioButton("Всі",this);
     oneTrainBtn = new QRadioButton("Окремі",this);
+    oneTrainBtn->setChecked(true);
 
     trainsGroupLayout = new QGridLayout;
 
@@ -401,7 +402,7 @@ void SettingsPage::drawTrainsWidgets(QVector<Train>& trains, QVector<QString>& p
         for(auto& train : trains)
         {
             QCheckBox* box = new QCheckBox(train.number);
-            box->setEnabled(false);
+            box->setEnabled(true);
             box->setToolTip(train.stationDeparture + " - " + train.stationArrival);
             trainsGroup.push_back(box);
             trainsGroupLayout->addWidget(box,i,j);

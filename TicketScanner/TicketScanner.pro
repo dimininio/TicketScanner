@@ -21,7 +21,6 @@ SOURCES += main.cpp\
     widgetsmediator.cpp \
     animatedsearchwidget.cpp \
     requestdata.cpp \
-    config.cpp \
     windowtitlebar.cpp \
     uzmainwindow.cpp \
     windowwrapper.cpp \

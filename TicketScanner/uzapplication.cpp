@@ -24,7 +24,7 @@ NetworkManager* UZApplication::p_networkManager = nullptr;
 UZApplication::UZApplication(int &argc, char **argv):
     QApplication(argc,argv),
     mainWindow(nullptr),searchParameters(nullptr),p_trains(nullptr),p_scanTrains(nullptr),
-    timer(nullptr),p_interval(150000) //10 min
+    timer(nullptr),p_interval(100000) //1:40 min
 {
     splashScreen = new QSplashScreen(QPixmap(":/resources/splash.jpg"));
     splashScreen->show(); //need tests: destroing while errors

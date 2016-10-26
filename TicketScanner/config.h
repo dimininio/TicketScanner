@@ -1,15 +1,15 @@
-#ifndef CONFIG
-#define CONFIG
+#ifndef CONFIG_
+#define CONFIG_
 #include <QString>
 
-class Config{
-public:
-    static const QString RequestDateFormat;
-    static const QString BookingUZsite;
+namespace Config{
 
-    static const int ApplicationWidth;
-    static const int ApplicationHeigth;
-};
+    static const QString RequestDateFormat = "dd.MM.yyyy";
+    static const QString BookingUZsite     = "http://booking.uz.gov.ua/";
+
+    static const int ApplicationWidth     = 500;
+    static const int ApplicationHeigth    = 470;
+}
 
 
 #endif // CONFIG
