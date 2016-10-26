@@ -117,6 +117,13 @@ bool BrowserPage::checkConditions()
         msgBox.exec();
         return false;
     }
+    if (dateField->date() < QDate::currentDate())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Зазначена дата вже пройшла");
+        msgBox.exec();
+        return false;
+    }
     return true;
 }
 
