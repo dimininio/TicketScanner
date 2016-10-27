@@ -98,6 +98,16 @@ void WidgetsMediator::setSearchParameters()
 
 }
 
+
+void WidgetsMediator::resetSearch()
+{
+    browserPage->webView->setHtml("<html><body></body></html>");
+    stackedWidget->setCurrentWidget(browserPage);
+    //delete processingPage;
+    //processingPage->deleteLater();
+    //processingPage = nullptr;
+}
+
 void WidgetsMediator::showAvailableTrains()
 {
     browserPage->showAvailableTrains();

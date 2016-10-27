@@ -69,8 +69,6 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
 
 
     QGridLayout *pagelayout = new QGridLayout;
-    //pagelayout->addWidget(editFrom,0,0);
-    //pagelayout->addWidget(editTo,0,2);
     pagelayout->addWidget(stationsWidget,0,0,1,3);
     pagelayout->addWidget(dateField,1,0);
     pagelayout->addWidget(searchButton,2,1);
@@ -288,7 +286,6 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     buttonsLayout->addWidget(showBrowserBtn);
     buttonsLayout->addWidget(startSearchBtn);
 
-    //buttonsBox->setFlat(true);
     buttonsBox->setLayout(buttonsLayout);
 
 
@@ -500,6 +497,8 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     showSettingsButton = new QPushButton("Змінити налаштування пошуку");
     openDefaultBrowserButton = new QPushButton("Відкрити браузер для замовлення квитків");
     openDefaultBrowserButton->hide();
+    startNewSearchButton = new QPushButton("Новий пошук");
+    startNewSearchButton->hide();
 
     QVBoxLayout* pagelayout = new QVBoxLayout(this);
     pagelayout->addWidget(infoLabel);
@@ -509,6 +508,8 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     pagelayout->addWidget(openDefaultBrowserButton,Qt::AlignBottom);
     pagelayout->addWidget(showSettingsButton);
     pagelayout->setAlignment(showSettingsButton,Qt::AlignBottom);
+    pagelayout->addWidget(startNewSearchButton);
+    pagelayout->setAlignment(startNewSearchButton,Qt::AlignBottom);
 
     pagelayout->setSpacing(10);
 
@@ -516,6 +517,8 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::updatePage);
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
     connect(openDefaultBrowserButton,&QPushButton::clicked,this,&ProcessingPage::openBrowser);
+    connect(startNewSearchButton,&QPushButton::clicked,[this](){this->mediator()->resetSearch();
+                                                                UZApplication::instance()->setStatus(UZApplication::SearchStatus::Waiting);});
 
     updatePage();
 
@@ -548,9 +551,15 @@ void ProcessingPage::updatePage()
         animatedSearchWidget->updateSearchStatus();
         warningLabel->setText("");
         openDefaultBrowserButton->show();
+        showSettingsButton->hide();
+        startNewSearchButton->show();
     }else {
         statusLabel->setText("Пошук");
         animatedSearchWidget->updateSearchStatus();
+        openDefaultBrowserButton->hide();
+        startNewSearchButton->hide();
+        showSettingsButton->show();
+
     }
 }
 

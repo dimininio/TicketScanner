@@ -101,7 +101,7 @@ void NetworkManager::updateAttributes()
     request.setRawHeader("Accept-Language","ua-UA,*");
     hiddenView->load(request);
 
-    // Some headers added to request in the "void QHttpNetworkConnectionPrivate::prepareRequest"
+    //Some HTTP-headers added to request in the "void QHttpNetworkConnectionPrivate::prepareRequest".
     //Accept-Language depends from the localization (QLocale class)
     //So we force this header for correct work, in other way "token" and "session-id" will be incorrect
 

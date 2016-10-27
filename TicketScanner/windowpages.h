@@ -143,7 +143,7 @@ public:
 
     void showSettings();
     void updatePage();
-    void openBrowser();
+    void openBrowser(); 
 
 private:
     QLabel* infoLabel;
@@ -151,8 +151,10 @@ private:
     QLabel* warningLabel;
     QPushButton* showSettingsButton;
     QPushButton* openDefaultBrowserButton;
+    QPushButton* startNewSearchButton;
     AnimatedSearchWidget* animatedSearchWidget;
     bool searchStatus;
+
 };
 
 #endif // WINDOWPAGES

@@ -32,6 +32,8 @@ public:
     void showAvailableTrains();
     void showAvailableCoaches(Train *train);
 
+    void resetSearch();
+
     QString getStationFrom();
     QString getStationTo();
     QString getStationIDFrom();

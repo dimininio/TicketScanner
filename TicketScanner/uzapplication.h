@@ -44,6 +44,7 @@ public:
     void startScanning(std::shared_ptr<SearchParameters> &parameters);
 
     SearchStatus status();
+    void setStatus(SearchStatus status);
 
 signals:
     void updateSearchStatus(SearchStatus);
@@ -70,7 +71,7 @@ private:
     Train* setTrain(QString number);
     bool checkScanningResults();
     void sendScanRequest();
-    void setStatus(SearchStatus status);
+
 
 };
 

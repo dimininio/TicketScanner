@@ -105,6 +105,7 @@ void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request i
                     alert(mainWindow,0); //causes flash of icon on taskbar (if window is not active)
                     timer->stop();
                     QSound::play(":/resources/arfa.wav");
+                    searchStatus = SearchStatus::Waiting; //to be opened for new searches
                 }
                 break;
 
@@ -175,6 +176,7 @@ void UZApplication::startScanning(std::shared_ptr<SearchParameters>& parameters)
 
     setStatus(SearchStatus::Search);
 }
+
 
 
 void UZApplication::sendScanRequest()
