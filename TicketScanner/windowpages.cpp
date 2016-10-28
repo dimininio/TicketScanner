@@ -467,7 +467,7 @@ void SettingsPage::startScanner()
     if (checkConditions()==false)
         return;
 
-    mediator()->setSearchParameters();
+    mediator()->setSearchParametersAndRunSearsh();
     mediator()->showProcessingPage();
     saveState();
 
@@ -553,6 +553,7 @@ void ProcessingPage::updatePage()
         openDefaultBrowserButton->show();
         showSettingsButton->hide();
         startNewSearchButton->show();
+        mediator()->showProcessingPage(); //TODO: refactor need! But after finish of search, ProcessingPage MUST shown.
     }else {
         statusLabel->setText("Пошук");
         animatedSearchWidget->updateSearchStatus();

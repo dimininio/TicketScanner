@@ -71,7 +71,7 @@ void WidgetsMediator::showProcessingPage()
     stackedWidget->setCurrentWidget(processingPage);
 }
 
-void WidgetsMediator::setSearchParameters()
+void WidgetsMediator::setSearchParametersAndRunSearsh()
 {
     if (settingsPage->isChanged()) {
 
@@ -92,7 +92,12 @@ void WidgetsMediator::setSearchParameters()
             searchParameters->setSearchForAnyTrain(true);
         else
             searchParameters->setSearchForAnyTrain(false);
+    }
 
+    //Start or Restart search only if ProcessingPage doesn't exist yet
+    //                              or settings was changed.
+    if (!processingPage || settingsPage->isChanged())
+    {
         UZApplication::instance()->startScanning(searchParameters);
     }
 
@@ -103,9 +108,8 @@ void WidgetsMediator::resetSearch()
 {
     browserPage->webView->setHtml("<html><body></body></html>");
     stackedWidget->setCurrentWidget(browserPage);
-    //delete processingPage;
-    //processingPage->deleteLater();
-    //processingPage = nullptr;
+    delete processingPage;
+    processingPage = nullptr;
 }
 
 void WidgetsMediator::showAvailableTrains()

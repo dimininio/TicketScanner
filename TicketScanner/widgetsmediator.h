@@ -27,7 +27,7 @@ public:
     void showProcessingPage();
 
     //void setSearchParameters(std::shared_ptr<SearchParameters> &p);
-    void setSearchParameters();
+    void setSearchParametersAndRunSearsh();
 
     void showAvailableTrains();
     void showAvailableCoaches(Train *train);

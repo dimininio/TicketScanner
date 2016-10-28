@@ -104,6 +104,7 @@ void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request i
                     //mainWindow->activateWindow();
                     alert(mainWindow,0); //causes flash of icon on taskbar (if window is not active)
                     timer->stop();
+                    delete timer;timer = nullptr;
                     QSound::play(":/resources/arfa.wav");
                     searchStatus = SearchStatus::Waiting; //to be opened for new searches
                 }
