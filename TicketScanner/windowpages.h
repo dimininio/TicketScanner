@@ -149,6 +149,7 @@ private:
     QLabel* infoLabel;
     QLabel* statusLabel;
     QLabel* warningLabel;
+    QLabel* connectionLostLabel;
     QPushButton* showSettingsButton;
     QPushButton* openDefaultBrowserButton;
     QPushButton* startNewSearchButton;

@@ -105,7 +105,10 @@ QLabel#processingLabel{
 QLabel#searchLabel{
     border: 1px solid #91D9D3;
     background-color: white;
+}
 
+QLabel#connectionLostLabel{
+    color:red;
 }
 
 

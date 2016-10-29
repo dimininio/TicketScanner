@@ -1,0 +1,12 @@
+	--Check of possible problems--
+	
+	1) Network connection break down:
+	*check breaking of network during displaying of slash window. (before running of .exe inet was OK, but during "splash" fell)
+	*Application is load --> connection is broken --> user click button "Search". Some notification should be.
+	*During searching process connection is dropped --> then after some time connection restored automatically.
+		Should be some notification, but searching process should be continue automatically after restoring of connection.
+	*Before application start, network has been disconnected already.
+
+
+		
+	?? check if possible: Server returns some shit instead of .json

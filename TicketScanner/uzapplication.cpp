@@ -108,6 +108,10 @@ void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request i
                     QSound::play(":/resources/arfa.wav");
                     searchStatus = SearchStatus::Waiting; //to be opened for new searches
                 }
+                else
+                {
+                    setStatus(SearchStatus::Search);
+                }
                 break;
 
     }
@@ -259,6 +263,20 @@ void UZApplication::setStatus(UZApplication::SearchStatus status)
 UZApplication::SearchStatus UZApplication::status()
 {
     return searchStatus;
+}
+
+
+void UZApplication::resetTrains()
+{
+    if (p_trains)
+    {
+        p_trains->clear();
+    }
+    if (p_scanTrains)
+    {
+        p_scanTrains->clear();
+    }
+
 }
 
 

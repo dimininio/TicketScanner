@@ -85,7 +85,7 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     connect(showSettingsButton,&QPushButton::clicked,this,&BrowserPage::showSettings);
     connect(webView,&QWebView::linkClicked,this,&BrowserPage::processLink);
     connect(UZApplication::instance(),&UZApplication::searchError,this,&BrowserPage::showError);
-
+    connect(UZApplication::instance()->networkManager(),&NetworkManager::connectionLost,this,[&](){showError("Відсутній зв'язок із сервером Укрзалізниці.");}); //TODO: pretify architecture
 }
 
 void BrowserPage::showSettings()
@@ -101,10 +101,16 @@ void BrowserPage::showSettings()
 
 void BrowserPage::ticketsSearch()
 {
+    if (isChanged())
+    {
+        UZApplication::instance()->resetTrains();   //avoid mix with previous list of trains;
+    }
+
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
     QString date = dateField->date().toString(Config::RequestDateFormat);
     SearchPOSTData searchdata(editFrom->getStationID(),editTo->getStationID(),date);
     networkManager->sendSearchRequest(searchdata,RequestType::SearchRequest);
+    saveState();
 }
 
 bool BrowserPage::checkConditions()
@@ -127,6 +133,10 @@ bool BrowserPage::checkConditions()
 
 bool BrowserPage::isChanged()
 {
+    //if (previousState_fromStation.isEmpty() && previousState_toStation.isEmpty() )  //for the first check;
+    //    return false;
+    //problems if connection broke.
+
     if(previousState_fromStation!=editFrom->text() ||
            previousState_toStation != editTo->text())
         return true;
@@ -242,7 +252,6 @@ void BrowserPage::showAvailableCoaches(Train *train)
 
 void BrowserPage::showError(QString error)
 {
-
     webView->setHtml("<html><body><h4>" + error + "</h4></body></html>");
 }
 
@@ -493,6 +502,9 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     warningLabel->setWordWrap(true);
     warningLabel->setAlignment(Qt::AlignJustify|Qt::AlignVCenter);
     animatedSearchWidget =  new AnimatedSearchWidget(UZApplication::instance()->mainWindow->width(),this);
+    connectionLostLabel = new QLabel(this);
+    connectionLostLabel->setText("Відсутній зв'язок із сервером! \nЯк тільки його буде відновлено, пошук продовжиться автоматично");
+    connectionLostLabel->setObjectName(QStringLiteral("connectionLostLabel"));
 
     showSettingsButton = new QPushButton("Змінити налаштування пошуку");
     openDefaultBrowserButton = new QPushButton("Відкрити браузер для замовлення квитків");
@@ -505,6 +517,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     pagelayout->addWidget(statusLabel);
     pagelayout->addWidget(animatedSearchWidget);
     pagelayout->addWidget(warningLabel,Qt::AlignBottom);
+    pagelayout->addWidget(connectionLostLabel,Qt::AlignBottom);
     pagelayout->addWidget(openDefaultBrowserButton,Qt::AlignBottom);
     pagelayout->addWidget(showSettingsButton);
     pagelayout->setAlignment(showSettingsButton,Qt::AlignBottom);
@@ -519,6 +532,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     connect(openDefaultBrowserButton,&QPushButton::clicked,this,&ProcessingPage::openBrowser);
     connect(startNewSearchButton,&QPushButton::clicked,[this](){this->mediator()->resetSearch();
                                                                 UZApplication::instance()->setStatus(UZApplication::SearchStatus::Waiting);});
+    connect(UZApplication::instance()->networkManager(),&NetworkManager::connectionLost,this,[this](){this->connectionLostLabel->show();});
 
     updatePage();
 
@@ -545,6 +559,7 @@ void ProcessingPage::updatePage()
 
     infoLabel->setText(info);
     warningLabel->setText("Не закривайте програму. Наявність квитків перевіряється щохвилинно.");
+    connectionLostLabel->hide(); //If we call this function, connection is OK
 
     if (UZApplication::instance()->status()==UZApplication::SearchStatus::Found) {
         statusLabel->setText("Знайдено");

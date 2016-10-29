@@ -43,6 +43,8 @@ public:
     bool parseCoachesSearchResults(QNetworkReply *reply);
     void startScanning(std::shared_ptr<SearchParameters> &parameters);
 
+    void resetTrains();
+
     SearchStatus status();
     void setStatus(SearchStatus status);
 

@@ -2,7 +2,6 @@
 #include <QWebPage>
 #include <QWebView>
 #include <QWebFrame>
-//#include <QNetworkAccessManager>
 #include <QtWebKitWidgets>
 #include <QNetworkReply>
 
@@ -61,6 +60,10 @@ NetworkManager::NetworkManager(QObject *parent):
     QWebSettings *defsetting = QWebSettings::globalSettings();
     defsetting->setAttribute(QWebSettings::LocalStorageEnabled,true);
 
+    connectionTimer = new QTimer(this);
+    connectionTimer->setTimerType(Qt::VeryCoarseTimer);
+    connectionTimer->setSingleShot(true);
+    connectionTimer->setInterval(20000); //time to wait for downloading booking.uz.gov.ua web-page
 
     hiddenView = new QWebView();
     updateAttributes();
@@ -75,10 +78,10 @@ NetworkManager::NetworkManager(QObject *parent):
 
 
 
-
     connect(hiddenView,SIGNAL(loadFinished(bool)),this,SLOT(getAttributes(bool)));
     connect(this,&NetworkManager::finished,this,&NetworkManager::replyHandling);
     connect(this,&NetworkManager::connectionDoesNotWork,this,&NetworkManager::connectionErrorSlot);
+    connect(connectionTimer,SIGNAL(timeout()),this,SLOT(tooLongWaiting()));
 
     //connect(networkReply,SIGNAL(error(QNetworkReply::NetworkError)),this,SLOT(error(QNetworkReply::NetworkError)));
 }
@@ -90,6 +93,11 @@ NetworkManager::~NetworkManager()
     QWebSettings::clearMemoryCaches();
 }
 
+
+//TicketScanner should work despite the network problems.
+//If internet would dropped, our keys(token,cookie) will be invalidated.
+//So, we should get new keys as soon as internet will be restored.
+//updateAttributes() simulates update of the web-browser page (F5).
 void NetworkManager::updateAttributes()
 {
     //hiddenView->reload();
@@ -100,6 +108,7 @@ void NetworkManager::updateAttributes()
     request.setRawHeader("Referer",bookingUZ);
     request.setRawHeader("Accept-Language","ua-UA,*");
     hiddenView->load(request);
+    connectionTimer->start();
 
     //Some HTTP-headers added to request in the "void QHttpNetworkConnectionPrivate::prepareRequest".
     //Accept-Language depends from the localization (QLocale class)
@@ -110,6 +119,7 @@ void NetworkManager::updateAttributes()
 void NetworkManager::getAttributes(bool ok)
 {
     if (!ok)  emit this->connectionDoesNotWork();
+    connectionTimer->stop();
 
     QWebFrame *frame = hiddenView->page()->mainFrame();
     frame->setParent(this);
@@ -263,7 +273,11 @@ void NetworkManager::replyHandling(QNetworkReply *reply)
     QByteArray identifier = reply->request().rawHeader("Sender");
     RequestType::Request requestType = RequestType::getRequestTypeByString(identifier);
     //qDebug()<<"id   " << identifier;
-    emit responseReady(reply,requestType);
+    if (reply->error() == QNetworkReply::NoError)
+    {
+        emit responseReady(reply,requestType);
+    }
+
 }
 
 
@@ -278,6 +292,7 @@ void NetworkManager::errorSlot(QNetworkReply::NetworkError err)
      if (httpstatus.toInt()==400)
          updateAttributes();
 
+     emit connectionLost();
 
     //int ret = QMessageBox::critical(UZApplication::instance()->mainWindow, tr("UZ scanner"),networkReply->errorString(),QMessageBox::Ok);
 }
@@ -287,9 +302,16 @@ void NetworkManager::errorSlot(QNetworkReply::NetworkError err)
 void NetworkManager::connectionErrorSlot()
 {
     QMessageBox msgBox;
-    msgBox.setText("Відсутній зв'язок з інтернетом. Перевірте мережу");
+    msgBox.setText("Відсутній зв'язок із сервером Укрзалізниці. Перевірте інтернет");
     msgBox.exec();
 
+}
+
+void NetworkManager::tooLongWaiting()
+{
+    QMessageBox msgBox;
+    msgBox.setText("Сервер Укрзалізниці не відповідає");
+    msgBox.exec();
 }
 
 

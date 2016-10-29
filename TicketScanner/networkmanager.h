@@ -7,7 +7,7 @@
 #include <QWebView>
 #include <QNetworkCookie>
 #include <QNetworkReply>
-#include <QMap>
+#include <QTimer>
 #include "requestdata.h"
 
 
@@ -24,6 +24,7 @@ signals:
     void responseReady(QNetworkReply* reply,RequestType::Request identifier);
     void networkManagerReady();
     void connectionDoesNotWork();
+    void connectionLost();
 
 public slots:
 
@@ -32,11 +33,15 @@ public slots:
     void sendCoachesRequest(CoachesPOSTData postdata, RequestType::Request sender);
     void sendCoachRequest(CoachPOSTData postdata, RequestType::Request sender);
 
-    void replyHandling(QNetworkReply* reply);
-    void connectionErrorSlot();
-    void errorSlot(QNetworkReply::NetworkError err);    
+
+
 private slots:
     void getAttributes(bool ok);
+
+    void replyHandling(QNetworkReply* reply);
+    void connectionErrorSlot();
+    void errorSlot(QNetworkReply::NetworkError err);
+    void tooLongWaiting();
 
 
 private:
@@ -44,7 +49,7 @@ private:
     QList<QNetworkCookie> cookies;
     QWebView* hiddenView;
     QNetworkReply* networkReply;
-
+    QTimer* connectionTimer;
     void updateAttributes();
 
 };
