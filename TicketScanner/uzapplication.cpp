@@ -14,7 +14,8 @@
 #include <QFile>
 #include <QSound>
 #include <QSplashScreen>
-
+#include <QKeyEvent>
+#include <QDesktopServices>
 #include "parser.h"
 
 
@@ -43,6 +44,7 @@ UZApplication::UZApplication(int &argc, char **argv):
 
     RequestType requestType; //initialization of requests' types
 
+    installEventFilter(this);
 }
 
 
@@ -276,6 +278,28 @@ void UZApplication::resetTrains()
     {
         p_scanTrains->clear();
     }
+}
+
+
+
+bool UZApplication::eventFilter(QObject* obj, QEvent* event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        if (keyEvent->key()==Qt::Key_F1)
+        {
+            bool helpRequest = QDesktopServices::openUrl(QUrl(Config::HelpURL));
+            return true;
+        }
+        else  {
+            return QApplication::eventFilter(obj,event);
+        }
+    }
+    else{
+        return QApplication::eventFilter(obj,event);
+    }
+
 
 }
 

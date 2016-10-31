@@ -56,6 +56,11 @@ private slots:
     void showWindow();
     void analizeResponse(QNetworkReply *reply, RequestType::Request id);
 
+
+protected:
+
+    bool eventFilter(QObject* obj, QEvent* event) override;
+
 private:
 
     static NetworkManager* p_networkManager;
