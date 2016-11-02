@@ -79,6 +79,7 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
 
     previousState_fromStation = "";
     previousState_toStation = "";
+    previous_tripDate = QDate();
 
 
     connect(searchButton,&QPushButton::clicked,this,&BrowserPage::ticketsSearch);
@@ -101,8 +102,10 @@ void BrowserPage::showSettings()
 
 void BrowserPage::ticketsSearch()
 {
-    if (isChanged())
+    if (isChanged() ||  previous_tripDate != tripDate())
     {
+        //Although changes of date not considered in the BrowserPage::isChanged()
+        //We should reset current list of trains, if date was changed
         UZApplication::instance()->resetTrains();   //avoid mix with previous list of trains;
     }
 
@@ -131,6 +134,10 @@ bool BrowserPage::checkConditions()
     return true;
 }
 
+
+//Changes of BrowserPage cause construction(reconstruction) of SettingsPage
+//We should rebuild all controls on the SettingsPage ONLY if stations changed
+//changes of date not considered
 bool BrowserPage::isChanged()
 {
     //if (previousState_fromStation.isEmpty() && previousState_toStation.isEmpty() )  //for the first check;
@@ -148,6 +155,7 @@ void BrowserPage::saveState()
 {
     previousState_fromStation = editFrom->text();
     previousState_toStation = editTo->text();
+    previous_tripDate = tripDate();
 }
 
 

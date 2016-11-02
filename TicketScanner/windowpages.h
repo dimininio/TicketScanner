@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <QRadioButton>
+#include <QDate>
 #include "requestdata.h"
 
 class QPushButton;
@@ -15,7 +16,6 @@ class LineEdit;
 class QGridLayout;
 class QHBoxLayout;
 class QRadioButton;
-//class QCheckBox;
 class Train;
 
 class SearchParameters;
@@ -88,6 +88,7 @@ private:
     //keep information about previous widget's state.
     QString previousState_fromStation;
     QString previousState_toStation;
+    QDate   previous_tripDate;
     void saveState();
 
     friend class WidgetsMediator;
