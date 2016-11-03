@@ -327,6 +327,7 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
 
 //Ukrazaliznitsya doesn't have public request to get "all possible trains" between stations.
 //So,we send several "search" requests with different dates to receive as much as possible existing trains.
+//TODO: comment strategy...
 void SettingsPage::exploreRout()
 {
     NetworkManager* networkManager = UZApplication::instance()->networkManager();
@@ -334,7 +335,10 @@ void SettingsPage::exploreRout()
     futuredate = futuredate.addDays(24);
     SearchPOSTData searchdata(mediator()->getStationIDFrom(),mediator()->getStationIDTo(),futuredate.toString(Config::RequestDateFormat));
     networkManager->sendSearchRequest(searchdata,RequestType::TrainsOnRoute);
-    futuredate = QDate::currentDate().addDays(1);
+    futuredate = QDate::currentDate().addDays(5);
+    searchdata.tripDate = futuredate.toString(Config::RequestDateFormat);
+    networkManager->sendSearchRequest(searchdata,RequestType::TrainsOnRoute);
+    futuredate = QDate::currentDate();
     searchdata.tripDate = futuredate.toString(Config::RequestDateFormat);
     networkManager->sendSearchRequest(searchdata,RequestType::TrainsOnRoute);
 
