@@ -543,6 +543,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
     connect(openDefaultBrowserButton,&QPushButton::clicked,this,&ProcessingPage::openBrowser);
     connect(startNewSearchButton,&QPushButton::clicked,[this](){this->mediator()->resetSearch();
+                                                                UZApplication::instance()->resetTrains(); //TODO: prettify
                                                                 UZApplication::instance()->setStatus(UZApplication::SearchStatus::Waiting);});
     connect(UZApplication::instance()->networkManager(),&NetworkManager::connectionLost,this,[this](){this->connectionLostLabel->show();});
 
