@@ -538,7 +538,6 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
 
     pagelayout->setSpacing(10);
 
-
     connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::updatePage);
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
     connect(openDefaultBrowserButton,&QPushButton::clicked,this,&ProcessingPage::openBrowser);
@@ -548,7 +547,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     connect(UZApplication::instance()->networkManager(),&NetworkManager::connectionLost,this,[this](){this->connectionLostLabel->show();});
 
     updatePage();
-
+setAttribute(Qt::WA_NoSystemBackground);
 
 }
 

@@ -39,6 +39,7 @@ WindowWrapper::WindowWrapper(QWidget *parent) :
     bodyWidgetShadow->setOffset(4.0);
     bodyWindowWidget->setGraphicsEffect(bodyWidgetShadow);
 
+    setAttribute(Qt::WA_NoSystemBackground);
     connect(titleBar,&WindowTitleBar::closeApp,UZApplication::instance(),&UZApplication::quit);
     connect(titleBar,&WindowTitleBar::minimize,this,&WindowWrapper::showMinimized);
 }
