@@ -7,7 +7,6 @@ table {
 
     width: 100%;
     border-collapse: collapse
-
 }
 
 th,td {
@@ -17,6 +16,7 @@ th,td {
     text-align: left;
     border-bottom: 1px solid #ddd;
     padding: 2px;
+    font-family: "Arial"
 }
 
 
@@ -30,22 +30,22 @@ tr:hover{
 
 
 .stations {
-    font-size: 13;
+    font-size: 12;
 
 }
 
 .date {
-    font-size: 13;
+    font-size: 12;
 
 }
 
 .time {
-    font-size: 17;
+    font-size: 15;
     font-weight: bold;
 }
 
 .places {
-    font-size: 17;
+    font-size: 15;
 
 }
 
@@ -54,8 +54,21 @@ h4.reference {
     text-align: right;
 }
 
+h4.error {
+    font-family: "Arial"
+}
+
+
 #trainsRef {
     color: green
 }
 
+
+a {
+    text-decoration: none;
+    font-size: 17;
+    font-weight: bold;
+    color: #0F615E;
+    font-family: "Arial"
+}
 

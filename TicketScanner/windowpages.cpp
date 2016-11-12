@@ -260,7 +260,7 @@ void BrowserPage::showAvailableCoaches(Train *train)
 
 void BrowserPage::showError(QString error)
 {
-    webView->setHtml("<html><body><h4>" + error + "</h4></body></html>");
+    webView->setHtml("<html><body><h4 class=\"error\">" + error + "</h4></body></html>");
 }
 
 
