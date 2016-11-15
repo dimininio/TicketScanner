@@ -51,4 +51,7 @@ RESOURCES += \
 
 CONFIG+=c++11
 
+win32: RC_ICONS = resources\TicketScanner.ico
+macx: ICON = resources\TicketScanner.icns
+
 DISTFILES +=

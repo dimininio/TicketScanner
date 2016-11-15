@@ -7,5 +7,7 @@
         <file>resources/close.png</file>
         <file>resources/minimize.png</file>
         <file>resources/splash.jpg</file>
+        <file>resources/TicketScanner.ico</file>
+        <file>resources/TicketScanner.icns</file>
     </qresource>
 </RCC>
