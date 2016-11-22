@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     windowtitlebar.cpp \
     uzmainwindow.cpp \
     windowwrapper.cpp \
-    parser.cpp
+    parser.cpp \
+    messagewidget.cpp
 
 
 HEADERS  += \
@@ -42,7 +43,8 @@ HEADERS  += \
     uzmainwindow.h \
     windowwrapper.h \
     parser.h \
-    tooltips.h
+    tooltips.h \
+    messagewidget.h
 
 FORMS    +=
 
