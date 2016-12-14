@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     uzmainwindow.cpp \
     windowwrapper.cpp \
     parser.cpp \
-    messagewidget.cpp
+    messagewidget.cpp \
+    message.cpp
 
 
 HEADERS  += \
@@ -44,9 +45,12 @@ HEADERS  += \
     windowwrapper.h \
     parser.h \
     tooltips.h \
-    messagewidget.h
+    messagewidget.h \
+    message.h \
+    nmessage.h
 
-FORMS    +=
+FORMS    += \
+    message.ui
 
 RESOURCES += \
     res.qrc
