@@ -1,6 +1,6 @@
 QWidget{
     font-size: 14px;
-    background-color: white;
+
 }
 
 QWidget#bodyWindowWidget

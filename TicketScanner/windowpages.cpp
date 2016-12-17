@@ -7,7 +7,7 @@
 #include "config.h"
 #include "widgetsmediator.h"
 #include "tooltips.h"
-#include "messagewidget.h"
+#include "message.h"
 #include <memory>
 
 #include <QGridLayout>
@@ -123,8 +123,6 @@ bool BrowserPage::checkConditions()
         QMessageBox msgBox;
         msgBox.setText("Оберіть станції відправлення та прибуття");
         msgBox.exec();
-        //auto pm = new MessageWidget(this);
-        //pm->show();
         return false;
     }
     if (dateField->date() < QDate::currentDate())

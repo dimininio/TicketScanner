@@ -3,20 +3,31 @@
 
 #include <QWidget>
 
-namespace Ui {
-class Message;
-}
+/*
+Message is a simple class for messages outputting.
+TicketScanner has own window style, but QMessageBox uses standard window.
+So, this class wraps QMessageBox by WindowWrapper for similar displaying.
+*/
+
+
+class QMessageBox;
+class WindowWrapper;
+class QEventLoop;
 
 class Message : public QWidget
 {
     Q_OBJECT
-
 public:
-    explicit Message(QWidget *parent = 0);
+    explicit Message(QString message,QWidget *parent = nullptr);
     ~Message();
 
+    void exec();
+
 private:
-    Ui::Message *ui;
+    QMessageBox* internalMessage;
+    WindowWrapper* customWindow;
+    QEventLoop*    eventLoop;
+
 };
 
 #endif // MESSAGE_H
