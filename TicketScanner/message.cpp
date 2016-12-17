@@ -24,7 +24,9 @@ Message::Message(QString message, QWidget *parent) : QWidget(parent)
     //After button click
     //internalMessage closes because its own EventLoop is finished
     //we close customWindow and finish our event loop (release paused function)
-    connect(internalMessage,&QMessageBox::buttonClicked,[&](){ customWindow->close();eventLoop->exit();});
+    connect(internalMessage,&QMessageBox::buttonClicked,this,&Message::closeMessage);
+
+    connect(customWindow,&WindowWrapper::closeWrapper,this,&Message::closeMessage);
 }
 
 
@@ -41,6 +43,17 @@ void Message::exec()
     eventLoop->exec();
 }
 
+
+void Message::closeMessage()
+{
+    internalMessage->close();
+    customWindow->close();
+    if (eventLoop && eventLoop->isRunning())
+    {
+        eventLoop->exit();
+    }
+
+}
 
 
 

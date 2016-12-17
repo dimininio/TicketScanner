@@ -2,7 +2,8 @@
 #define WINDOWWRAPPER_H
 
 /*
- * The borderless window which contains(wraps) the main window of applications.
+ * WindowWrapper is important class for customization of window style.
+ * It can contain(wrap) any window of applications.
  * This allow to create your own type of window,title bar, toolbuttons (close, minimize)
 */
 
@@ -19,6 +20,9 @@ public:
     ~WindowWrapper();
 
     void setMainWidget(QWidget* w);
+
+signals:
+    void closeWrapper();
 
 private:
 

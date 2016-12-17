@@ -33,6 +33,8 @@ UZApplication::UZApplication(int &argc, char **argv):
     p_networkManager = new NetworkManager(this);
     p_trains = new Trains();
 
+    windowWrapper = new WindowWrapper();
+
     QFile styleF;
     styleF.setFileName(":/resources/widgetstyles.qss");
     styleF.open(QFile::ReadOnly);
@@ -41,6 +43,7 @@ UZApplication::UZApplication(int &argc, char **argv):
 
     connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
     connect(p_networkManager,&NetworkManager::responseReady,this,&UZApplication::analizeResponse);
+    connect(windowWrapper,&WindowWrapper::closeWrapper,this,&UZApplication::quit);
 
     RequestType requestType; //initialization of requests' types
 
@@ -52,12 +55,11 @@ void UZApplication::showWindow()
 {
     if (!mainWindow) {
         mainWindow = new UZMainWindow();
-        windowWrapper = new WindowWrapper();
+
         windowWrapper->setMainWidget(mainWindow);
         windowWrapper->show();
         splashScreen->finish(windowWrapper);
         //mainWindow->show();
-
      }
 }
 

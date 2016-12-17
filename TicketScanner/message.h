@@ -22,6 +22,7 @@ public:
     ~Message();
 
     void exec();
+    void closeMessage();
 
 private:
     QMessageBox* internalMessage;
