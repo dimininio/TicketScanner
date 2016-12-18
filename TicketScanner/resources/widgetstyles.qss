@@ -113,6 +113,19 @@ QLabel#connectionLostLabel{
 }
 
 
+
+QGroupBox {
+    border: 1px solid #91D9D3;
+    margin-top:  3ex;
+}
+
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+}
+
+
 QFrame#webViewFrame
 {
     border: 2px solid #91D9D3;
