@@ -16,7 +16,6 @@
 #include <QWebView>
 #include <QGroupBox>
 #include <QCheckBox>
-#include <QMessageBox>
 #include <QDesktopServices>
 #include <algorithm>
 
@@ -120,15 +119,13 @@ void BrowserPage::ticketsSearch()
 bool BrowserPage::checkConditions()
 {
     if (editFrom->text().length()==0 || editTo->text().length()==0) {
-        QMessageBox msgBox;
-        msgBox.setText("Оберіть станції відправлення та прибуття");
+        Message msgBox("Оберіть станції відправлення та прибуття");
         msgBox.exec();
         return false;
     }
     if (dateField->date() < QDate::currentDate())
     {
-        QMessageBox msgBox;
-        msgBox.setText("Зазначена дата вже пройшла");
+        Message msgBox("Зазначена дата вже пройшла");
         msgBox.exec();
         return false;
     }
@@ -474,8 +471,7 @@ bool SettingsPage::checkConditions()
     auto coachesResult = std::find_if(coachesTypes.begin(),coachesTypes.end(),[](QCheckBox* box){return box->isChecked();});
 
     if (trainsResult==trainsGroup.end() || coachesResult==coachesTypes.end()) {
-        QMessageBox msgBox;
-        msgBox.setText("Визначте умови для пошуку квитків. Оберіть доступні поїзди і типи вагонів");
+        Message msgBox("Визначте умови для пошуку квитків. Оберіть доступні поїзди і типи вагонів");
         msgBox.exec();
         return false;
     }
@@ -598,8 +594,7 @@ void ProcessingPage::openBrowser()
 
     qDebug()<<"open"<<result;
     if (!result) {
-        QMessageBox msgBox;
-        msgBox.setText("Не відкривається ваш браузер (Mozilla, Google Chrome, Safari..)."
+        Message msgBox("Не відкривається ваш браузер (Mozilla, Google Chrome, Safari..)."
                        " Перевірте налаштування вашого браузера за замовчуванням"
                        " або відкрийте сайт Укрзалізниці самостійно");
         msgBox.exec();

@@ -5,7 +5,7 @@
 #include <QtWebKitWidgets>
 #include <QNetworkReply>
 
-#include <QMessageBox>
+#include "message.h"
 #include <QDebug>
 #include <QUrl>
 #include "uzapplication.h"
@@ -301,17 +301,15 @@ void NetworkManager::errorSlot(QNetworkReply::NetworkError err)
 //temporary
 void NetworkManager::connectionErrorSlot()
 {
-    QMessageBox msgBox;
-    msgBox.setText("Відсутній зв'язок із сервером Укрзалізниці. Перевірте інтернет");
-    msgBox.exec();
+    Message message("Відсутній зв'язок із сервером Укрзалізниці. Перевірте інтернет");
+    message.exec();
 
 }
 
 void NetworkManager::tooLongWaiting()
 {
-    QMessageBox msgBox;
-    msgBox.setText("Сервер Укрзалізниці не відповідає");
-    msgBox.exec();
+    Message message("Сервер Укрзалізниці не відповідає");
+    message.exec();
 }
 
 
