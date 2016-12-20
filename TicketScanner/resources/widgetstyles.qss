@@ -93,17 +93,16 @@ QCheckBox:focus{
 }
 
 
-QLabel{
-    margin-top: 30px;
-}
 
 QLabel#processingLabel{
+    margin-top: 30px;
     border: 2px solid #91D9D3;
     background-color: #60B3D7;
     max-height: 3em;
 }
 
 QLabel#searchLabel{
+    margin-top: 30px;
     border: 1px solid #91D9D3;
     background-color: white;
 }

@@ -9,5 +9,6 @@
         <file>resources/splash.jpg</file>
         <file>resources/TicketScanner.ico</file>
         <file>resources/TicketScanner.icns</file>
+        <file>resources/titleBarIcon.png</file>
     </qresource>
 </RCC>

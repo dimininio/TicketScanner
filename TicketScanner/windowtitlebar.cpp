@@ -2,6 +2,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include "windowtitlebar.h"
+#include "uzapplication.h"
 
 WindowTitleBar::WindowTitleBar(QWidget *parent): QWidget(parent)
 {
@@ -10,6 +11,7 @@ WindowTitleBar::WindowTitleBar(QWidget *parent): QWidget(parent)
     styleF.open(QFile::ReadOnly);
     QString qssStr = styleF.readAll();
     setStyleSheet(qssStr);
+
 
     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     sizePolicy.setHorizontalStretch(0);
@@ -21,29 +23,31 @@ WindowTitleBar::WindowTitleBar(QWidget *parent): QWidget(parent)
     horizontalLayout->setSpacing(6);
     horizontalLayout->setContentsMargins(5, 5, 5, 5);
 
-    titleText = new QLabel("TicketScanner",this);
+    QLabel* iconHandler = new QLabel(this);
+    //iconHandler->setMinimumWidth(24);
+    iconHandler->setPixmap(QPixmap(":/resources/titleBarIcon.png"));
+    horizontalLayout->addWidget(iconHandler);
 
-    titleText->setObjectName(QStringLiteral("titleText"));    
-    QFont font;
-    font.setBold(true);
-    font.setWeight(75);
-    titleText->setFont(font);
-    titleText->setAlignment(Qt::AlignCenter);
-    horizontalLayout->addWidget(titleText);
+    titleText = new QLabel(this);
+    titleText->setText("  TicketScanner");
+    titleText->setObjectName(QStringLiteral("titleText"));
+
+    //QFont font;
+    //font->setPixelSize(14);
+    //font->setBold(true);
+    //font->setWeight(75);
+    //titleText->setFont(*font);
+    //titleText->setAlignment(Qt::AlignCenter);
+    horizontalLayout->addWidget(titleText,Qt::AlignLeft);
 
     minimizeButton = new QToolButton(this);
     minimizeButton->setObjectName(QStringLiteral("minimizeButton"));
-    minimizeButton->setFont(font);
 
     horizontalLayout->addWidget(minimizeButton);
 
     closeButton = new QToolButton(this);
     closeButton->setObjectName(QStringLiteral("closeButton"));
-    closeButton->setFont(font);
 
-
-    //minimizeButton->setText("_");
-    //closeButton->setText("X");
 
     horizontalLayout->addWidget(closeButton);
     mousePressed = false;

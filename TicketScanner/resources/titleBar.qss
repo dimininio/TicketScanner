@@ -12,11 +12,13 @@ WindowTitleBar
 }
 
 
-
 QLabel#titleText
 {
-        color: black;
+        color: #91D9D3;
+        font-size: 14;
+        font-weight: bold;
 }
+
 
 QToolButton#closeButton
 {

@@ -36,10 +36,10 @@ protected:
     QPoint wndPos;
 
 private:
-    QLabel *titleText;
-    QToolButton *minimizeButton;
-    QToolButton *closeButton;
-    QHBoxLayout *horizontalLayout;
+    QLabel* titleText;
+    QToolButton* minimizeButton;
+    QToolButton* closeButton;
+    QHBoxLayout* horizontalLayout;
 
 };
 
