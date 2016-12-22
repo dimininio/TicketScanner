@@ -25,7 +25,7 @@ class QFrame;
 
 class WidgetsMediator;
 class AnimatedSearchWidget;
-class UZApplication;
+class Application;
 
 
 class BasePage

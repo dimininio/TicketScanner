@@ -13,7 +13,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-    uzapplication.cpp \
     networkmanager.cpp \
     lineedit.cpp \
     windowpages.cpp \
@@ -25,11 +24,11 @@ SOURCES += main.cpp\
     uzmainwindow.cpp \
     windowwrapper.cpp \
     parser.cpp \
-    message.cpp
+    message.cpp \
+    application.cpp
 
 
 HEADERS  += \
-    uzapplication.h \
     networkmanager.h \
     lineedit.h \
     requestdata.h \
@@ -44,7 +43,8 @@ HEADERS  += \
     windowwrapper.h \
     parser.h \
     tooltips.h \
-    message.h
+    message.h \
+    application.h
 
 FORMS    +=
 

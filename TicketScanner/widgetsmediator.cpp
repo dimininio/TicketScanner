@@ -1,7 +1,7 @@
 #include "widgetsmediator.h"
 #include "windowpages.h"
 
-#include "uzapplication.h"
+#include "application.h"
 #include "searchparameters.h"
 #include "lineedit.h"
 #include "networkmanager.h"
@@ -98,7 +98,7 @@ void WidgetsMediator::setSearchParametersAndRunSearsh()
     //                              or settings was changed.
     if (!processingPage || settingsPage->isChanged())
     {
-        UZApplication::instance()->startScanning(searchParameters);
+        Application::instance()->startScanning(searchParameters);
     }
 
 }

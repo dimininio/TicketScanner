@@ -2,7 +2,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include "windowtitlebar.h"
-#include "uzapplication.h"
+#include "application.h"
 
 WindowTitleBar::WindowTitleBar(QWidget *parent): QWidget(parent)
 {

@@ -1,7 +1,7 @@
 #include "windowpages.h"
 #include "lineedit.h"
 #include "requestdata.h"
-#include "uzapplication.h"
+#include "application.h"
 #include "networkmanager.h"
 #include "searchparameters.h"
 #include "config.h"
@@ -85,8 +85,8 @@ BrowserPage::BrowserPage(WidgetsMediator* widgetsMediator,QWidget *parent)
     connect(searchButton,&QPushButton::clicked,this,&BrowserPage::ticketsSearch);
     connect(showSettingsButton,&QPushButton::clicked,this,&BrowserPage::showSettings);
     connect(webView,&QWebView::linkClicked,this,&BrowserPage::processLink);
-    connect(UZApplication::instance(),&UZApplication::searchError,this,&BrowserPage::showError);
-    connect(UZApplication::instance()->networkManager(),&NetworkManager::connectionLost,this,[&](){showError("Відсутній зв'язок із сервером Укрзалізниці.");}); //TODO: pretify architecture
+    connect(Application::instance(),&Application::searchError,this,&BrowserPage::showError);
+    connect(Application::instance()->networkManager(),&NetworkManager::connectionLost,this,[&](){showError("Відсутній зв'язок із сервером Укрзалізниці.");}); //TODO: pretify architecture
 }
 
 void BrowserPage::showSettings()
@@ -106,10 +106,10 @@ void BrowserPage::ticketsSearch()
     {
         //Although changes of date not considered in the BrowserPage::isChanged()
         //We should reset current list of trains, if date was changed
-        UZApplication::instance()->resetTrains();   //avoid mix with previous list of trains;
+        Application::instance()->resetTrains();   //avoid mix with previous list of trains;
     }
 
-    NetworkManager* networkManager = UZApplication::instance()->networkManager();
+    NetworkManager* networkManager = Application::instance()->networkManager();
     QString date = dateField->date().toString(Config::RequestDateFormat);
     SearchPOSTData searchdata(editFrom->getStationID(),editTo->getStationID(),date);
     networkManager->sendSearchRequest(searchdata,RequestType::SearchRequest);
@@ -170,9 +170,9 @@ void BrowserPage::processTrain(const QUrl &link)
 {
      qDebug()<<"clicked "<<link;
      QString trainNum = link.toString();
-     const Train* currentTrain = UZApplication::instance()->getTrain(trainNum);
+     const Train* currentTrain = Application::instance()->getTrain(trainNum);
 
-     NetworkManager* networkManager = UZApplication::instance()->networkManager();
+     NetworkManager* networkManager = Application::instance()->networkManager();
 
      for(auto&& p = currentTrain->freePlaces.begin();p!=currentTrain->freePlaces.end();++p)
      {
@@ -187,7 +187,7 @@ void BrowserPage::processTrain(const QUrl &link)
 void BrowserPage::showAvailableTrains()
 {
     QString trainData;
-    const Trains* trains = UZApplication::instance()->trains();
+    const Trains* trains = Application::instance()->trains();
 
 
     trainData =trainData+ "<html><body><table>";
@@ -311,7 +311,7 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
     pagelayout->addWidget(buttonsBox);
     pagelayout->setAlignment(buttonsBox,Qt::AlignBottom);
 
-    NetworkManager* networkManager = UZApplication::instance()->networkManager();
+    NetworkManager* networkManager = Application::instance()->networkManager();
     connect(networkManager,&NetworkManager::responseReady,this,&SettingsPage::getTrainsOnRoute);
 
     connect(allTrainsBtn,&QRadioButton::clicked,this,&SettingsPage::onRadioButtonClick);
@@ -328,7 +328,7 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
 //TODO: comment strategy...
 void SettingsPage::exploreRout()
 {
-    NetworkManager* networkManager = UZApplication::instance()->networkManager();
+    NetworkManager* networkManager = Application::instance()->networkManager();
     QDate futuredate = QDate::currentDate();
     futuredate = futuredate.addDays(24);
     SearchPOSTData searchdata(mediator()->getStationIDFrom(),mediator()->getStationIDTo(),futuredate.toString(Config::RequestDateFormat));
@@ -391,7 +391,7 @@ void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, RequestType::Request i
     if (id == RequestType::TrainsOnRoute)
     {
         Trains allTrainsOnRoute;
-        UZApplication::instance()->parseSearchResults(reply,allTrainsOnRoute);
+        Application::instance()->parseSearchResults(reply,allTrainsOnRoute);
         QVector<QString> placeTypes;
         QVector<Train> trainsOnRoute;
         for(auto train : allTrainsOnRoute)
@@ -510,7 +510,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     warningLabel->setObjectName(QStringLiteral("processingLabel"));
     warningLabel->setWordWrap(true);
     warningLabel->setAlignment(Qt::AlignJustify|Qt::AlignVCenter);
-    animatedSearchWidget =  new AnimatedSearchWidget(UZApplication::instance()->mainWindow->width(),this);
+    animatedSearchWidget =  new AnimatedSearchWidget(Application::instance()->mainWindow->width(),this);
     connectionLostLabel = new QLabel(this);
     connectionLostLabel->setText("Відсутній зв'язок із сервером! \nЯк тільки його буде відновлено, пошук продовжиться автоматично");
     connectionLostLabel->setObjectName(QStringLiteral("connectionLostLabel"));
@@ -535,13 +535,13 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
 
     pagelayout->setSpacing(10);
 
-    connect(UZApplication::instance(),&UZApplication::updateSearchStatus,this,&ProcessingPage::updatePage);
+    connect(Application::instance(),&Application::updateSearchStatus,this,&ProcessingPage::updatePage);
     connect(showSettingsButton,&QPushButton::clicked,this,&ProcessingPage::showSettings);
     connect(openDefaultBrowserButton,&QPushButton::clicked,this,&ProcessingPage::openBrowser);
     connect(startNewSearchButton,&QPushButton::clicked,[this](){this->mediator()->resetSearch();
-                                                                UZApplication::instance()->resetTrains(); //TODO: prettify
-                                                                UZApplication::instance()->setStatus(UZApplication::SearchStatus::Waiting);});
-    connect(UZApplication::instance()->networkManager(),&NetworkManager::connectionLost,this,[this](){this->connectionLostLabel->show();});
+                                                                Application::instance()->resetTrains(); //TODO: prettify
+                                                                Application::instance()->setStatus(Application::SearchStatus::Waiting);});
+    connect(Application::instance()->networkManager(),&NetworkManager::connectionLost,this,[this](){this->connectionLostLabel->show();});
 
     updatePage();
 setAttribute(Qt::WA_NoSystemBackground);
@@ -570,7 +570,7 @@ void ProcessingPage::updatePage()
     warningLabel->setText("Не закривайте програму. Наявність квитків перевіряється щохвилинно.");
     connectionLostLabel->hide(); //If we call this function, connection is OK
 
-    if (UZApplication::instance()->status()==UZApplication::SearchStatus::Found) {
+    if (Application::instance()->status()==Application::SearchStatus::Found) {
         statusLabel->setText("Знайдено");
         animatedSearchWidget->updateSearchStatus();
         warningLabel->setText("");

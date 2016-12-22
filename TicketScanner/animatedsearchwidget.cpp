@@ -1,5 +1,5 @@
 #include "animatedsearchwidget.h"
-#include "uzapplication.h"
+#include "application.h"
 
 #include <QPainter>
 #include <QPropertyAnimation>
@@ -47,9 +47,9 @@ int AnimatedSearchWidget::searchStatus()
 void AnimatedSearchWidget::updateSearchStatus()
 {
    // status = searchStatus;
-    UZApplication::SearchStatus status = UZApplication::instance()->status();
+    Application::SearchStatus status = Application::instance()->status();
     switch (status) {
-    case UZApplication::SearchStatus::Search:
+    case Application::SearchStatus::Search:
         moveAnimation->start();
         break;
     default:

@@ -1,5 +1,5 @@
 #include "lineedit.h"
-#include "uzapplication.h"
+#include "application.h"
 #include "networkmanager.h"
 
 #include <QStringList>
@@ -23,7 +23,7 @@ LineEdit::LineEdit(QWidget *parent):
 {
     currentCompleter = new QCompleter(this);
 
-    networkManager = UZApplication::instance()->networkManager();
+    networkManager = Application::instance()->networkManager();
     p_identifier = ++senderIdentifier;
 
     connect(this,SIGNAL(textEdited(QString)),this,SLOT(checkContent()));

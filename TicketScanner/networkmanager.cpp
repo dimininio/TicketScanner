@@ -8,7 +8,7 @@
 #include "message.h"
 #include <QDebug>
 #include <QUrl>
-#include "uzapplication.h"
+#include "application.h"
 //#include <QNetworkProxy>
 
 static const QUrl searchURL("http://booking.uz.gov.ua/purchase/search/");

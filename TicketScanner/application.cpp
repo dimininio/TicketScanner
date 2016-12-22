@@ -1,4 +1,4 @@
-#include "uzapplication.h"
+#include "application.h"
 #include "uzmainwindow.h"
 #include "networkmanager.h"
 #include "searchparameters.h"
@@ -19,10 +19,10 @@
 #include "parser.h"
 
 
-NetworkManager* UZApplication::p_networkManager = nullptr;
+NetworkManager* Application::p_networkManager = nullptr;
 
 
-UZApplication::UZApplication(int &argc, char **argv):
+Application::Application(int &argc, char **argv):
     QApplication(argc,argv),
     mainWindow(nullptr),searchParameters(nullptr),p_trains(nullptr),p_scanTrains(nullptr),
     timer(nullptr),p_interval(100000) //1:40 min
@@ -41,9 +41,9 @@ UZApplication::UZApplication(int &argc, char **argv):
     QString qssStr = styleF.readAll();
     setStyleSheet(qssStr);
 
-    connect(p_networkManager,&NetworkManager::networkManagerReady,this,&UZApplication::showWindow);
-    connect(p_networkManager,&NetworkManager::responseReady,this,&UZApplication::analizeResponse);
-    connect(windowWrapper,&WindowWrapper::closeWrapper,this,&UZApplication::quit);
+    connect(p_networkManager,&NetworkManager::networkManagerReady,this,&Application::showWindow);
+    connect(p_networkManager,&NetworkManager::responseReady,this,&Application::analizeResponse);
+    connect(windowWrapper,&WindowWrapper::closeWrapper,this,&Application::quit);
 
     RequestType requestType; //initialization of requests' types
 
@@ -51,7 +51,7 @@ UZApplication::UZApplication(int &argc, char **argv):
 }
 
 
-void UZApplication::showWindow()
+void Application::showWindow()
 {
     if (!mainWindow) {
         mainWindow = new UZMainWindow();
@@ -64,12 +64,12 @@ void UZApplication::showWindow()
 }
 
 
-UZApplication* UZApplication::instance()
+Application* Application::instance()
 {
-    return (static_cast<UZApplication*>(QCoreApplication::instance()));
+    return (static_cast<Application*>(QCoreApplication::instance()));
 }
 
-UZApplication::~UZApplication()
+Application::~Application()
 {
     delete mainWindow;
     delete p_networkManager;
@@ -82,7 +82,7 @@ UZApplication::~UZApplication()
 
 
 
-void UZApplication::analizeResponse(QNetworkReply *reply, RequestType::Request id)
+void Application::analizeResponse(QNetworkReply *reply, RequestType::Request id)
 {
     if (reply==nullptr) return;
 
@@ -133,7 +133,7 @@ QString whatType(QNetworkReply *coachesReply)
 }
 
 
-bool UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContainer)
+bool Application::parseSearchResults(QNetworkReply *reply,Trains& trainsContainer)
 {
 
     QByteArray data = reply->readAll();
@@ -152,7 +152,7 @@ bool UZApplication::parseSearchResults(QNetworkReply *reply,Trains& trainsContai
 }
 
 
-bool UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
+bool Application::parseCoachesSearchResults(QNetworkReply *reply )
 {
     QByteArray data = reply->readAll();
     QString trainNumber = whatTrain(reply);
@@ -170,13 +170,13 @@ bool UZApplication::parseCoachesSearchResults(QNetworkReply *reply )
 
 
 
-void UZApplication::startScanning(std::shared_ptr<SearchParameters>& parameters)
+void Application::startScanning(std::shared_ptr<SearchParameters>& parameters)
 {
     searchParameters = parameters;
     qDebug()<<searchParameters->stationTo()<< "    check search";
     if (!timer) {
         timer = new QTimer(this);
-        connect(timer,&QTimer::timeout,this,&UZApplication::sendScanRequest);
+        connect(timer,&QTimer::timeout,this,&Application::sendScanRequest);
         timer->start(p_interval);
     }
     if (p_scanTrains)
@@ -188,7 +188,7 @@ void UZApplication::startScanning(std::shared_ptr<SearchParameters>& parameters)
 
 
 
-void UZApplication::sendScanRequest()
+void Application::sendScanRequest()
 {
     QString date = searchParameters->getTripDate().toString(Config::RequestDateFormat);
     SearchPOSTData searchdata(searchParameters->stationFrom(),searchParameters->stationTo(),date);
@@ -196,7 +196,7 @@ void UZApplication::sendScanRequest()
 }
 
 
-bool UZApplication::checkScanningResults()
+bool Application::checkScanningResults()
 {
     //Ukrazaliznitsya doesn't have public request to get all possible trains between stations.
     //Now we check two dates for existing trains, but it cannot guarantee that available trains
@@ -228,49 +228,49 @@ bool UZApplication::checkScanningResults()
 }
 
 
-NetworkManager*  UZApplication::networkManager()
+NetworkManager*  Application::networkManager()
 {
     return p_networkManager;
 }
 
 
-const Trains* UZApplication::trains() const
+const Trains* Application::trains() const
 {
     return p_trains;
 }
 
 
-Trains* UZApplication::setTrains()
+Trains* Application::setTrains()
 {
     return p_trains;
 }
 
-Train *UZApplication::setTrain(QString number)
+Train *Application::setTrain(QString number)
 {
     return  &p_trains->operator [](number);
 }
 
-const Train *UZApplication::getTrain(QString number) const
+const Train *Application::getTrain(QString number) const
 {
     return  &p_trains->operator [](number);
 }
 
 
 
-void UZApplication::setStatus(UZApplication::SearchStatus status)
+void Application::setStatus(Application::SearchStatus status)
 {
     searchStatus = status;
     emit updateSearchStatus(status);
 }
 
 
-UZApplication::SearchStatus UZApplication::status()
+Application::SearchStatus Application::status()
 {
     return searchStatus;
 }
 
 
-void UZApplication::resetTrains()
+void Application::resetTrains()
 {
     if (p_trains)
     {
@@ -284,7 +284,7 @@ void UZApplication::resetTrains()
 
 
 
-bool UZApplication::eventFilter(QObject* obj, QEvent* event)
+bool Application::eventFilter(QObject* obj, QEvent* event)
 {
     if (event->type() == QEvent::KeyPress)
     {

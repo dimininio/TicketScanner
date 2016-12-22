@@ -1,5 +1,5 @@
 #include "windowwrapper.h"
-#include "uzapplication.h"
+#include "application.h"
 #include "config.h"
 
 #include <QtWidgets/QVBoxLayout>

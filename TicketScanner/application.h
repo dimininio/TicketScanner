@@ -16,14 +16,14 @@ class QTimer;
 class SearchParameters;
 
 
-class UZApplication: public QApplication
+class Application: public QApplication
 {
     Q_OBJECT
 
 public:
 
-    UZApplication(int &argc, char **argv);
-    ~UZApplication();
+    Application(int &argc, char **argv);
+    ~Application();
 
     enum class SearchStatus{
         Waiting,
@@ -31,7 +31,7 @@ public:
         Found
     };
 
-    static UZApplication* instance();
+    static Application* instance();
     static NetworkManager* networkManager();
 
     UZMainWindow *mainWindow;
