@@ -42,6 +42,8 @@ WindowWrapper::WindowWrapper(QWidget *parent) :
     setAttribute(Qt::WA_NoSystemBackground);
     connect(titleBar,&WindowTitleBar::closeApp,this,&WindowWrapper::closeWrapper);
     connect(titleBar,&WindowTitleBar::minimize,this,&WindowWrapper::showMinimized);
+
+    qDebug()<<this->isWindow() << "     IS_window";
 }
 
 WindowWrapper::~WindowWrapper()
