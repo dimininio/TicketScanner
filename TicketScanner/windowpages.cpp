@@ -471,7 +471,7 @@ bool SettingsPage::checkConditions()
     auto coachesResult = std::find_if(coachesTypes.begin(),coachesTypes.end(),[](QCheckBox* box){return box->isChecked();});
 
     if (trainsResult==trainsGroup.end() || coachesResult==coachesTypes.end()) {
-        Message msgBox("Визначте умови для пошуку квитків. Оберіть доступні поїзди і типи вагонів");
+        Message msgBox("Визначте умови для пошуку квитків.\n Оберіть доступні поїзди і типи вагонів");
         msgBox.exec();
         return false;
     }
@@ -512,7 +512,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     warningLabel->setAlignment(Qt::AlignJustify|Qt::AlignVCenter);
     animatedSearchWidget =  new AnimatedSearchWidget(Application::instance()->mainWindow->width(),this);
     connectionLostLabel = new QLabel(this);
-    connectionLostLabel->setText("Відсутній зв'язок із сервером! \nЯк тільки його буде відновлено, пошук продовжиться автоматично");
+    connectionLostLabel->setText("Відсутній зв'язок із сервером!\nЯк тільки його буде відновлено, пошук продовжиться автоматично");
     connectionLostLabel->setObjectName(QStringLiteral("connectionLostLabel"));
 
     showSettingsButton = new QPushButton("Змінити налаштування пошуку");

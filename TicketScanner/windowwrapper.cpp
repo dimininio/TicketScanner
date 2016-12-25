@@ -42,8 +42,10 @@ WindowWrapper::WindowWrapper(QWidget *parent) :
     setAttribute(Qt::WA_NoSystemBackground);
     connect(titleBar,&WindowTitleBar::closeApp,this,&WindowWrapper::closeWrapper);
     connect(titleBar,&WindowTitleBar::minimize,this,&WindowWrapper::showMinimized);
+    //For OS_X:
+    //It is necessary to use Qt 5.5.1 or higher for building
+    //There are some bug with minimizing, and shadows for previous version
 
-    qDebug()<<this->isWindow() << "     IS_window";
 }
 
 WindowWrapper::~WindowWrapper()
