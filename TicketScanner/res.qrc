@@ -10,5 +10,6 @@
         <file>resources/TicketScanner.ico</file>
         <file>resources/TicketScanner.icns</file>
         <file>resources/titleBarIcon.png</file>
+        <file>resources/help.png</file>
     </qresource>
 </RCC>

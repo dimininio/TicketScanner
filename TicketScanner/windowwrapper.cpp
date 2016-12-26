@@ -7,7 +7,7 @@
 
 
 
-WindowWrapper::WindowWrapper(QWidget *parent) :
+WindowWrapper::WindowWrapper(bool showHelp, bool showMinimize, QWidget *parent) :
     QWidget(parent)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
@@ -18,7 +18,7 @@ WindowWrapper::WindowWrapper(QWidget *parent) :
     verticalLayout = new QVBoxLayout(this);
     verticalLayout->setSpacing(0);
 
-    titleBar = new WindowTitleBar(this);
+    titleBar = new WindowTitleBar(showHelp,showMinimize,this);
     titleBar->setObjectName(QStringLiteral("titleBar"));
 
     bodyWindowWidget = new QWidget(this);
@@ -41,7 +41,8 @@ WindowWrapper::WindowWrapper(QWidget *parent) :
 
     setAttribute(Qt::WA_NoSystemBackground);
     connect(titleBar,&WindowTitleBar::closeApp,this,&WindowWrapper::closeWrapper);
-    connect(titleBar,&WindowTitleBar::minimize,this,&WindowWrapper::showMinimized);
+    connect(titleBar,&WindowTitleBar::minimize,this,&WindowWrapper::showMinimized); //doesn't sent messages, just minimizes window
+    connect(titleBar,&WindowTitleBar::help,this,&WindowWrapper::helpWrapper);
     //For OS_X:
     //It is necessary to use Qt 5.5.1 or higher for building
     //There are some bug with minimizing, and shadows for previous version

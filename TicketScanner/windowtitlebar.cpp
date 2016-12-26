@@ -4,7 +4,8 @@
 #include "windowtitlebar.h"
 #include "application.h"
 
-WindowTitleBar::WindowTitleBar(QWidget *parent): QWidget(parent)
+WindowTitleBar::WindowTitleBar(bool showHelp, bool showMinimize, QWidget *parent):
+    QWidget(parent),helpButton(nullptr),minimizeButton(nullptr)
 {
     QFile styleF;
     styleF.setFileName(":/resources/titleBar.qss");
@@ -40,23 +41,35 @@ WindowTitleBar::WindowTitleBar(QWidget *parent): QWidget(parent)
     //titleText->setAlignment(Qt::AlignCenter);
     horizontalLayout->addWidget(titleText,Qt::AlignLeft);
 
-    minimizeButton = new QToolButton(this);
-    minimizeButton->setObjectName(QStringLiteral("minimizeButton"));
+    if (showHelp)
+    {
+        helpButton = new QToolButton(this);
+        helpButton->setObjectName(QStringLiteral("helpButton"));
+        horizontalLayout->addWidget(helpButton);
+        connect(helpButton,SIGNAL(clicked(bool)),this,SIGNAL(help()));
+    }
 
-    horizontalLayout->addWidget(minimizeButton);
+
+    if (showMinimize)
+    {
+        minimizeButton = new QToolButton(this);
+        minimizeButton->setObjectName(QStringLiteral("minimizeButton"));
+        horizontalLayout->addWidget(minimizeButton);
+        connect(minimizeButton,SIGNAL(clicked(bool)),this,SIGNAL(minimize()));
+    }
+
 
     closeButton = new QToolButton(this);
     closeButton->setObjectName(QStringLiteral("closeButton"));
-
-
     horizontalLayout->addWidget(closeButton);
+
+    connect(closeButton,SIGNAL(clicked(bool)),this,SIGNAL(closeApp()));
+
     mousePressed = false;
 
     setMaximumHeight(29);// fixed height of titlebar widget
     setMinimumHeight(29);
 
-    connect(closeButton,SIGNAL(clicked(bool)),this,SIGNAL(closeApp()));
-    connect(minimizeButton,SIGNAL(clicked(bool)),this,SIGNAL(minimize()));
 }
 
 void WindowTitleBar::mousePressEvent(QMouseEvent *event)

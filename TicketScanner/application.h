@@ -54,6 +54,7 @@ signals:
 
 private slots:
     void showWindow();
+    void showHelp();
     void analizeResponse(QNetworkReply *reply, RequestType::Request id);
 
 

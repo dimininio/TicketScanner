@@ -16,13 +16,14 @@ class WindowWrapper : public QWidget
 {
     Q_OBJECT
 public:
-    explicit WindowWrapper(QWidget *parent = 0);
+    explicit WindowWrapper(bool showHelp = false, bool showMinimize = false,QWidget *parent = 0);
     ~WindowWrapper();
 
     void setMainWidget(QWidget* w);
 
 signals:
     void closeWrapper();
+    void helpWrapper();
 
 private:
 

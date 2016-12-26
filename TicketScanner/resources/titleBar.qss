@@ -30,8 +30,16 @@ QToolButton#minimizeButton
 {
         background-color: transparent;
         border-image: url(:resources/minimize.png);
-
 }
+
+QToolButton#helpButton
+{
+        background-color: transparent;
+        border-image: url(:resources/help.png);
+}
+
+
+
 
 QToolButton#closeButton:hover
 {
@@ -42,6 +50,13 @@ QToolButton#minimizeButton:hover
 {
         background-color: #387875;
 }
+QToolButton#helpButton:hover
+{
+        background-color: #387875;
+}
+
+
+
 
 QToolButton#closeButton:pressed
 {
@@ -49,6 +64,10 @@ QToolButton#closeButton:pressed
 }
 
 QToolButton#minimizeButton:pressed
+{
+        background-color: #1E6360;
+}
+QToolButton#helpButton:pressed
 {
         background-color: #1E6360;
 }

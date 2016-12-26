@@ -33,7 +33,7 @@ Application::Application(int &argc, char **argv):
     p_networkManager = new NetworkManager(this);
     p_trains = new Trains();
 
-    windowWrapper = new WindowWrapper();
+    windowWrapper = new WindowWrapper(true,true);
 
     QFile styleF;
     styleF.setFileName(":/resources/widgetstyles.qss");
@@ -44,6 +44,7 @@ Application::Application(int &argc, char **argv):
     connect(p_networkManager,&NetworkManager::networkManagerReady,this,&Application::showWindow);
     connect(p_networkManager,&NetworkManager::responseReady,this,&Application::analizeResponse);
     connect(windowWrapper,&WindowWrapper::closeWrapper,this,&Application::quit);
+    connect(windowWrapper,&WindowWrapper::helpWrapper,this,&Application::showHelp);
 
     RequestType requestType; //initialization of requests' types
 
@@ -291,7 +292,7 @@ bool Application::eventFilter(QObject* obj, QEvent* event)
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         if (keyEvent->key()==Qt::Key_F1)
         {
-            bool helpRequest = QDesktopServices::openUrl(QUrl(Config::HelpURL));
+            showHelp();
             return true;
         }
         else  {
@@ -305,6 +306,11 @@ bool Application::eventFilter(QObject* obj, QEvent* event)
 
 }
 
+
+void Application::showHelp()
+{
+    bool helpRequest = QDesktopServices::openUrl(QUrl(Config::HelpURL));
+}
 
 
 
