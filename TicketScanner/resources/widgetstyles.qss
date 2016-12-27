@@ -138,27 +138,25 @@ QMainWindow{
 
 
 
+
 /* navigation bar */
 QCalendarWidget QWidget#qt_calendar_navigationbar {
-        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #91D9D3, stop: 1 #3B9C97);
+        background-color: #91D9D3;
 }
 QCalendarWidget QToolButton {
 
         color: black;
-
-        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #91D9D3, stop: 1 #3B9C97);
+        background-color: #91D9D3;
 }
 QCalendarWidget QMenu {
 
         left: 20px;
         color: black;
-
-        background-color: #3B9C97;
-
+        background-color: #91D9D3;
 }
 QCalendarWidget QSpinBox {
         color: black;
-        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #91D9D3, stop: 1 #3B9C97);
+        background-color: #91D9D3;
         selection-background-color: rgb(136, 136, 136);
         selection-color: rgb(255, 255, 255);
 }
@@ -170,10 +168,9 @@ QCalendarWidget QSpinBox::down-arrow { width:12px;  height:12px; }
 
 */
 
-
-/* header row */
+/* header row (Sn,Mo,Tu,Fr..)*/
 QCalendarWidget QWidget {
-    alternate-background-color: #3B9C97;
+    alternate-background-color: #91D9D3;
 }
 
 /* normal days */
@@ -181,8 +178,8 @@ QCalendarWidget QAbstractItemView:enabled
 {
         /*font-size:18px;*/
         color: black;
-        background-color: #84CFCB;
-        selection-background-color: #3B9C97;
+        background-color: white;
+        selection-background-color: #91D9D3;
         selection-color: blue;
 }
 
@@ -191,6 +188,8 @@ QCalendarWidget QAbstractItemView:enabled
 QCalendarWidget QAbstractItemView:disabled {
     color: rgb(150, 150, 150);
 }
+
+
 
 
 QMessageBox {
