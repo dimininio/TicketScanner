@@ -93,18 +93,25 @@ QCheckBox:focus{
 }
 
 
+/* settings for all widgets from #processingPage
+#processingPage QLabel {
+    padding: 7px;
+}*/
+
 
 QLabel#processingLabel{
     margin-top: 30px;
     border: 2px solid #91D9D3;
     background-color: #60B3D7;
     max-height: 3em;
+    padding: 7px;
 }
 
 QLabel#searchLabel{
     margin-top: 30px;
-    border: 1px solid #91D9D3;
+    border: 2px solid #91D9D3;
     background-color: white;
+    padding: 7px;
 }
 
 QLabel#connectionLostLabel{
@@ -180,7 +187,7 @@ QCalendarWidget QAbstractItemView:enabled
         color: black;
         background-color: white;
         selection-background-color: #91D9D3;
-        selection-color: blue;
+        selection-color: #176688;
 }
 
 

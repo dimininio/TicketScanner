@@ -501,6 +501,8 @@ void SettingsPage::showBrowser()
 ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     :BasePage(widgetsMediator),QWidget(parent),searchStatus(false)
 {
+    setObjectName("processingPage");
+
     infoLabel = new QLabel(this);
     infoLabel->setObjectName(QStringLiteral("searchLabel"));
     infoLabel->setWordWrap(true);
@@ -577,6 +579,7 @@ void ProcessingPage::updatePage()
         openDefaultBrowserButton->show();
         showSettingsButton->hide();
         startNewSearchButton->show();
+        warningLabel->hide();
         mediator()->showProcessingPage(); //TODO: refactor need! But after finish of search, ProcessingPage MUST shown.
     }else {
         statusLabel->setText("Пошук");
@@ -584,6 +587,7 @@ void ProcessingPage::updatePage()
         openDefaultBrowserButton->hide();
         startNewSearchButton->hide();
         showSettingsButton->show();
+        warningLabel->show();
 
     }
 }

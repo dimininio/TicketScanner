@@ -30,7 +30,7 @@ WindowTitleBar::WindowTitleBar(bool showHelp, bool showMinimize, QWidget *parent
     horizontalLayout->addWidget(iconHandler);
 
     titleText = new QLabel(this);
-    titleText->setText("  TicketScanner");
+    titleText->setText("  Ticket Scanner");
     titleText->setObjectName(QStringLiteral("titleText"));
 
     //QFont font;
