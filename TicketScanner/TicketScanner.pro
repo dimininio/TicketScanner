@@ -56,4 +56,9 @@ CONFIG+=c++11
 win32: RC_ICONS = resources\TicketScanner.ico
 macx: ICON = resources\TicketScanner.icns
 
+
+VERSION = 1.0
+QMAKE_TARGET_COPYRIGHT = dimininio
+
+
 DISTFILES +=
