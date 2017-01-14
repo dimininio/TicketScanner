@@ -8,3 +8,7 @@ Choose the point of depart and destination point, trip date and check the ticket
 
 # Thanks
 Thanks to Natalia Shuminova for help with UI design. (https://www.facebook.com/natasha.shuminova)
+
+#References
+Installation packages:  https://github.com/dimininio/TicketScanner/releases   
+Description, help:      https://github.com/dimininio/TicketScanner/wiki/Help
