@@ -146,14 +146,21 @@ void NetworkManager::sendGetStationsRequest(QString prefix, RequestType::Request
 {
     QNetworkRequest request;
 
-    request.setUrl(QUrl(stationsURL + prefix + "/"));
+    //request.setUrl(QUrl(stationsURL + prefix + "/"));
+    request.setUrl(QUrl(stationsURL + "?term=" + prefix));  //POST changed --> GET 23/03/2017
+
     request.setRawHeader("Host",host);
     request.setRawHeader("Connection",connectionType);
     request.setRawHeader("Origin",originURL);
     request.setRawHeader("Referer",bookingUZ);
     request.setRawHeader("Sender",RequestType::getStringByRequestType(sender)); //get QByteArray equivalent to RequestType
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
-    post(request,"");
+    //post(request,"");
+
+   get(request);
+   //
+   // get()
+
     //return this->post(request,"");
 }
 

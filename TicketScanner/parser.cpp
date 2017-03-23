@@ -113,18 +113,32 @@ bool Parser::parseStations(QByteArray &data, QMap<QString,QString> &stations)
 
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
-    if (responce.isObject()) {
-        QJsonObject jsonobject = responce.object();
-         QJsonArray jsonStations = jsonobject["value"].toArray();
+    //if (responce.isObject()) {
+    //    QJsonObject jsonobject = responce.object();
+    //     QJsonArray jsonStations = jsonobject["value"].toArray();
+    //     QJsonObject station;
+    //     for(auto it2 = jsonStations.begin();it2 != jsonStations.end();++it2)
+    //     {
+    //         station = it2->toObject();
+    //         //stations.insert(station["title"].toString(), station["station_id"].toString());
+    //         stations.insert(station["label"].toString(), station["value"].toString());
+    //         //stations.insert(station["title"].toString(), QString::number(station["station_id"].toInt()));
+    //        // qDebug()<<"-- :  "<< station["title"].toString()<<" "<<station["station_id"].toString();
+    //     }
+    //    return true;
+    //}
+
+    if (responce.isArray()) {
+
+         QJsonArray jsonStations = responce.array();
          QJsonObject station;
          for(auto it2 = jsonStations.begin();it2 != jsonStations.end();++it2)
          {
              station = it2->toObject();
-             stations.insert(station["title"].toString(), station["station_id"].toString());
-             //stations.insert(station["title"].toString(), QString::number(station["station_id"].toInt()));
-            // qDebug()<<"-- :  "<< station["title"].toString()<<" "<<station["station_id"].toString();
+             stations.insert(station["label"].toString(), station["value"].toString());
          }
         return true;
     }
+
     return false;
 }
