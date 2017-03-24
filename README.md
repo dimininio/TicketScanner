@@ -9,6 +9,9 @@ Choose the point of depart and destination point, trip date and check the ticket
 # Thanks
 Thanks to Natalia Shuminova for help with UI design. (https://www.facebook.com/natasha.shuminova)
 
-#References
+# Building
+TicketScanner requires Qt 5.5 and C++ compiler. For higher versions of Qt you should install QtWebKit module in addition, because it deprecated now.
+
+# References
 Installation packages:  https://github.com/dimininio/TicketScanner/releases   
 Description, help:      https://github.com/dimininio/TicketScanner/wiki/Help
