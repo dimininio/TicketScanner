@@ -2,14 +2,13 @@
 #include "application.h"
 #include "networkmanager.h"
 
-#include <QStringList>
 #include <QNetworkReply>
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QStringListModel>
-
+#include <QStringList>
 #include <QFile>
 #include <QTextStream>
 #include "parser.h"
@@ -32,8 +31,12 @@ LineEdit::LineEdit(QWidget *parent):
 
 void LineEdit::checkContent()
 {
-    if (text().length()>=2 && currentBegin!=text().mid(0,2).toLower()) {
-        currentBegin = text().mid(0,2).toLower();
+    //Request sends when length of station more than 2.
+    //TODO: find a way of good-looking updating of completer.
+
+    //if (text().length()>=2 && currentBegin!=text().mid(0,2).toLower()) {
+    if (text().length()>=2 && text().length()<=4 && currentBegin!=text().toLower()) {
+        currentBegin = text().toLower();
         networkManager->sendGetStationsRequest(currentBegin,identifier());
         //qDebug()<<"id  "<<identifier();
     }
@@ -51,36 +54,28 @@ void LineEdit::updateContent(QNetworkReply *reply, RequestType::Request id)
     QByteArray data = reply->readAll();
     //qDebug()<<"cities :  "<< data;
 
-    stations.clear();
+
     QStringList stationsList;
-    stationsList.clear();
-    /*
-    QJsonDocument responce;
-    responce = QJsonDocument::fromJson(data);
-    if (responce.isObject()) {
-        QJsonObject jsonobject = responce.object();
-         QJsonArray jsonStations = jsonobject["value"].toArray();
-         QJsonObject station;
-         for(auto it2 = jsonStations.begin();it2 != jsonStations.end();++it2)
-         {
-             station = it2->toObject();
-             stations.insert(station["title"].toString(), station["station_id"].toString());
-             //stations.insert(station["title"].toString(), QString::number(station["station_id"].toInt()));
-             stationsList<<station["title"].toString();
+    //stationsList.clear();
 
-            // qDebug()<<"-- :  "<< station["title"].toString()<<" "<<station["station_id"].toString();
-         }
 
-    }
-    */
-    auto result = Parser::parseStations(data,stations);
+    QMap<QString,QString> tempStations;
+    auto result = Parser::parseStations(data,tempStations);
+
+    if (tempStations!=stations)
+        stations.swap(tempStations);
+    else
+        return;
+
+
     for (auto p = stations.begin();p!=stations.end();++p)
         stationsList<<p.key();
 
+
     delete currentCompleter;
-    currentCompleter = new QCompleter(this);
+    currentCompleter = new QCompleter(stationsList,this);
     currentCompleter->setCaseSensitivity(Qt::CaseInsensitive);
-    currentCompleter->setModel(new QStringListModel(stationsList));
+    //currentCompleter->setModel(new QStringListModel(stationsList));
     setCompleter(currentCompleter);
     delete reply;
     //reply->deleteLater();
