@@ -2,12 +2,15 @@
 
 
 ::Ticketcsanner.exe should be put into the package folder (which is required by Qt Installer Framework)
-::Provide temporary system variable "Path" for windeployqt.exe
+:: with Microsoft redistributables (msvcp110.dll, msvcr120.dll, msvcp120.dll)
 
 set PATH_TO_QTDIR=%1
 set PATH_TO_BINARYCREATOR=%2
 set PATH_TO_PACKAGEFOLDER=%3
 
+
+
+::Provide temporary system variable "Path" for windeployqt.exe
 ::Set Path="C:\Qt\Qt5.4.2\5.4\msvc2013\bin"
 Set Path=%PATH_TO_QTDIR%\bin
 Set TICKETSCANNER=%PATH_TO_PACKAGEFOLDER%\packages\TicketScanner\data\TicketScanner.exe
