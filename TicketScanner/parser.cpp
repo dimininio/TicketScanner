@@ -133,6 +133,7 @@ bool Parser::parseStations(QByteArray &data, QMap<QString,QString> &stations)
          QJsonArray jsonStations = responce.array();
          QJsonObject station;
          QString strID;
+         QString stationName;
          int intID;
 
          for(auto it2 = jsonStations.begin();it2 != jsonStations.end();++it2)
@@ -143,7 +144,11 @@ bool Parser::parseStations(QByteArray &data, QMap<QString,QString> &stations)
              strID = (intID > 0)
                      ? QString::number(intID)
                      : station["value"].toString();
-             stations.insert(station["label"].toString(), strID);
+
+             stationName = station["label"].toString();
+             if (stationName.isEmpty())
+                 stationName = station["title"].toString();
+             stations.insert(stationName, strID);
 
              //TODO: POINT for exception/log
          }
