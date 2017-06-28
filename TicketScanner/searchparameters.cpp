@@ -2,7 +2,8 @@
 #include <QString>
 
 SearchParameters::SearchParameters(QString stationFrom, QString stationTo, QDate tripDate)
-    :_stationFrom(stationFrom),_stationTo(stationTo),_tripDate(tripDate)
+    :_stationFrom(stationFrom),_stationTo(stationTo),_tripDate(tripDate),_stationFromName(""),_stationToName("")
+    ,_searchForAnyTrain(true)
 {
 
 }
@@ -14,6 +15,10 @@ SearchParameters::SearchParameters(SearchParameters &sparams)
     _stationFrom = sparams._stationFrom;
     _stationTo = sparams._stationTo;
     _tripDate = sparams._tripDate;
+    _stationToName = sparams._stationToName;
+    _stationFromName = sparams._stationFromName;
+    _searchForAnyTrain = sparams._searchForAnyTrain;
+
 }
 
 

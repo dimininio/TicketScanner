@@ -58,7 +58,9 @@ public:
         CoachesRequest,  //get coaches of special type (with number of free places)
         TrainsOnRoute,    //the same as SearchRequest, but doesn't update browser and current trains
         GetStationsFrom,
-        GetStationsTo
+        GetStationsTo,
+
+        Invalid
     };
 
     static Request getRequestTypeByString(QByteArray identifier){
@@ -80,6 +82,8 @@ private:
         requestTypes.insert(RequestType::TrainsOnRoute,"trainsOnRoute");
         requestTypes.insert(RequestType::GetStationsFrom,QByteArray("fr"));
         requestTypes.insert(RequestType::GetStationsTo,"to");
+
+        requestTypes.insert(RequestType::Invalid,"invalid");
     }
 };
 

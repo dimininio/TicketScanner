@@ -60,7 +60,11 @@ void LineEdit::updateContent(QNetworkReply *reply, RequestType::Request id)
 
 
     QMap<QString,QString> tempStations;
-    auto result = Parser::parseStations(data,tempStations);
+    if(!Parser::parseStations(data,tempStations))
+    {
+        qDebug()<<"parse error. LineEdit";
+        return;
+    }
 
     if (tempStations!=stations)
         stations.swap(tempStations);
@@ -95,6 +99,8 @@ RequestType::Request LineEdit::identifier()
         case 2:
                 return RequestType::GetStationsTo;
     }
+
+    return RequestType::Invalid;
 }
 
 

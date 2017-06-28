@@ -38,8 +38,8 @@ public:
     void setSearchForAnyTrain(bool anytrain);
 
 private:
-    QVector<QString> _trains;
-    QVector<QString> _coachTypes;
+    QVector<QString> _trains =  QVector<QString>();
+    QVector<QString> _coachTypes = QVector<QString>();
     QDate _tripDate;
     QString _stationFrom;
     QString _stationTo;
