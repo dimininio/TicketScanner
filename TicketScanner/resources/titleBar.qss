@@ -38,6 +38,12 @@ QToolButton#helpButton
         border-image: url(:resources/help.png);
 }
 
+QToolButton#aboutButton
+{
+        background-color: transparent;
+        border-image: url(:resources/about.png);
+}
+
 
 
 
@@ -51,6 +57,10 @@ QToolButton#minimizeButton:hover
         background-color: #387875;
 }
 QToolButton#helpButton:hover
+{
+        background-color: #387875;
+}
+QToolButton#aboutButton:hover
 {
         background-color: #387875;
 }
@@ -68,6 +78,10 @@ QToolButton#minimizeButton:pressed
         background-color: #1E6360;
 }
 QToolButton#helpButton:pressed
+{
+        background-color: #1E6360;
+}
+QToolButton#aboutButton:pressed
 {
         background-color: #1E6360;
 }

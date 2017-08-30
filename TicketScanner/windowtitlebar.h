@@ -18,12 +18,13 @@ class WindowTitleBar: public QWidget
     Q_OBJECT
 
 public:
-    explicit WindowTitleBar(bool showHelp = false, bool showMinimize = false,QWidget *parent = 0);
+    explicit WindowTitleBar(bool showHelp = false, bool showMinimize = false, bool showAbout = false,QWidget *parent = 0);
 
 signals:
     void closeApp();
     void minimize();
     void help();
+    void about();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -41,6 +42,7 @@ private:
     QToolButton* minimizeButton;
     QToolButton* closeButton;
     QToolButton* helpButton;
+    QToolButton* aboutButton;
     QHBoxLayout* horizontalLayout;
 
 };

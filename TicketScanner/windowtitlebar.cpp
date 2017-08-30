@@ -4,7 +4,7 @@
 #include "windowtitlebar.h"
 #include "application.h"
 
-WindowTitleBar::WindowTitleBar(bool showHelp, bool showMinimize, QWidget *parent):
+WindowTitleBar::WindowTitleBar(bool showHelp, bool showMinimize, bool showAbout, QWidget *parent):
     QWidget(parent),helpButton(nullptr),minimizeButton(nullptr)
 {
     QFile styleF;
@@ -40,6 +40,16 @@ WindowTitleBar::WindowTitleBar(bool showHelp, bool showMinimize, QWidget *parent
     //titleText->setFont(*font);
     //titleText->setAlignment(Qt::AlignCenter);
     horizontalLayout->addWidget(titleText,Qt::AlignLeft);
+
+
+
+    if (showAbout)
+    {
+        aboutButton = new QToolButton(this);
+        aboutButton->setObjectName(QStringLiteral("aboutButton"));
+        horizontalLayout->addWidget(aboutButton);
+        connect(aboutButton,SIGNAL(clicked(bool)),this,SIGNAL(about()));
+    }
 
     if (showHelp)
     {

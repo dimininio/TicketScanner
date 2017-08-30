@@ -3,6 +3,7 @@
 #include "networkmanager.h"
 #include "searchparameters.h"
 #include "config.h"
+#include "message.h"
 //#include "requestdata.h"
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -27,13 +28,16 @@ Application::Application(int &argc, char **argv):
     mainWindow(nullptr),searchParameters(nullptr),p_trains(nullptr),p_scanTrains(nullptr),
     timer(nullptr),p_interval(60000) //1 min
 {
+    setApplicationName("TicketScanner");
+    setApplicationVersion("1.1.0");
+
     splashScreen = new QSplashScreen(QPixmap(":/resources/splash.jpg"));
     splashScreen->show(); //need tests: destroing while errors
 
     p_networkManager = new NetworkManager(this);
     p_trains = new Trains();
 
-    windowWrapper = new WindowWrapper(true,true);
+    windowWrapper = new WindowWrapper(true,true,true);
 
     QFile styleF;
     styleF.setFileName(":/resources/widgetstyles.qss");
@@ -45,6 +49,7 @@ Application::Application(int &argc, char **argv):
     connect(p_networkManager,&NetworkManager::responseReady,this,&Application::analizeResponse);
     connect(windowWrapper,&WindowWrapper::closeWrapper,this,&Application::quit);
     connect(windowWrapper,&WindowWrapper::helpWrapper,this,&Application::showHelp);
+    connect(windowWrapper,&WindowWrapper::aboutWrapper,this,&Application::showAbout);
 
     RequestType requestType; //initialization of requests' types
 
@@ -310,6 +315,16 @@ bool Application::eventFilter(QObject* obj, QEvent* event)
 void Application::showHelp()
 {
     bool helpRequest = QDesktopServices::openUrl(QUrl(Config::HelpURL));
+}
+
+void Application::showAbout()
+{
+    QString about = "TicketScanner " + applicationVersion() +
+            "\nLicense: MIT" +
+            "\nexample@email.com";
+
+    Message msgBox(about);
+    msgBox.exec();
 }
 
 
