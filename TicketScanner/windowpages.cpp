@@ -565,8 +565,8 @@ void ProcessingPage::updatePage()
         info = info + "для поїздів: ";
         for(auto& num: mediator()->getChosenTrains())
             info = info + num +  " ";
-        info = info + "\nДата відправлення: " +mediator()->tripDate().toString(Config::RequestDateFormat);
     }
+    info = info + "\nДата відправлення: " +mediator()->tripDate().toString(Config::RequestDateFormat);
 
     infoLabel->setText(info);
     warningLabel->setText("Не закривайте програму. Наявність квитків перевіряється щохвилинно.");
