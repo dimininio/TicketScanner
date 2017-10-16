@@ -11,17 +11,18 @@
 #include "application.h"
 //#include <QNetworkProxy>
 
-static const QUrl searchURL("http://booking.uz.gov.ua/purchase/search/");
-static const QUrl coachesURL("http://booking.uz.gov.ua/purchase/coaches/");
-static const QUrl coachURL("http://booking.uz.gov.ua/purchase/coach/");
-static const QString stationsURL = "http://booking.uz.gov.ua/purchase/station/";
+static const QUrl searchURL("https://booking.uz.gov.ua/purchase/search/");
+static const QUrl coachesURL("https://booking.uz.gov.ua/purchase/coaches/");
+static const QUrl coachURL("https://booking.uz.gov.ua/purchase/coach/");
+static const QString stationsURL = "https://booking.uz.gov.ua/purchase/station/";
 static const QByteArray host = "booking.uz.gov.ua";
-static const QByteArray bookingUZ = "http://booking.uz.gov.ua/";
-static const QByteArray originURL = "http://booking.uz.gov.ua";
+static const QByteArray bookingUZ = "https://booking.uz.gov.ua/";
+static const QByteArray originURL = "https://booking.uz.gov.ua";
 static const QByteArray connectionType = "keep-alive";
 static const QByteArray contentType = "application/x-www-form-urlencoded";
 static const QByteArray gv_ajax = "1";
 static const QByteArray acceptLanguage = "ua-UA,*";
+
 
 
 /* ENglish
@@ -75,8 +76,6 @@ NetworkManager::NetworkManager(QObject *parent):
     proxy->setPort(8888);
     QNetworkProxy::setApplicationProxy(*proxy);
 */
-
-
 
     connect(hiddenView,SIGNAL(loadFinished(bool)),this,SLOT(getAttributes(bool)));
     connect(this,&NetworkManager::finished,this,&NetworkManager::replyHandling);
@@ -148,18 +147,16 @@ void NetworkManager::sendGetStationsRequest(QString prefix, RequestType::Request
 
     //request.setUrl(QUrl(stationsURL + prefix + "/"));
     request.setUrl(QUrl(stationsURL + "?term=" + prefix));  //POST changed --> GET 23/03/2017
-
     request.setRawHeader("Host",host);
     request.setRawHeader("Connection",connectionType);
-    request.setRawHeader("Origin",originURL);
+    //request.setRawHeader("Origin",originURL);
     request.setRawHeader("Referer",bookingUZ);
     request.setRawHeader("Sender",RequestType::getStringByRequestType(sender)); //get QByteArray equivalent to RequestType
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
     //post(request,"");
 
-   get(request);
-   //
-   // get()
+    get(request);
+
 
     //return this->post(request,"");
 }

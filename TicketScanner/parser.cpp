@@ -110,7 +110,7 @@ bool Parser::parseCoachesSearchResults(QByteArray &data, Train &train,QString co
 bool Parser::parseStations(QByteArray &data, QMap<QString,QString> &stations)
 {
     CreateJsonFileForTest(data,"test_StationReply.json");
-
+    //qDebug()<<data;
     QJsonDocument responce;
     responce = QJsonDocument::fromJson(data);
     //if (responce.isObject()) {
