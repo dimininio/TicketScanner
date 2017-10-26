@@ -29,7 +29,7 @@ Application::Application(int &argc, char **argv):
     timer(nullptr),p_interval(60000) //1 min
 {
     setApplicationName("TicketScanner");
-    setApplicationVersion("1.1.0");
+    setApplicationVersion("1.0.5");
 
     splashScreen = new QSplashScreen(QPixmap(":/resources/splash.jpg"));
     splashScreen->show(); //need tests: destroing while errors
@@ -321,7 +321,7 @@ void Application::showAbout()
 {
     QString about = "TicketScanner " + applicationVersion() +
             "\nLicense: MIT" +
-            "\nexample@email.com";
+            "\nTicketScanner@email.ua";
 
     Message msgBox(about);
     msgBox.exec();
