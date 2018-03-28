@@ -4,7 +4,7 @@
 
 namespace Config{
 
-    static const QString RequestDateFormat = "dd.MM.yyyy";
+    static const QString RequestDateFormat = "yyyy-MM-dd";
     static const QString BookingUZsite     = "http://booking.uz.gov.ua/";
     static const QString HelpURL           = "https://github.com/dimininio/TicketScanner/wiki/Help";
 

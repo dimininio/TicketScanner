@@ -11,10 +11,10 @@
 #include "application.h"
 //#include <QNetworkProxy>
 
-static const QUrl searchURL("https://booking.uz.gov.ua/purchase/search/");
-static const QUrl coachesURL("https://booking.uz.gov.ua/purchase/coaches/");
-static const QUrl coachURL("https://booking.uz.gov.ua/purchase/coach/");
-static const QString stationsURL = "https://booking.uz.gov.ua/purchase/station/";
+static const QUrl searchURL("https://booking.uz.gov.ua/train_search/");
+static const QUrl coachesURL("https://booking.uz.gov.ua/train_wagons/");
+static const QUrl coachURL("https://booking.uz.gov.ua/train_wagon/");
+static const QString stationsURL = "https://booking.uz.gov.ua/train_search/station/";
 static const QByteArray host = "booking.uz.gov.ua";
 static const QByteArray bookingUZ = "https://booking.uz.gov.ua/";
 static const QByteArray originURL = "https://booking.uz.gov.ua";
@@ -180,10 +180,19 @@ void NetworkManager::sendSearchRequest(SearchPOSTData searchdata,RequestType::Re
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 
 
-    QString postBody = "station_id_from=" + searchdata.stationFrom +
-                       "&station_id_till=" + searchdata.stationTo +
-                       "&date_dep=" + searchdata.tripDate +
-                       "&time_dep=00%3A00&time_dep_till=&another_ec=0&search=";
+    //QString postBody = "station_id_from=" + searchdata.stationFrom +
+    //                   "&station_id_till=" + searchdata.stationTo +
+    //                   "&date_dep=" + searchdata.tripDate +
+    //                   "&time_dep=00%3A00&time_dep_till=&another_ec=0&search=";
+
+    //from=2200001&to=2210700&date=2018-03-28&time=00%3A00&get_tpl=1
+
+    QString postBody = "from=" + searchdata.stationFrom +
+                       "&to=" + searchdata.stationTo +
+                       "&date=" + searchdata.tripDate +
+                       "&time=00%3A00&get_tpl=1";
+
+
     qDebug()<<postBody;
     QByteArray bytearrayPOST;bytearrayPOST.append(postBody);
 
@@ -228,6 +237,9 @@ void NetworkManager::sendCoachesRequest(CoachesPOSTData postdata, RequestType::R
                        "&train=" + URLencode(postdata.train) +
                        "&coach_type=" + URLencode(postdata.coachType) +
                        "&date_dep=" + postdata.tripDate;
+
+
+
     qDebug()<<postBody;
     QByteArray bytearrayPOST;bytearrayPOST.append(postBody);
 

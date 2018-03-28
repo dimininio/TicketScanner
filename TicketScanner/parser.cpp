@@ -65,7 +65,7 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QStri
 
         if (jsonobject["error"].toBool()){
             error = jsonobject["value"].toString();
-            //qDebug()<<error;
+            qDebug()<<error;
             CreateJsonFileForTest(data,"test_SearchErrorReply.json");
             return false;
         }
