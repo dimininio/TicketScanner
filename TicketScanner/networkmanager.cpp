@@ -180,13 +180,6 @@ void NetworkManager::sendSearchRequest(SearchPOSTData searchdata,RequestType::Re
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 
 
-    //QString postBody = "station_id_from=" + searchdata.stationFrom +
-    //                   "&station_id_till=" + searchdata.stationTo +
-    //                   "&date_dep=" + searchdata.tripDate +
-    //                   "&time_dep=00%3A00&time_dep_till=&another_ec=0&search=";
-
-    //from=2200001&to=2210700&date=2018-03-28&time=00%3A00&get_tpl=1
-
     QString postBody = "from=" + searchdata.stationFrom +
                        "&to=" + searchdata.stationTo +
                        "&date=" + searchdata.tripDate +
@@ -232,12 +225,13 @@ void NetworkManager::sendCoachesRequest(CoachesPOSTData postdata, RequestType::R
     request.setRawHeader("CoachType",coachType);
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 
-    QString postBody = "station_id_from=" + postdata.stationFrom +
-                       "&station_id_till=" + postdata.stationTo +
-                       "&train=" + URLencode(postdata.train) +
-                       "&coach_type=" + URLencode(postdata.coachType) +
-                       "&date_dep=" + postdata.tripDate;
 
+    QString postBody = "from=" + postdata.stationFrom +
+                       "&to=" + postdata.stationTo +
+                       "&date=" + postdata.tripDate +
+                       "&train=" + URLencode(postdata.train) +
+                       "&wagon_type_id=" + URLencode(postdata.coachType) +
+                       "&get_tpl=1";
 
 
     qDebug()<<postBody;
@@ -267,12 +261,14 @@ void NetworkManager::sendCoachRequest(CoachPOSTData postdata, RequestType::Reque
     request.setRawHeader("Sender",RequestType::getStringByRequestType(sender));
     request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
 
-    QString postBody = "station_id_from=" + postdata.stationFrom +
-                       "&station_id_till=" + postdata.stationTo +
+
+    QString postBody = "from=" + postdata.stationFrom +
+                       "&to=" + postdata.stationTo +
                        "&train=" + postdata.train +
-                       "&coach_num=" + postdata.coachNum +
-                       "&coach_type_id=" + postdata.coachType +
-                       "&date_dep=" + postdata.tripDate;
+                       "&date=" + postdata.tripDate +
+                       "&wagon_num=" + postdata.coachNum +
+                       "&wagon_class=" + postdata.coachType;
+
 
     qDebug()<<postBody;
     QByteArray bytearrayPOST;bytearrayPOST.append(postBody);

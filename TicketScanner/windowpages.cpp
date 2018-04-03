@@ -176,7 +176,7 @@ void BrowserPage::processTrain(const QUrl &link)
 
      for(auto&& p = currentTrain->freePlaces.begin();p!=currentTrain->freePlaces.end();++p)
      {
-        CoachesPOSTData postdata(editFrom->getStationID(),editTo->getStationID(),QString::number(currentTrain->dateDeparture.toTime_t()),
+        CoachesPOSTData postdata(editFrom->getStationID(),editTo->getStationID(),currentTrain->dateDeparture.toString(Config::RequestDateFormat),
                               trainNum,p->placeClass);
         networkManager->sendCoachesRequest(postdata,RequestType::CoachesRequest);
      }
