@@ -35,7 +35,7 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QStri
         QJsonObject jsonobject = responce.object();
         QJsonObject jsonData = jsonobject["data"].toObject();
 
-
+        //qDebug()<<jsonobject;
 
 
          QJsonArray jsonTrains = jsonData["list"].toArray();
@@ -68,8 +68,16 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QStri
                  trainsContainer.insert(trainNumber,train);
          }
 
-        if (jsonobject["error"].toBool()){
-            error = jsonobject["value"].toString();
+         error = jsonData["warning"].toString();
+         if (!error.isEmpty()){
+             qDebug()<<error;
+             CreateJsonFileForTest(data,"test_SearchErrorReply.json");
+             return false;
+         }
+
+
+        if (jsonobject["error"].toInt()){
+            error = jsonobject["data"].toString();
             qDebug()<<error;
             CreateJsonFileForTest(data,"test_SearchErrorReply.json");
             return false;

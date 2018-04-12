@@ -123,12 +123,12 @@ void NetworkManager::getAttributes(bool ok)
     QWebFrame *frame = hiddenView->page()->mainFrame();
     frame->setParent(this);
     //QWebPage* startpage = new QWebPage(hiddenView->page());
-    token.clear();
-    QVariant vartoken = frame->evaluateJavaScript("localStorage.getItem('gv-token')");
-    token.append(vartoken.toString());
+    //token.clear();
+    //QVariant vartoken = frame->evaluateJavaScript("localStorage.getItem('gv-token')");
+    //token.append(vartoken.toString());
     cookies = hiddenView->page()->networkAccessManager()->cookieJar()->cookiesForUrl(QUrl(bookingUZ));
 
-    qDebug()<<"token  "<<token;
+    //qDebug()<<"token  "<<token;
     for(QList<QNetworkCookie>::iterator it = cookies.begin(); it!=cookies.end(); it++)
     {
        qDebug()<<it->name()<<"  --  "<<it->value();
