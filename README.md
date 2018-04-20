@@ -1,8 +1,8 @@
 # TicketScanner  
 ![logo](https://cloud.githubusercontent.com/assets/9840426/21867770/615e720a-d858-11e6-87d0-0087e8b1d50d.png)
 
-[![Dowload](https://img.shields.io/badge/download%20%7C%20windows-v.1.0.5-blue.svg)](https://github.com/dimininio/TicketScanner/releases/download/1.0.5/TScannerSetup1.0.5-windows-x86.rar)  
-[![Dowload](https://img.shields.io/badge/download%20%7C%20macOS%20-v.1.0.5-blue.svg)](https://github.com/dimininio/TicketScanner/releases/download/1.0.5/TicketScanner1.0.5-macOS.dmg) 
+[![Dowload](https://img.shields.io/badge/download%20%7C%20windows-v.1.0.7-blue.svg)](https://github.com/dimininio/TicketScanner/releases/download/1.0.7/TScannerSetup1.0.7-windows-x86.zip)  
+[![Dowload](https://img.shields.io/badge/download%20%7C%20macOS%20-v.1.0.5-red.svg)](https://github.com/dimininio/TicketScanner/releases/download/1.0.5/TicketScanner1.0.5-macOS.dmg) 
 
 <!--
 <p align="right">

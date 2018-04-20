@@ -10,7 +10,6 @@ Message::Message(QString message, QWidget *parent) : QWidget(parent)
     customWindow = new WindowWrapper();
 
     internalMessage = new QMessageBox();
-   // internalMessage->setMinimumWidth(200); //BUG: short messages doesn't look nice
     internalMessage->setText(message);
     customWindow->setMainWidget(internalMessage);
     customWindow->setWindowModality(Qt::ApplicationModal);

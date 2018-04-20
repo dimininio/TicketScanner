@@ -26,10 +26,10 @@ NetworkManager* Application::p_networkManager = nullptr;
 Application::Application(int &argc, char **argv):
     QApplication(argc,argv),
     mainWindow(nullptr),searchParameters(nullptr),p_trains(nullptr),p_scanTrains(nullptr),
-    timer(nullptr),p_interval(15000) //15 sec
+    timer(nullptr),p_interval(10000) //15 sec
 {
     setApplicationName("TicketScanner");
-    setApplicationVersion("1.0.6");
+    setApplicationVersion("1.0.7");
 
     splashScreen = new QSplashScreen(QPixmap(":/resources/splash.jpg"));
     splashScreen->show(); //need tests: destroing while errors
