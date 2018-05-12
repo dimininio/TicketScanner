@@ -41,6 +41,25 @@ struct CoachPOSTData{
 };
 
 
+struct AddToCartPOSTData{
+    AddToCartPOSTData() = default;
+
+    AddToCartPOSTData(QString from,QString to,QString date,QString trainNum,QString type,QString num)
+        :stationFrom(from),stationTo(to),tripDate(date),train(trainNum),coachType(type),coachNum(num) {}
+
+
+    QString stationFrom;
+    QString stationTo;
+    QString tripDate;
+    QString train;
+    QString coachNum;
+    QString coachType;
+    QString firstName;
+    QString lastName;
+    QString placeNum;
+};
+
+
 
 
 //This class wraps enum only
@@ -59,6 +78,7 @@ public:
         TrainsOnRoute,    //the same as SearchRequest, but doesn't update browser and current trains
         GetStationsFrom,
         GetStationsTo,
+        AddToCart,
 
         Invalid
     };

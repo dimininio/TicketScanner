@@ -66,6 +66,23 @@ void Application::showWindow()
         windowWrapper->show();
         splashScreen->finish(windowWrapper);
         //mainWindow->show();
+
+        //AddToCartPOSTData data;
+        //data.coachNum = "1";
+        //data.coachType = "%D0%9A";
+        //data.firstName = "Taras";
+        //data.lastName = "Lee";
+        //data.placeNum = "32";
+        //data.stationFrom = "2218000";
+        //data.stationTo = "2200001";
+        //data.train = "092%D0%9B";
+        //data.tripDate = "2018-05-12";
+        //
+        //p_networkManager->sendAddToCartRequest(data,RequestType::AddToCart);
+
+
+
+
      }
 }
 

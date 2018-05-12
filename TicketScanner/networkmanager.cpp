@@ -14,6 +14,7 @@
 static const QUrl searchURL("https://booking.uz.gov.ua/train_search/");
 static const QUrl coachesURL("https://booking.uz.gov.ua/train_wagons/");
 static const QUrl coachURL("https://booking.uz.gov.ua/train_wagon/");
+static const QUrl addToCartURL("https://booking.uz.gov.ua/cart/add/");
 static const QString stationsURL = "https://booking.uz.gov.ua/train_search/station/";
 static const QByteArray host = "booking.uz.gov.ua";
 static const QByteArray bookingUZ = "https://booking.uz.gov.ua/";
@@ -268,6 +269,50 @@ void NetworkManager::sendCoachRequest(CoachPOSTData postdata, RequestType::Reque
                        "&date=" + postdata.tripDate +
                        "&wagon_num=" + postdata.coachNum +
                        "&wagon_class=" + postdata.coachType;
+
+
+    qDebug()<<postBody;
+    QByteArray bytearrayPOST;bytearrayPOST.append(postBody);
+
+    networkReply = post(request,bytearrayPOST);
+    if (networkReply) {
+        connect(networkReply,SIGNAL(error(QNetworkReply::NetworkError)),this,SLOT(errorSlot(QNetworkReply::NetworkError)));
+    }
+}
+
+void NetworkManager::sendAddToCartRequest(AddToCartPOSTData postdata, RequestType::Request sender)
+{
+    QNetworkRequest request;
+
+    request.setUrl(addToCartURL);
+    request.setRawHeader("Host",host);
+    request.setRawHeader("Connection",connectionType);
+    request.setRawHeader("Origin",originURL);
+    request.setRawHeader("Content-Type",contentType);
+    request.setRawHeader("Referer",bookingUZ);
+    request.setRawHeader("Sender",RequestType::getStringByRequestType(sender));
+    request.setHeader(QNetworkRequest::CookieHeader,QVariant::fromValue(cookies));
+
+
+    QString postBody =
+            "roundtrip=0&places[0][ord]=0&places[0][from]=" + postdata.stationFrom +
+            "&places[0][to]=" + postdata.stationTo +
+            "&places[0][train]=" + postdata.train +
+            "&places[0][date]=" + postdata.tripDate +
+            "&places[0][wagon_num]=" + postdata.coachNum +
+            "&places[0][wagon_type]=" + postdata.coachType +
+            "&places[0][firstname]=" + postdata.firstName +
+            "&places[0][lastname]=" + postdata.lastName +
+            "&places[0][bedding]=1&places[0][child]=&places[0][student]=&places[0][reserve]=0" +
+            "&places[0][place_num]=" + postdata.placeNum;
+
+
+
+
+
+    //roundtrip=0&places[0][ord]=0&places[0][from]=2208001&places[0][to]=2200001&places[0][train]=148Ш&places[0][date]=2018-05-03&places[0]
+    //[wagon_num]=10&places[0][wagon_class]=Д&places[0][wagon_type]=П&places[0][wagon_railway]=40&places[0][charline]=Б&places[0]
+    //[firstname]=Leonid&places[0][lastname]=Daras&places[0][bedding]=1&places[0][child]=&places[0][student]=&places[0][reserve]=0&places[0][place_num]=032
 
 
     qDebug()<<postBody;

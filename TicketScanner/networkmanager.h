@@ -32,7 +32,7 @@ public slots:
     void sendSearchRequest(SearchPOSTData searchdata,RequestType::Request sender);
     void sendCoachesRequest(CoachesPOSTData postdata, RequestType::Request sender);
     void sendCoachRequest(CoachPOSTData postdata, RequestType::Request sender);
-
+    void sendAddToCartRequest(AddToCartPOSTData postdata, RequestType::Request sender);
 
 
 private slots:
