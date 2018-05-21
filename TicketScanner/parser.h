@@ -10,10 +10,11 @@ public:
     Parser(){}
     ~Parser(){}
 
-    static bool parseSearchResults(QByteArray& data,Trains &trainsContainer,QString& error);
-    static bool parseCoachesSearchResults(QByteArray& data, Train &train,QString);
     static bool parseStations(QByteArray& data, QMap<QString, QString> &stations);
-
+    static bool parseSearchResults(QByteArray& data,Trains &trainsContainer,QString& error);
+    static bool parseCoachesSearchResults(QByteArray& data, Train &train,QString&);
+    static bool parseCoachResults(QByteArray& data, Coach &train,QString&);
+    static bool parseAddToCartResults(QByteArray& data, QString&);
 
 
 

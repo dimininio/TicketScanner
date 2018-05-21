@@ -54,6 +54,8 @@ Application::Application(int &argc, char **argv):
     RequestType requestType; //initialization of requests' types
 
     installEventFilter(this);
+
+    setStatus(SearchStatus::Check);
 }
 
 
@@ -177,15 +179,30 @@ bool Application::parseSearchResults(QNetworkReply *reply,Trains& trainsContaine
 
 bool Application::parseCoachesSearchResults(QNetworkReply *reply )
 {
+    //TO DO: refactoring!!!!
+    //TO DO: refactoring!!!!
+    //TO DO: refactoring!!!!
+
     QByteArray data = reply->readAll();
     QString trainNumber = whatTrain(reply);
     QString coachType = whatType(reply);
-    Train* train = setTrain(trainNumber);
+    Train* train;
+    if (status() == SearchStatus::Check)
+     train = setTrain(trainNumber);
+    else
+     train = &p_scanTrains->operator [](trainNumber);
     //qDebug()<<"coaches data: "<<data;
 
-    Parser::parseCoachesSearchResults(data,*train,coachType); {
+    Parser::parseCoachesSearchResults(data,*train,coachType);
+
+    if (status() == SearchStatus::Check)
+    {
         mainWindow->showAvailableCoaches(train);
-        return true;
+
+    }
+    else
+    {
+        //send request for coach
     }
 
     return true;
@@ -196,6 +213,25 @@ bool Application::parseCoachesSearchResults(QNetworkReply *reply )
 void Application::startScanning(std::shared_ptr<SearchParameters>& parameters)
 {
     searchParameters = parameters;
+    qDebug()<<searchParameters->stationTo()<< "    check search";
+    if (!timer) {
+        timer = new QTimer(this);
+        connect(timer,&QTimer::timeout,this,&Application::sendScanRequest);
+        timer->start(p_interval);
+    }
+    if (p_scanTrains)
+        delete p_scanTrains;
+    p_scanTrains = new Trains();
+
+    setStatus(SearchStatus::Search);
+}
+
+void Application::startScanningAndBook(std::shared_ptr<SearchParameters> &parameters)
+{
+    searchParameters = parameters;
+    searchParameters->setFirstName("Taras");
+    searchParameters->setLastName("Lozenko");
+
     qDebug()<<searchParameters->stationTo()<< "    check search";
     if (!timer) {
         timer = new QTimer(this);
@@ -247,6 +283,11 @@ bool Application::checkScanningResults()
             }
         }
     }
+    return false;
+}
+
+bool Application::checkScanningResultsAndBook()
+{
     return false;
 }
 

@@ -542,7 +542,7 @@ ProcessingPage::ProcessingPage(WidgetsMediator* widgetsMediator,QWidget* parent)
     connect(openDefaultBrowserButton,&QPushButton::clicked,this,&ProcessingPage::openBrowser);
     connect(startNewSearchButton,&QPushButton::clicked,[this](){this->mediator()->resetSearch();
                                                                 Application::instance()->resetTrains(); //TODO: prettify
-                                                                Application::instance()->setStatus(Application::SearchStatus::Waiting);});
+                                                                Application::instance()->setStatus(Application::SearchStatus::Check);});
     connect(Application::instance()->networkManager(),&NetworkManager::connectionLost,this,[this](){this->connectionLostLabel->show();});
 
     updatePage();

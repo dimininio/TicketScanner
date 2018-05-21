@@ -26,6 +26,7 @@ public:
     ~Application();
 
     enum class SearchStatus{
+        Check,
         Waiting,
         Search,
         Found
@@ -42,6 +43,7 @@ public:
     bool parseSearchResults(QNetworkReply *reply, Trains &trainsContainer);
     bool parseCoachesSearchResults(QNetworkReply *reply);
     void startScanning(std::shared_ptr<SearchParameters> &parameters);
+    void startScanningAndBook(std::shared_ptr<SearchParameters> &parameters);
 
     void resetTrains();
 
@@ -79,6 +81,7 @@ private:
     Trains* setTrains();
     Train* setTrain(QString number);
     bool checkScanningResults();
+    bool checkScanningResultsAndBook();
     void sendScanRequest();
 
 

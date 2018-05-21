@@ -107,3 +107,23 @@ void SearchParameters::setSearchForAnyTrain(bool anytrain)
 {
     _searchForAnyTrain = anytrain;
 }
+
+void SearchParameters::setFirstName(QString name)
+{
+    _firstName = name;
+}
+
+QString SearchParameters::firstName()
+{
+    return _firstName;
+}
+
+void SearchParameters::setLastName(QString name)
+{
+    _lastName = name;
+}
+
+QString SearchParameters::lastName()
+{
+    return _lastName;
+}

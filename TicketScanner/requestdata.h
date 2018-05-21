@@ -102,6 +102,7 @@ private:
         requestTypes.insert(RequestType::TrainsOnRoute,"trainsOnRoute");
         requestTypes.insert(RequestType::GetStationsFrom,QByteArray("fr"));
         requestTypes.insert(RequestType::GetStationsTo,"to");
+        requestTypes.insert(RequestType::AddToCart,"addToRequest");
 
         requestTypes.insert(RequestType::Invalid,"invalid");
     }

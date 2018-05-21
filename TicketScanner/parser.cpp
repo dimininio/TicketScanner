@@ -89,7 +89,7 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QStri
     return true;
 }
 
-bool Parser::parseCoachesSearchResults(QByteArray &data, Train &train,QString coachType)
+bool Parser::parseCoachesSearchResults(QByteArray &data, Train &train,QString& coachType)
 {
 
     CreateJsonFileForTest(data,"test_SearchCoachesReply.json");
@@ -122,6 +122,71 @@ bool Parser::parseCoachesSearchResults(QByteArray &data, Train &train,QString co
     else if (responce.isNull())
     {
         qDebug()<< "Wagons_Responce: Invalid JSON.";
+    }
+    return false;
+}
+
+bool Parser::parseCoachResults(QByteArray &data, Coach &wagon, QString& error)
+{
+    QJsonDocument responce;
+    responce = QJsonDocument::fromJson(data);
+
+    if (responce.isObject()) {
+        QJsonObject jsonobject = responce.object();
+
+
+        QJsonObject jsonData = jsonobject["data"].toObject();
+
+         QJsonObject jsonPlaces = jsonData["places"].toObject();
+
+         QString wagonClass = *jsonPlaces.keys().begin();
+         wagon.coachClass = wagonClass;
+
+         QJsonArray freePlaces = jsonPlaces.begin()->toArray();
+
+         wagon.places.reserve(freePlaces.size());
+         qDebug()<< wagonClass << "   " << freePlaces.size() <<"  free";
+         int placeNr;
+         for(auto it = freePlaces.begin();it != freePlaces.end();++it)
+         {
+             placeNr = it->toInt();
+             wagon.places.push_back(placeNr);
+          }
+         return true;
+
+
+         if (jsonobject["error"].toInt()){
+             error = jsonobject["data"].toString();
+             qDebug()<<error;
+             return false;
+         }
+    }
+    else if (responce.isNull())
+    {
+        qDebug()<< "Wagon_Responce: Invalid JSON.";
+    }
+    return false;
+}
+
+bool Parser::parseAddToCartResults(QByteArray &data, QString & error)
+{
+    QJsonDocument responce;
+    responce = QJsonDocument::fromJson(data);
+
+    if (responce.isObject()) {
+        QJsonObject jsonobject = responce.object();
+
+        if (jsonobject["error"].toInt()){
+            error = jsonobject["data"].toString();
+            qDebug()<<error;
+            return false;
+        }
+        return true;
+
+    }
+    else if (responce.isNull())
+    {
+        qDebug()<< "AddToCart_Responce: Invalid JSON.";
     }
     return false;
 }

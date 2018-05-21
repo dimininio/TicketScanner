@@ -37,7 +37,15 @@ public:
     bool searchForAnyTrain();
     void setSearchForAnyTrain(bool anytrain);
 
+    void setFirstName(QString name);
+    QString firstName();
+
+    void setLastName(QString name);
+    QString lastName();
+
 private:
+    QString _firstName;
+    QString _lastName;
     QVector<QString> _trains =  QVector<QString>();
     QVector<QString> _coachTypes = QVector<QString>();
     QDate _tripDate;
