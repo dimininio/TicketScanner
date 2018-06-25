@@ -41,6 +41,7 @@ public:
     const Train* getTrain(QString number) const;
 
     bool parseSearchResults(QNetworkReply *reply, Trains &trainsContainer);
+    bool parseRouteResults(QNetworkReply *reply, Trains &trainsContainer);
     bool parseCoachesSearchResults(QNetworkReply *reply);
     void startScanning(std::shared_ptr<SearchParameters> &parameters);
     void startScanningAndBook(std::shared_ptr<SearchParameters> &parameters);

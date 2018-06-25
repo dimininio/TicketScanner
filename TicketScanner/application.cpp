@@ -29,7 +29,7 @@ Application::Application(int &argc, char **argv):
     timer(nullptr),p_interval(10000) //15 sec
 {
     setApplicationName("TicketScanner");
-    setApplicationVersion("1.0.7");
+    setApplicationVersion("1.0.8");
 
     splashScreen = new QSplashScreen(QPixmap(":/resources/splash.jpg"));
     splashScreen->show(); //need tests: destroing while errors
@@ -170,10 +170,19 @@ bool Application::parseSearchResults(QNetworkReply *reply,Trains& trainsContaine
        emit searchError(errors);
 
     return parseResult;
+}
 
+bool Application::parseRouteResults(QNetworkReply *reply, Trains &trainsContainer)
+{
+    QByteArray data = reply->readAll();
+    QString errors = "";
 
-    //reply->deleteLater();
-    //delete searchReply;
+    bool parseResult = Parser::parseSearchResults(data,trainsContainer,errors,true);
+
+    if (!errors.isEmpty())
+       emit searchError(errors);
+
+    return parseResult;
 }
 
 
@@ -264,10 +273,16 @@ bool Application::checkScanningResults()
     if (searchParameters->searchForAnyTrain()) {
         //just check all available trains
         for(auto&& train = p_scanTrains->begin();train!=p_scanTrains->end();++train){
-                for(auto& placeType:train->freePlaces)
-                    for (auto& appropriatePlace:searchParameters->getCoachTypes() )
-                        if (appropriatePlace==placeType.placeClass)
-                            return true;
+                if (searchParameters->searchForAnyCoach())
+                    return true;
+                else
+                {
+                    for(auto& placeType:train->freePlaces)
+                        for (auto& appropriatePlace:searchParameters->getCoachTypes() )
+                            if (appropriatePlace==placeType.placeClass)
+                                return true;
+                }
+
         }
 
     }else {
@@ -276,10 +291,15 @@ bool Application::checkScanningResults()
             //compare available trains with selected trains
             auto train = std::find_if(p_scanTrains->begin(),p_scanTrains->end(),[&rightTrain](Train trn){return trn.number==rightTrain;});
             if (train!=p_scanTrains->end()) {
-                for(auto& placeType:train->freePlaces)
-                    for (auto& appropriatePlace:searchParameters->getCoachTypes() )
-                        if (appropriatePlace==placeType.placeClass)
-                            return true;
+                if (searchParameters->searchForAnyCoach())
+                    return true;
+                else
+                {
+                    for(auto& placeType:train->freePlaces)
+                        for (auto& appropriatePlace:searchParameters->getCoachTypes() )
+                            if (appropriatePlace==placeType.placeClass)
+                                return true;
+                }
             }
         }
     }

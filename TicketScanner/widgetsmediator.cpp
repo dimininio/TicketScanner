@@ -88,10 +88,16 @@ void WidgetsMediator::setSearchParametersAndRunSearsh()
             if (coach->isChecked())
                 searchParameters->setCoachTypes().push_back(coach->text());
 
+        decltype(settingsPage->coachesTypes.begin()) allTypesBox = std::find_if(settingsPage->coachesTypes.begin(),settingsPage->coachesTypes.end(),[](QCheckBox* box){return box->text()=="Усі";});
+        if (allTypesBox != settingsPage->coachesTypes.end())
+            if ((*allTypesBox)->isChecked())
+                searchParameters->setSearchForAnyCoach(true);
+
         if (settingsPage->allTrainsBtn->isChecked())
             searchParameters->setSearchForAnyTrain(true);
         else
             searchParameters->setSearchForAnyTrain(false);
+
     }
 
     //Start or Restart search only if ProcessingPage doesn't exist yet

@@ -22,7 +22,7 @@ void CreateJsonFileForTest(QByteArray &data,QString filename)
 }
 
 
-bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QString &error)
+bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QString &error, bool allPossibleTrains)
 {
     QDateTime datetime;
 
@@ -64,7 +64,7 @@ bool Parser::parseSearchResults(QByteArray &data, Trains &trainsContainer, QStri
             // tempstr = tempstr + ticketType["letter"].toString()+ "    "+ QString::number(ticketType["places"].toInt()) + ",    ";
              }
              //qDebug()<<tempstr;
-             if (train.freePlaces.size() > 0)
+             if (train.freePlaces.size() > 0 || allPossibleTrains)
                  trainsContainer.insert(trainNumber,train);
          }
 

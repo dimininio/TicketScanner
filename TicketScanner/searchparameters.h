@@ -37,6 +37,9 @@ public:
     bool searchForAnyTrain();
     void setSearchForAnyTrain(bool anytrain);
 
+    bool searchForAnyCoach();
+    void setSearchForAnyCoach(bool anywagon);
+
     void setFirstName(QString name);
     QString firstName();
 
@@ -53,7 +56,8 @@ private:
     QString _stationTo;
     QString _stationFromName;
     QString _stationToName;
-    bool _searchForAnyTrain;
+    bool _searchForAnyTrain = false;
+    bool _searchForAnyCoach = false;
 
 };
 

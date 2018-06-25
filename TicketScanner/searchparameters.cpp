@@ -108,6 +108,16 @@ void SearchParameters::setSearchForAnyTrain(bool anytrain)
     _searchForAnyTrain = anytrain;
 }
 
+bool SearchParameters::searchForAnyCoach()
+{
+    return _searchForAnyCoach;
+}
+
+void SearchParameters::setSearchForAnyCoach(bool anywagon)
+{
+    _searchForAnyCoach = anywagon;
+}
+
 void SearchParameters::setFirstName(QString name)
 {
     _firstName = name;

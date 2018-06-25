@@ -134,8 +134,7 @@ bool BrowserPage::checkConditions()
 
 
 //Changes of BrowserPage cause construction(reconstruction) of SettingsPage
-//We should rebuild all controls on the SettingsPage ONLY if stations changed
-//changes of date not considered
+//We should rebuild all controls on the SettingsPage ONLY if stations or date changed
 bool BrowserPage::isChanged()
 {
     //if (previousState_fromStation.isEmpty() && previousState_toStation.isEmpty() )  //for the first check;
@@ -143,7 +142,8 @@ bool BrowserPage::isChanged()
     //problems if connection broke.
 
     if(previousState_fromStation!=editFrom->text() ||
-           previousState_toStation != editTo->text())
+           previousState_toStation != editTo->text() ||
+            previous_tripDate != QDate::fromString(editTo->text()))
         return true;
     else
         return false;
@@ -323,22 +323,14 @@ SettingsPage::SettingsPage(WidgetsMediator *widgetsMediator, QWidget *parent)
 
 
 
-//Ukrazaliznitsya doesn't have public request to get "all possible trains" between stations.
-//So,we send several "search" requests with different dates to receive as much as possible existing trains.
-//TODO: comment strategy...
 void SettingsPage::exploreRout()
 {
     NetworkManager* networkManager = Application::instance()->networkManager();
-    QDate futuredate = QDate::currentDate();
-    futuredate = futuredate.addDays(24);
-    SearchPOSTData searchdata(mediator()->getStationIDFrom(),mediator()->getStationIDTo(),futuredate.toString(Config::RequestDateFormat));
+    QDate tripDate = mediator()->tripDate();
+
+    SearchPOSTData searchdata(mediator()->getStationIDFrom(),mediator()->getStationIDTo(),tripDate.toString(Config::RequestDateFormat));
     networkManager->sendSearchRequest(searchdata,RequestType::TrainsOnRoute);
-    futuredate = QDate::currentDate().addDays(5);
-    searchdata.tripDate = futuredate.toString(Config::RequestDateFormat);
-    networkManager->sendSearchRequest(searchdata,RequestType::TrainsOnRoute);
-    futuredate = QDate::currentDate();
-    searchdata.tripDate = futuredate.toString(Config::RequestDateFormat);
-    networkManager->sendSearchRequest(searchdata,RequestType::TrainsOnRoute);
+
 
 }
 
@@ -391,7 +383,7 @@ void SettingsPage::getTrainsOnRoute(QNetworkReply *reply, RequestType::Request i
     if (id == RequestType::TrainsOnRoute)
     {
         Trains allTrainsOnRoute;
-        Application::instance()->parseSearchResults(reply,allTrainsOnRoute);
+        Application::instance()->parseRouteResults(reply,allTrainsOnRoute);
         QVector<QString> placeTypes;
         QVector<Train> trainsOnRoute;
         for(auto train : allTrainsOnRoute)
@@ -444,6 +436,11 @@ void SettingsPage::drawTrainsWidgets(QVector<Train>& trains, QVector<QString>& p
             coachesTypesLayout->addWidget(box2);
             coachesTypes.push_back(box2);
         }
+        QCheckBox* box2 = new QCheckBox("Усі");
+        box2->setToolTip("Будь-який тип");
+        box2->setChecked(false);
+        coachesTypesLayout->addWidget(box2);
+        coachesTypes.push_back(box2);
 
         std::sort(trainsGroup.begin(),trainsGroup.end(),[](QCheckBox* a, QCheckBox* b){return a->text() < b->text();});
         std::sort(coachesTypes.begin(),coachesTypes.end(),[](QCheckBox* a, QCheckBox* b){return a->text() < b->text();});
