@@ -25,7 +25,9 @@ SOURCES += main.cpp\
     windowwrapper.cpp \
     parser.cpp \
     message.cpp \
-    application.cpp
+    application.cpp \
+    mainwindow.cpp \
+    ui/mainwindow.cpp
 
 
 HEADERS  += \
@@ -44,9 +46,12 @@ HEADERS  += \
     parser.h \
     tooltips.h \
     message.h \
-    application.h
+    application.h \
+    mainwindow.h \
+    ui/mainwindow.h
 
-FORMS    +=
+FORMS    += \
+    mainwindow.ui
 
 RESOURCES += \
     res.qrc
