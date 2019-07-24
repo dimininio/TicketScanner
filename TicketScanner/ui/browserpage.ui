@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BrowserPage</class>
+ <widget class="QWidget" name="BrowserPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>418</width>
+    <height>435</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget
+{
+    	font-size: 14px;
+  		background: #FFFFFF;
+}
+
+QPushButton {
+    border-radius: 2px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #91D9D3;
+    padding: 5px;
+    min-width: 5em;
+}
+
+
+QPushButton:hover {
+    background: #91D9D3;
+    color: black
+}
+
+
+QPushButton:pressed {
+
+    background: #91D9D3;
+    border-radius: 2px;
+    border-style: inset;
+    border-width: 2px;
+    border-color: #478D94;
+    color:black;
+    padding-left: 6px;
+    padding-top: 6px;
+    min-width: 5em;
+}
+
+
+QPushButton:focus {
+    outline: none;
+}
+
+
+
+
+QLineEdit {
+    background-color: #FFFFFF;
+    border: 2px solid #91D9D3;
+    border-radius: 2px;
+    background-position:center left;
+}
+
+QDateEdit{
+    background-color:#FFFFFF;
+    border: 2px solid #91D9D3;
+    padding-right:15px;
+    border-radius: 2px;
+}
+
+
+QFrame#mWebFrame
+{
+    border: 2px solid #91D9D3;
+}
+
+
+
+/* navigation bar */
+QCalendarWidget QWidget#qt_calendar_navigationbar {
+        background-color: #91D9D3;
+}
+QCalendarWidget QToolButton {
+
+        color: black;
+        background-color: #91D9D3;
+}
+QCalendarWidget QMenu {
+
+        left: 20px;
+        color: black;
+        background-color: #91D9D3;
+}
+QCalendarWidget QSpinBox {
+        color: black;
+        background-color: #91D9D3;
+        selection-background-color: rgb(136, 136, 136);
+        selection-color: rgb(255, 255, 255);
+}
+/*
+QCalendarWidget QSpinBox::up-button { subcontrol-origin: border;  subcontrol-position: top right;  width:15px; }
+QCalendarWidget QSpinBox::down-button {subcontrol-origin: border; subcontrol-position: bottom right;  width:15px;}
+QCalendarWidget QSpinBox::up-arrow { width:12px;  height:12px; }
+QCalendarWidget QSpinBox::down-arrow { width:12px;  height:12px; }
+
+*/
+
+/* header row (Sn,Mo,Tu,Fr..)*/
+QCalendarWidget QWidget {
+    alternate-background-color: #91D9D3;
+}
+
+/* normal days */
+QCalendarWidget QAbstractItemView:enabled
+{
+        /*font-size:18px;*/
+        color: black;
+        background-color: white;
+        selection-background-color: #91D9D3;
+        selection-color: #176688;
+}
+
+
+/* days in other months */
+QCalendarWidget QAbstractItemView:disabled {
+    color: rgb(150, 150, 150);
+}
+
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>25</number>
+     </property>
+     <item>
+      <widget class="QLineEdit" name="mFromEdit"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mToEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QDateEdit" name="mDateEdit">
+       <property name="minimumSize">
+        <size>
+         <width>187</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>187</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mSearchButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>130</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>130</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Пошук</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QFrame" name="mWebFrame">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QWebView" name="mWebView">
+        <property name="url">
+         <url>
+          <string>about:blank</string>
+         </url>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="mSettingsButton">
+     <property name="text">
+      <string>Налаштування пошуку</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKitWidgets/QWebView</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

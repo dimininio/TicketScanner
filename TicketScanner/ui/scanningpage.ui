@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ScanningPage</class>
+ <widget class="QWidget" name="ScanningPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>408</width>
+    <height>373</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget{
+    font-size: 14px;
+	background-color: white;
+}
+
+
+
+QPushButton {
+
+    background: #FFFFFF;
+    border-radius: 2px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #91D9D3;
+    padding: 5px;
+    min-width: 5em;
+
+}
+QPushButton:hover {
+    background: #91D9D3;
+    color: black
+
+}
+QPushButton:pressed {
+
+    background: #91D9D3;
+    border-radius: 2px;
+    border-style: inset;
+    border-width: 2px;
+    border-color: #478D94;
+    color:black;
+    padding-left: 6px;
+    padding-top: 6px;
+    min-width: 5em;
+}
+QPushButton:focus {
+    outline: none;
+}
+
+
+
+
+QLabel#mProcessingLabel{
+    border: 2px solid #91D9D3;
+    background-color: #60B3D7;
+    max-height: 3em;
+    padding: 7px;
+}
+
+QLabel#mInfoLabel{
+    border: 2px solid #91D9D3;
+    background-color: white;
+    padding: 7px;
+}
+
+QLabel#mConnectionLostLabel{
+    color:red;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="mInfoLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Пошук</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="AnimatedSearchWidget" name="mStatusLabel" native="true"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="mProcessingLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="mOpenBookingButton">
+     <property name="text">
+      <string>PushButton</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="mChangeSettingsButton">
+     <property name="text">
+      <string>Змінити налаштування пошуку</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AnimatedSearchWidget</class>
+   <extends>QWidget</extends>
+   <header>animatedsearchwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

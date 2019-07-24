@@ -17,8 +17,7 @@ SOURCES += main.cpp\
     lineedit.cpp \
     windowpages.cpp \
     searchparameters.cpp \
-    widgetsmediator.cpp \
-    animatedsearchwidget.cpp \
+    widgetsmediator.cpp \    
     requestdata.cpp \
     windowtitlebar.cpp \
     uzmainwindow.cpp \
@@ -26,8 +25,11 @@ SOURCES += main.cpp\
     parser.cpp \
     message.cpp \
     application.cpp \
-    mainwindow.cpp \
-    ui/mainwindow.cpp
+    ui/mainwindow.cpp \
+    ui/browserpage.cpp \
+    ui/settingspage.cpp \
+    ui/scanningpage.cpp \
+    ui/animatedsearchwidget.cpp
 
 
 HEADERS  += \
@@ -38,7 +40,6 @@ HEADERS  += \
     windowpages.h \
     searchparameters.h \
     widgetsmediator.h \
-    animatedsearchwidget.h \
     config.h \
     windowtitlebar.h \
     uzmainwindow.h \
@@ -47,11 +48,17 @@ HEADERS  += \
     tooltips.h \
     message.h \
     application.h \
-    mainwindow.h \
-    ui/mainwindow.h
+    ui/mainwindow.h \
+    ui/browserpage.h \
+    ui/settingspage.h \
+    ui/scanningpage.h \
+    ui/animatedsearchwidget.h
 
 FORMS    += \
-    mainwindow.ui
+    ui/mainwindow.ui \
+    ui/browserpage.ui \
+    ui/settingspage.ui \
+    ui/scanningpage.ui
 
 RESOURCES += \
     res.qrc
